@@ -14,6 +14,7 @@
 
 | # | Tài liệu | Pha AI-Agile | Mô tả |
 |---|---|---|---|
+| ★ | [**`docs/WHITEPAPER.md`**](./docs/WHITEPAPER.md) | **Strategy / Fundraising** | **Whitepaper Gọi vốn:** Luận điểm đầu tư, 5W1H, TAM/SAM/SOM, so sánh đối thủ (FOMO, Virtuals, B3/BSMNT, Pump.fun, Poki), bài học *Gate-First vs. Infra-First* & cảnh báo Play-Gate, Dual Business Model, SWOT/TOWS, GTM & Use of Funds |
 | 0 | [`docs/00-open-source-landscape.md`](./docs/00-open-source-landscape.md) | P01 / P04 | Danh mục mã nguồn mở đã xác minh cho từng module, ma trận Build/Adopt/CPI, kiểm soát License & cấu trúc Monorepo |
 | 1 | [**`docs/PRD.md`**](./docs/PRD.md) | **P01 → P06** | **PRD Tổng thể:** Tầm nhìn, OKRs, Personas, Cơ chế Version-Gated Growth & 6 lớp chống bot, FRs, User Stories, BDD, MoSCoW, HITL Gates, NFR & DORA |
 | 2 | [`docs/01-user-flows-and-ux.md`](./docs/01-user-flows-and-ux.md) | P02 | Sitemap, danh mục màn hình (Screen Specs) & 8 sơ đồ Luồng người dùng End-to-End |
