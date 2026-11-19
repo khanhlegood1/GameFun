@@ -6,7 +6,7 @@
 | Thông tin tài liệu | Chi tiết |
 |---|---|
 | **Dự án** | **MetaPump** (`khanhlegood1/GameFun`) |
-| **Phiên bản** | `v1.1 — Investor & Strategic Whitepaper (Multi-Stage Fundraising Edition)` |
+| **Phiên bản** | `v1.2 — Investor & Strategic Whitepaper (Version Standard, Unit Economics & Self-Binding Governance)` |
 | **Ngày phát hành** | Tháng 11 / 2026 |
 | **Phân khúc kiến tạo** | **Version-Gated Game Capital Markets** *(Poki × Arena × Pump.fun × Notcoin)* |
 | **Vòng gọi vốn hiện tại** | **Pre-Seed $1.0M** *(Lộ trình kế tiếp: Seed $3.0M → Series A $12.0M → Series B $25.0M)* |
@@ -103,6 +103,28 @@ Qua khảo sát toàn bộ cả **hệ sinh thái mã nguồn mở trên GitHub*
 | **Bảo hiểm Hoàn vốn khi Dev Bỏ cuộc (Ragequit)** | **Có (100% On-chain)** | N/A | Không | Không | Không | Không |
 | **Dòng tiền Kép (Quảng cáo Web2 + Phí Giao dịch Web3)** | **Có (Chống chu kỳ)** | Chỉ Quảng cáo Web2 | Phí hệ sinh thái/token | Chỉ phí giao dịch Web3 | Chỉ phí giao dịch Web3 | Chỉ phí giao dịch Web3 |
 
+### 4.3. Tại sao Ngành Game Chưa từng có Chuẩn Phiên bản Cố định — Và Tiêu chuẩn 3 Lớp của MetaPump
+
+Khác với **thư viện phần mềm** (tuân thủ nghiêm ngặt chuẩn *Semantic Versioning* `MAJOR.MINOR.PATCH` theo tương thích API), **trình duyệt web** (Chrome, Firefox phát hành đều đặn mỗi 4 tuần tăng 1 số chính `v130 → v131 → v132`), hay **hệ điều hành** (iOS/Android theo chu kỳ năm, Ubuntu theo lịch *CalVer* `24.04 → 26.04`), **ngành game toàn cầu hoàn toàn không có một quy ước đánh số phiên bản bắt buộc hay thống nhất**:
+
+| Phân khúc Game / Nền tảng | Cách đánh số thường gặp | Vấn đề nếu dùng trực tiếp để Mở khóa Vốn |
+|---|---|---|
+| **Indie & Early Access** | `MAJOR.MINOR.PATCH` cảm tính (`v0.3`, `v0.12`, `v1.0`) | Ranh giới `v1.0` hoàn toàn tùy ý: có siêu phẩm ở `0.x` suốt 8–10 năm (*Factorio*), trong khi hàng nghìn bản demo lỗi tự gắn nhãn `v1.0` ngay ngày đầu. |
+| **Live-Service / Online** | Mùa giải, Chương hoặc Năm (`Season 4`, `Chapter 6`, `25.S1`, nhảy từ `4.8 → 5.0`) | Số phiên bản phục vụ truyền thông & sự kiện thương mại, không phản ánh mức độ cải thiện chất lượng cốt lõi. |
+| **Sản xuất Nội bộ Studio** | Mốc vòng đời (`Prototype → Vertical Slice → Alpha → Beta → RC → Gold`) | Không có thước đo định lượng chung giữa hai studio khác nhau. |
+| **Cửa hàng PC / Mobile (Steam, Apple, Google)** | Tách nhãn hiển thị khỏi mã kỹ thuật (`BuildID + ManifestID` trên Steam; `versionCode` trên App Store/Play) | Chứng minh bài học sống còn: **nền tảng phân phối không bao giờ tin vào chuỗi chữ do nhà phát triển tự gõ** — nhưng mới dừng ở quản lý tệp, chưa gắn với thẩm định người chơi hay giải ngân vốn. |
+| **Web / HTML5 Portals** | Ghi đè lặng lẽ tệp `index.html` trên CDN hoặc gõ tay nhãn tĩnh `Version 0.1.0` | Không thể kiểm chứng nhà phát triển vừa nâng cấp cả trò chơi hay chỉ đổi màu một nút bấm (*"Lạm phát phiên bản" — Version Inflation*). |
+
+**Lợi thế kiến tạo tiêu chuẩn của MetaPump — Kiến trúc Phiên bản 3 Lớp (*MetaPump 3-Layer Version Standard*):**
+
+Nếu một bệ phóng ngây thơ giải ngân vốn dựa trên việc studio đổi tên từ `v0.1` sang `v0.2`, kẻ trục lợi sẽ sửa một dòng chữ rồi gọi là `v1.0` để rút sạch thanh khoản. MetaPump triệt tiêu kẽ hở đó bằng cách tách khái niệm "Phiên bản Game" thành **3 lớp độc lập**:
+
+1. **Lớp 1 — Nhãn Sáng tạo của Studio (`Display Label` — Tự do 100%):** Studio toàn quyền đặt tên theo phong cách riêng (`v0.4.2`, `Alpha 3`, `Season 2`, `2026.11`) để giao tiếp tự nhiên với cộng đồng game thủ.
+2. **Lớp 2 — Định danh Kỹ thuật Bất biến (`Canonical Build Proof` — Chuẩn Steam Manifest neo On-Chain):** Hệ thống tự cấp số thứ tự tăng đơn điệu (`build #1, #2, #3...`), băm `SHA-256` toàn bộ gói mã nguồn/tài nguyên neo lên Solana và đo tỷ lệ thay đổi thực chất (*Build Diff*). Nhờ đó nền tảng tách bạch rõ **bản vá lỗi nhỏ (*Hotfix/Patch*)** — được cập nhật nhanh để bảo vệ trải nghiệm người chơi nhưng **không mở thêm trần vốn** — khỏi **bản nâng cấp lớn (*Milestone Candidate*)** đủ tư cách bước vào vòng kiểm định.
+3. **Lớp 3 — Cấp bậc Kinh tế Đồng bộ Vốn (`M0 → M1 → M2 → M3 → M4 → M5+` — Chỉ mở bằng Giờ chơi Thật):** Đây là con số duy nhất có quyền mở két sắt thanh khoản. Một bản game tự xưng `v9.0` nhưng người chơi thoát sau 20 giây vẫn đứng yên ở `M0`; ngược lại một bản `v0.4-beta` đạt chuẩn *Giờ chơi Thật đã Xác minh (Verified Play Hours — VPH)*, vượt Player Fit 500 lượt và đánh bại bản trước trong đấu mù Arena sẽ chính thức mở khóa chặng vốn `M2/M3`.
+
+> **Ý nghĩa chiến lược:** Cũng như `SemVer` chuẩn hóa hệ sinh thái mã nguồn mở và `BuildID/Manifest` của Steam chuẩn hóa phát hành game PC, **MetaPump định nghĩa tiêu chuẩn công nghiệp đầu tiên biến "một phiên bản game" thành một đơn vị kinh tế có thể kiểm chứng, so sánh và tài trợ minh bạch.**
+
 ---
 
 ## 5. Luận điểm Kinh doanh Cốt lõi: Tại sao "Gate-First" Thắng "Infra-First" — Và Lời Cảnh báo Đỏ về Cái bẫy Volume
@@ -145,42 +167,81 @@ flowchart TB
     end
 ```
 
-### 5.3. CẢNH BÁO ĐỎ CHO BAN ĐIỀU HÀNH: Tuyệt đối Không được Nới Play-Gate để Chạy theo Volume!
+### 5.3. Rủi ro Lớn nhất Đến từ Chính Chúng tôi — Và Cơ chế "Tự Khóa Tay" trên Chuỗi
 
-Trong hành trình vận hành MetaPump, cám dỗ nguy hiểm nhất sẽ đến vào tháng thứ 3–6, khi ai đó trong phòng họp đề xuất:
-> *"Tuần này sàn chỉ có 15 game vượt ải M2 nên phí giao dịch tăng chậm. Hay mình hạ chuẩn chơi thử từ 3 phút xuống 45 giây, giảm số trận Arena từ 50 xuống 10, hoặc mở cửa cho cá voi mua tự do ngay giờ đầu để doanh số tháng này tăng gấp 5 lần?"*
+Rủi ro nguy hiểm nhất của MetaPump (mã định danh **`R11`** trong PRD) không đến từ đối thủ hay thị trường, mà là **rủi ro tự gây: nới lỏng điều kiện Play-Gate để chạy theo volume ngắn hạn**.
 
-**Câu trả lời bắt buộc của Hội đồng Quản trị phải là: KHÔNG BAO GIỜ.** Vì 3 lý do sống còn:
+Tại sao nó cực kỳ nguy hiểm? Bởi vì vào tháng thứ 3–6, người đề xuất *"hạ chuẩn chơi thử từ 3 phút xuống 45 giây hoặc nới cửa cho cá voi mua sớm để tăng phí gấp 5 lần"* **sẽ ĐÚNG trong ngắn hạn**: khối lượng giao dịch tăng vọt thật, biểu đồ doanh thu tháng đẹp thật. Hậu quả phá hủy thương hiệu chỉ bộc lộ sau 2–3 quý, khi người mua thua lỗ triền miên rút ví bỏ đi và không bao giờ quay lại — đúng như kịch bản **85% agent chết** của Virtuals khi họ chọn mở rộng thay vì siết cổng.
 
-1. **Tài sản thực sự mà MetaPump bán không phải là "chỗ tạo token", mà là "Chứng chỉ Niềm tin (Trust Stamp)":** Tạo token trên Solana tốn chưa tới $2 — ai cũng sao chép được. Thứ khiến một nhà đầu tư dám bỏ $500 vào game đạt mốc `M3` trên MetaPump là niềm tin sắt đá rằng *"đã có hàng nghìn người chơi thật say mê trò chơi này và không ai làm giả được con số đó"*. Hạ chuẩn Play-Gate chính là **pha nước lã vào rượu quý để bán được nhiều chai hơn** — quý này lãi to, quý sau phá sản thương hiệu.
-2. **Không bao giờ thắng được sòng bạc nếu tự biến mình thành sòng bạc nửa mùa:** Nếu nới cổng kiểm định, MetaPump sẽ rơi vào "vùng chết chiến lược": quá lỏng để bảo vệ game thủ và nhà đầu tư nghiêm túc, nhưng lại quá rườm rà so với Pump.fun trong mắt dân đầu cơ lướt sóng 5 phút. Kết quả là mất cả hai tệp khách hàng.
-3. **Cách tăng doanh thu đúng đắn mà không chạm vào Play-Gate:**
-   - Muốn **nhiều game vượt cổng hơn** → Không hạ thấp xà ngang, mà **huấn luyện vận động viên nhảy cao hơn**: cung cấp báo cáo video playtest siêu tốc, công cụ chẩn đoán điểm rơi người chơi ở phút thứ 1, SDK gắn trong 10 phút, và hỗ trợ studio AI tinh chỉnh game để vượt mốc 3 phút thực chất.
-   - Muốn **doanh thu mỗi game lớn hơn** → Kéo dài tuổi thọ kinh tế của các game đạt `M4` (giải đấu mùa `M5+`, phí thanh khoản vĩnh viễn trên DEX, doanh thu quảng cáo hàng triệu lượt chơi toàn cầu).
+Thứ MetaPump bán không phải là "chỗ tạo token giá $2", mà là **Chứng chỉ Niềm tin (*Trust Stamp*)**. Muốn tăng doanh thu bền vững, cách duy nhất đúng là **huấn luyện studio nhảy qua xà cao hơn** (báo cáo video playtest siêu tốc, công cụ chẩn đoán điểm rơi người chơi phút đầu, SDK 10 phút) và **kéo dài vòng đời kinh tế của các game đạt `M4+`** (quảng cáo toàn cầu, phí LP vĩnh viễn, giải đấu mùa).
 
-#### 4 Nguyên tắc "Hiến pháp Bất khả xâm phạm" (Governance Guardrails)
-1. **Tách quyền kinh doanh khỏi quyền kiểm định:** Bộ phận tăng trưởng doanh thu (Growth/BD) không có quyền sửa ngưỡng Player Fit, điểm Arena hay danh sách ví đạt Proof-of-Play (tương tự tách ban biên tập khỏi phòng quảng cáo, hoặc tách khối thẩm định tín dụng khỏi khối kinh doanh ngân hàng).
-2. **Minh bạch hóa bằng chứng lên Blockchain:** Mọi lần mở khóa mốc `M1–M4` đều ghi công khai chỉ số thời gian chơi trung bình, tỷ lệ phiên >3 phút, tỷ lệ thắng Arena và mã băm báo cáo lên Solana — thị trường tự giám sát nếu sàn hạ chuẩn.
-3. **Bất biến luật chơi cho dự án đang chạy:** Tham số đường cong, trần mua và thời hạn Ragequit được chụp cứng ngay lúc game phát hành M1; ngay cả ban quản trị cũng không thể tự ý đổi luật giữa chừng.
-4. **KPI Bắc Đẩu (North Star Metric) của CEO:** Đo lường thành công bằng **"Khối lượng giao dịch & Giờ chơi của các game sống sót trên 90 ngày (M2–M4+)"**, tuyệt đối không thưởng KPI theo *"Tổng số lượng token tạo ra"*.
+#### Cách Chúng tôi Làm cho Việc "Nới Cổng" Trở nên Bất khả thi (Technical & Governance Guardrails)
+
+Thay vì yêu cầu nhà đầu tư tin vào lời hứa đạo đức của ban điều hành, MetaPump khóa cứng kỷ luật Play-Gate vào kiến trúc kỹ thuật và quản trị:
+
+| Cơ chế Tự Khóa Tay | Tác dụng Kinh doanh & Bảo vệ Nhà đầu tư |
+|---|---|
+| **1. Play-Gate thực thi On-Chain, không nằm ở giao diện (UI)** | Muốn nới điều kiện mở chặng phải nâng cấp hợp đồng thông minh đã triển khai trên Solana (mọi bằng chứng giờ chơi, tỷ lệ thắng Arena và mã băm báo cáo đều ghi công khai lên chuỗi), không thể lén sửa file cấu hình máy chủ; bộ phận Growth/BD tách biệt hoàn toàn khỏi quyền kiểm định. |
+| **2. Nâng cấp qua Đa chữ ký `Squads v4 (4/7)` + `Timelock 48h`** | Mọi thay đổi bắt buộc có tối thiểu **4/7 chữ ký** độc lập và xếp hàng công khai **48 giờ** trên chuỗi trước khi có hiệu lực — không ai có thể tự ý đổi luật lúc 2 giờ sáng; đồng thời tham số của các dự án đang chạy được chụp cứng bất biến từ lúc mở `M1`. |
+| **3. Đóng băng Hợp đồng (`Immutable Program`) sau 90 ngày** | Sau 90 ngày vận hành ổn định và vượt kiểm toán trên Mainnet, quyền nâng cấp hợp đồng lõi được thu hồi vĩnh viễn — **không một ai, kể cả nhà sáng lập**, còn khả năng nới Play-Gate. |
+| **4. Tham số khóa bằng Bộ Mô phỏng Kiểm thử Tự động** | Mọi cấu hình kinh tế phải vượt qua trọn bộ kịch bản mô phỏng căng thẳng (bot round-trip âm, 0 chênh lệch giá trục lợi, 0 thiếu hụt tài sản đảm bảo trên ≥1,000 kịch bản ngẫu nhiên) — không bao giờ chỉnh tham số bằng cảm tính. KPI Bắc Đẩu của CEO gắn chặt với *giờ chơi & thanh khoản game sống >90 ngày*. |
+
+> **Thước đo để nhà đầu tư đánh giá chúng tôi:**  
+> *"Chúng tôi không hứa sẽ không bao giờ nới điều kiện. Chúng tôi thiết kế hệ thống để việc đó không thể làm một mình, không thể làm nhanh, và sau 90 ngày là không thể làm được nữa."*
+
+#### Ba Rủi ro Tối trọng yếu Phải có Người Chịu Trách nhiệm & Cầu dao Ngắt mạch (Stop-the-Line)
+
+| Mã | Rủi ro Trọng yếu | Người Chịu Trách nhiệm Trực tiếp | Điều kiện Dừng Cứng *(Circuit Breaker)* |
+|---|---|---|---|
+| **`R11`** | Áp lực nới lỏng Play-Gate để lấy volume ngắn hạn | **Founder + Hội đồng Multisig `4/7`** | **Không tồn tại ngoại lệ "khẩn cấp"**; khóa bất biến hợp đồng sau 90 ngày. |
+| **`R1`** | Token / Version Bond bị phân loại là chứng khoán hoặc vi phạm vùng cấm | **Trưởng bộ phận Pháp lý (Legal Counsel)** | **Không phát hành Mainnet (GA)** nếu chưa có ý kiến luật sư độc lập (*Legal Opinion*) và bộ lọc khu vực hoạt động. |
+| **`R2`** | Bot / Sybil (tạo nhiều danh tính giả) lách cổng đo giờ chơi thật (PoP/PoPW) | **Trưởng bộ phận Rủi ro (Risk Lead)** | Tỷ lệ gian lận đo được **`BotShare > 8%` ⇒ Tự động tạm dừng mở đợt phát hành mới** cho đến khi khắc phục triệt để. |
+
+### 5.4. Pháp lý: Ràng buộc Cứng, Không phải Lựa chọn
+
+Tại Việt Nam, **Nghị quyết số `05/2025/NQ-CP` ngày 09/09/2025** của Chính phủ về triển khai thí điểm thị trường tài sản mã hóa (có hiệu lực từ `09/09/2025`, thời gian thí điểm **5 năm**) quy định rõ: hoạt động tổ chức thị trường và cung cấp dịch vụ tài sản mã hóa trong cơ chế thí điểm chỉ được thực hiện bởi tổ chức được Bộ Tài chính cấp phép (vốn điều lệ đã góp tối thiểu **10.000 tỷ đồng VND**), và theo **Điều 6**, tài sản mã hóa theo cơ chế này **chỉ được chào bán, phát hành cho nhà đầu tư nước ngoài**.
+
+MetaPump coi đây là **đường biên thiết kế bắt buộc ngay từ ngày đầu**, với 3 nguyên tắc vận hành cứng:
+
+1. **Giai đoạn 1 — Không chào bán token cho nhà đầu tư Việt Nam:** Tách bạch tuyệt đối cổng giải trí Web Game HTML5 miễn phí với phân khu Launchpad/Version Bond; áp dụng chặn truy cập theo khu vực địa lý (*geo-fencing*) và kiểm soát tuân thủ nghiêm ngặt đối với Việt Nam cùng các khu vực pháp lý hạn chế khác.
+2. **Phạm vi vận hành hợp lệ:** Cơ chế gọi vốn theo phiên bản chỉ chạy thử nghiệm không giá trị tài chính trên mạng **Solana Devnet**, và khi lên Mainnet chỉ phục vụ người tham gia tại các khu vực pháp lý cho phép ngoài phạm vi điều chỉnh hạn chế, dưới pháp nhân quốc tế độc lập đã có ý kiến tư vấn pháp lý.
+3. **Phương án Dự phòng Sống sót (*Off-Chain Fallback*) đã thiết kế sẵn:** Ngay cả tại thị trường tắt hoàn toàn cấu phần token on-chain, toàn bộ lõi *Sổ cái Phiên bản + Phễu Kiểm định Poki + Đấu trường mù Arena* vẫn hoạt động độc lập 100% và chuyển sang mô hình **chia sẻ doanh thu quảng cáo & tài trợ cột mốc bằng tiền pháp định (Off-Chain Revenue-Share)** cho studio — đảm bảo sản phẩm và doanh nghiệp luôn sống khỏe trong mọi kịch bản chính sách.
 
 ---
 
-## 6. Cơ chế Sản phẩm & Kinh tế Token (Được Thiết kế Chống Đầu cơ Sớm)
+## 6. Cơ chế Sản phẩm & Kinh tế Đơn vị (Được Thiết kế & Mô phỏng Chống Đầu cơ Sớm)
 
-### 6.1. Cấu trúc Phân bổ Chuẩn cho Mỗi Token Dự án Game (`1,000,000,000` Token — 0% Pre-sale Ẩn)
+### 6.1. Cấu trúc Phân bổ Token (`1,000,000,000` Cung) — Khác biệt Đạo đức Cốt lõi so với Pump.fun
 
-| Hạng mục Phân bổ | Tỷ trọng | Cơ chế Mở khóa & Bảo vệ Nhà đầu tư / Game thủ |
+| Hạng mục Phân bổ | **Chuẩn VGBC 4 Chặng**<br>*(Toàn vòng đời `M1–M4`)* | **Cấu hình Version Bond Đầm giá**<br>*(Tài trợ phiên bản đơn)* | Cơ chế Bảo vệ & Điểm Khác biệt so với Pump.fun |
+|---|---|---|---|
+| **Đường cong Cộng đồng (Curve)** | **70%** (`700M`) | **60%** (`600M`) | Hàm tích bất biến `x * y = k` đã kiểm chứng; mở khóa theo kiểm định phiên bản, tốt nghiệp ở **`76.11 – 79.25 SOL` thực** (~`$11.4K – $11.9K` @ `$150/SOL`) — **vừa sức một cộng đồng game thủ nhỏ, không phụ thuộc cá voi**. |
+| **Quỹ Thưởng Người chơi Thật (Player Reward Pool)** | **10%** (`100M`) + 50% SOL phạt | **20%** (`200M`) | Phân phối theo bằng chứng giờ chơi thật đã xác minh (*PoP / PoPW — Verified Play Hours*) và đóng góp `SPARK`, trả tuyến tính 21 ngày chống xả — **Pump.fun = 0%**. |
+| **Nhà phát triển (Creator Vesting)** | **5%** (`50M`) + `10 SOL` Grant M4 | **15%** (`150M`) | **Mở khóa theo giờ chơi thật & cột mốc phiên bản đã nghiệm thu**, tuyệt đối không vest suông theo thời gian đồng hồ (`0%` ở `M0–M1`, đóng băng vĩnh viễn nếu dừng làm game) — **Pump.fun không có**. |
+| **Thanh khoản DEX Khóa (Locked LP)** | **15%** (`150M` — khóa vĩnh viễn) | **5%** (`50M` — khóa ≥12 tháng) | Tự động chuyển lên Meteora DAMM v2 / Raydium CPMM ở **đúng 100% giá cuối trên đường cong** (0% chênh lệch giá cho bot trục lợi). |
+| **Team / Đội ngũ Nền tảng MetaPump** | **`0%`** (`0 Token`) | **`0%`** (`0 Token`) | **Nền tảng chỉ nhận phí giao dịch & chia sẻ quảng cáo minh bạch, KHÔNG nhận bất kỳ token nào của game hay phiên bản.** |
+
+> **Ranh giới Đạo đức Bất khả xâm phạm (`0% Platform Allocation`):** Dòng cuối cùng trong bảng trên là nền tảng đạo đức của toàn bộ giao thức. **MetaPump không sở hữu dù chỉ 1 token của bất kỳ phiên bản game nào.** Nếu nền tảng cầm token dự án, nền tảng sẽ nảy sinh xung đột lợi ích để bơm giá hoặc dễ dãi khi duyệt cổng — và mọi cơ chế kiểm định phía trước sẽ trở nên vô nghĩa.
+
+### 6.2. Tham số Đường cong & Lá chắn Chống Bot (Khóa bằng Mô phỏng Toán học)
+
+| Tham số Kinh tế | Cấu hình VGBC 4 Chặng *(Mặc định)* | Cấu hình Version Bond Đầm giá | Lý do Thiết kế *(Mechanism Rationale)* |
+|---|---|---|---|
+| **Hàm định giá & Thanh khoản ảo** | `x * y = k` · `Virtual SOL = 30 SOL` | `x * y = k` · `Virtual SOL = 60 SOL` | Đơn giản, minh bạch tuyệt đối; bể ảo `60 SOL` tạo độ sâu giúp lệnh nhỏ không gây giật giá thất thường. |
+| **Ngưỡng Tốt nghiệp (Graduation)** | `79.25 SOL` qua 4 chặng (`5.52 → 15.59 → 36.55 → 79.25`) | `76.11 SOL` thực (`~$11,416` @ `$150/SOL`) | Đủ vốn thực chất cho studio indie hoàn thiện phiên bản, nhưng đủ gọn để cộng đồng vài trăm game thủ tự cán đích. |
+| **Biên độ Giá trước Graduation** | Từng chặng dịu (`1.40× → 2.31× → 4.92× → 13.26×`) | **`5.15×`** toàn đường cong | Đủ hấp dẫn thưởng cho người tin tưởng sớm, không tạo bong bóng FOMO cực đoan rồi sập đổ. |
+| **Phí Giao dịch Cơ bản** | `1.00%` (`0.5%` sàn · `0.3%` dev · `0.2%` game thủ) | `1.00%` | Cạnh tranh, thấp hơn tổng phí thực tế của nhiều sàn launchpad có phụ phí động (`~1.0%–1.25%`). |
+| **Phí Thoát sớm (Early-Exit Fee)** | **`12%` (`<1h`) → `6%` (`<24h`) → `3%` (`<7d`) → `1%`** *(0% phạt nếu giữ qua ≥1 version)* | **`4.00%`** cố định chống lướt sóng | **Vũ khí chống bot quan trọng nhất:** biến mọi giao dịch mua-xả chớp nhoáng thành lỗ ròng chắc chắn; hoàn trả 50% phạt cho game thủ & 40% đắp quỹ giá sàn. |
+| **Giới hạn Tốc độ & Trần Ví** | `24h Gamer Priority Window` (`0.25–2.0 SOL`/ví) + Trần `2%` cung/ví + Lưu ký `BuyerPosition` trước M4 | `Epoch 600s` (tối đa `10%` curve/epoch) · Trần `5%`/ví | Chặn đứng 100% bot sniper block-0, ngăn cá voi bơm vốn đột ngột làm méo giá và ngăn dùng 100 ví ảo gom token xả sập sàn. |
+
+### 6.3. Kiểm chứng Định lượng: Bot Đầu cơ có Lãi không?
+
+| Kịch bản Kiểm chứng | Kết quả Định lượng | Ý nghĩa Kinh tế đối với Hệ sinh thái |
 |---|---|---|
-| **Đường cong Gọi vốn theo Phiên bản (VGBC)** | **70%** (`700M`) | Mở bán dần qua 4 lần nghiệm thu phiên bản: **M1 `15%`** (huy động tối đa ~5.52 SOL) → **M2 `33%`** (~15.59 SOL) → **M3 `53%`** (~36.55 SOL) → **M4 `70%`** (~79.25 SOL). |
-| **Thanh khoản DEX Vĩnh viễn** | **15%** (`150M`) | Khóa cứng trong hợp đồng; khi hoàn thành M4 tự động ghép với **~61.84 SOL** đưa lên Meteora DAMM v2 / Raydium CPMM ở **đúng 100% mức giá cuối cùng trên đường cong** (không có kẽ hở chênh lệch giá cho bot trục lợi) và khóa LP vĩnh viễn. |
-| **Quỹ Thưởng Cộng đồng Game thủ (Proof-of-Play)** | **10%** (`100M`) | Thưởng theo từng mốc M1–M5+ cho người chơi thật tích lũy điểm `SPARK` (chơi game, test Mystery Tile, chấm Arena chuẩn, hoạt động Squad). Trả nhỏ giọt **tuyến tính trong 21 ngày** chống xả ồ ạt, cộng thêm **50% tiền SOL thu từ phí phạt kẻ xả sớm**. |
-| **Quỹ Đồng hành Nhà phát triển (Milestone Vesting)** | **5%** (`50M`) | **0% ở M0 và M1.** Chỉ mở dần tại M2 (1%), M3 (1%), M4 (1.5%), M5+ (1.5%), trả dần trong **90 ngày** và chỉ rút ra ví sau khi hoàn thành M4 (v1.0). Bù lại, khi đạt M4 studio nhận ngay **10 SOL vốn tài trợ phát triển (Milestone Grant)** + phí giao dịch 0.30% + chia sẻ doanh thu quảng cáo dài hạn. |
-
-### 6.2. Tại sao Bot Đầu cơ Không thể Xả lên Đầu Game thủ?
-- **Chặn cửa vào (24h Gamer Priority Window):** Mỗi khi game vừa lên đời phiên bản mới, 24 giờ đầu tiên là "giờ vàng tri ân game thủ" — chỉ ai đã thực sự bỏ thời gian chơi game đó và có hạng uy tín *Proof-of-Play* mới được mua, tối đa 0.25–2.0 SOL/ví. Bot tự động không có cửa chen chân ở giá đáy.
-- **Chặn đường lách (Pre-Graduation Custody):** Trước khi game đạt bản hoàn chỉnh M4, số dư mua trên đường cong gắn chặt với ví mua — không ai có thể dùng 100 ví ảo mua lẻ rồi gom về 1 ví xả sập giá hay mở chợ đen bên ngoài.
-- **Biến kẻ lướt sóng thành nhà tài trợ cho game thủ (Early-Exit Tax):** Bán trong dưới 1 giờ chịu phí **12%**; 1–24 giờ chịu **6%**; 1–7 ngày chịu **3%**; giữ trên 7 ngày hoặc **đồng hành cùng game sang ít nhất 1 phiên bản mới** chỉ chịu phí sàn chuẩn **1%**. Gần như toàn bộ tiền phạt được chia thẳng cho cộng đồng người chơi thật và đắp dày két sắt bảo hiểm giá sàn.
+| **Bot mua rồi bán ngay (Round-Trip)** | **`−8.92%`** *(cấu hình phí thoát sớm 4%)* đến **`−12.88%`** *(chuẩn VGBC `<1h`)* | **Bot lỗ chắc chắn ngay từ lệnh đầu tiên.** Đây là mục tiêu tối thượng của phí thoát sớm — biến kẻ đầu cơ chớp nhoáng thành nhà tài trợ cho quỹ thưởng game thủ. |
+| **Người chơi mua sớm & giữ tới Graduation** | **`+383%`** *(cấu hình đầm `5.15×`)* đến **`+802% – +975%`** *(vào M1/M2 giữ trọn tới M4)* | Người chơi có niềm tin và đồng hành cùng sự tiến bộ thật của phiên bản game được thưởng xứng đáng (miễn phí phạt thoát sớm). |
+| **Người chơi đóng góp giờ chơi thật** | Đóng góp `20%` thời gian hợp lệ nhận **`~5.0%` pool** *(có hàm chống độc quyền + stream 21 ngày)* | Thưởng công bằng theo công sức kiểm thử & gắn bó thực tế (*Proof-of-Play*), không thể dùng một tài khoản cày thâu tóm toàn bộ quỹ. |
+| **Bán toàn bộ Curve / Ragequit 100%** | **`0` thiếu hụt tài sản đảm bảo** *(Zero Collateral Deficit)* | Toán học số nguyên `u128` làm tròn có lợi cho két sắt; kiểm chứng qua 8 bất biến & ≥1,000 kịch bản ngẫu nhiên đảm bảo giá tăng đơn điệu, không vượt cung và không có lỗ hổng kế toán. |
 
 ---
 
@@ -301,6 +362,28 @@ Mô hình kịch bản cơ sở (*Base Case*) giả định MetaPump giữ nguy�
 
 ---
 
+### 9.4. Lộ trình Thực thi Kỹ thuật S0–S12 & Kỷ luật Đường găng (Phase 1 Execution Gates)
+
+Để biến `$1.0M` vốn Pre-Seed thành sản phẩm Mainnet không lỗi trọng yếu, lộ trình kỹ thuật Phase 1 được chia thành các Sprint có **cột mốc đầu ra đo đếm được (Verifiable Exit Criteria)**:
+
+| Sprint | Hạng mục Triển khai Trọng tâm | Cột mốc Nghiệm thu Đo lường được |
+|---|---|---|
+| **`S0`** | Cổng phê duyệt `P01 + P02`, kiến trúc hợp đồng & prototype tương tác | Biên bản duyệt HITL Gate `P01/P02` có chữ ký xác nhận |
+| **`S1 – S2`** | Hạ tầng nền tảng, Sổ cái Phiên bản (`Registry`), luồng xuất bản & Inspector | Studio đầu tiên tải lên & chạy thành công bản build cô lập |
+| **`S3 – S4`** | Play Runtime tốc độ cao, hệ thống đo lường Telemetry & `PoP / PoPW v1` | Đo chính xác Giờ chơi Thật đã Xác minh (`VPH`), chặn spam cơ bản |
+| **`S5`** | Cổng khám phá (Discovery), kiểm duyệt nội dung, Blind Arena & neo Merkle | Điểm xếp hạng phiên bản được neo mã băm Merkle lên chuỗi mỗi giờ |
+| **`S6 – S7`** | **Smart Contracts đường cong (`Curve`), két sắt `Escrow` & bộ chỉ mục Indexer** | **Tối thiểu 3 dự án chạy trọn luồng trên Solana Devnet, giải ngân escrow chuẩn xác** |
+| **`S8`** | Cơ chế Tốt nghiệp DEX (`Graduation`), Hoàn vốn (`Ragequit/Refund`) & Season Engine | Dự án đầu tiên tốt nghiệp tự động 0% chênh lệch giá & kiểm chứng hoàn vốn |
+| **`S9`** | Hệ thống nhận thưởng (`Claim`), trả thưởng tuyến tính & Bảng Minh bạch Công khai | Người chơi thật rút thành công phần thưởng kiểm thử trên môi trường thực |
+| **`S10`** | Chống gian lận **Sybil v2** (chặn đa danh tính ảo farm thưởng), khiếu nại & A/B Arena | Tỷ lệ gian lận đo lường độc lập đạt **`BotShare < 8%`** |
+| **`S11`** | Gia cố bảo mật (Hardening), kiểm thử chịu tải, diễn tập sự cố & Kiểm toán độc lập | Vượt qua `10/10` bài diễn tập sự cố (Chaos/Incident Drills), **2 đợt Audit `0` lỗi Critical** |
+| **`S12`** | Phát hành chính thức **GA Phase 1** + quỹ thời gian đệm an toàn | Đạt mốc **`40,000+` giờ chơi thật xác minh (`VPH`) / tuần** |
+
+> **Đường găng Bất di bất dịch (Critical Path):** `P01 → P02 → P03 → S6 (Curve & Escrow) → Audit #1 → S8 (Graduation & Ragequit) → Audit #2 → Mainnet GA`.  
+> **Kỷ luật tiến độ:** Nếu phát sinh chậm trễ ở `S6`, ban điều hành **bắt buộc dời ngày `GA` — tuyệt đối không cắt giảm kiểm thử, không rút ngắn kiểm toán và không hạ chuẩn `BotShare < 8%`**.
+
+---
+
 ## 10. Kết luận: Định nghĩa lại Cách Thế giới Tài trợ và Thưởng thức Trò chơi
 
 Suốt một thập kỷ qua, ngành game bị chia cắt thành hai thái cực cực đoan: hoặc là **những cổng game tuyệt vời nhưng đóng kín cơ hội sở hữu** (Poki, App Store), hoặc là **những sòng bạc tài chính mở toang nhưng thiếu vắng trò chơi thực thụ** (GameFi đời đầu, Memecoin & Agent Launchpads).
@@ -316,3 +399,5 @@ Suốt một thập kỷ qua, ngành game bị chia cắt thành hai thái cực
 3. **Pump.fun Graduation & Post-Graduation Survival (2025–2026):** Số liệu tổng hợp từ *The Block / Dune Analytics / Solana Compass* (06/2026: >$800M doanh thu lũy kế, tỷ lệ tốt nghiệp lịch sử ~1.4%, <2%) và nghiên cứu định lượng trên các tập mẫu 655K–18.6M token (0.26%–1.71% tốt nghiệp; 80.4% ngừng giao dịch trong 24 giờ đầu).
 4. **B3 / Basement (`bsmnt.fun`):** Tài liệu kỹ thuật *BSMNT Game Launcher Docs* (`docs.basement.fun`) và công bố hệ sinh thái B3 Open Gaming trên Base (6M+ ví, 140K DAU, cơ chế nhúng game qua JWT & hiển thị nhãn phiên bản tĩnh).
 5. **FOMO (`fomo.family`):** Dữ liệu doanh thu giao thức trên *DefiLlama* & tổng hợp phân tích sản phẩm Q3–Q4/2026 (ứng dụng giao dịch xã hội tự quản ví đa chuỗi, Series A $17M Benchmark, Series B $75M Index Ventures, ~$33.7M doanh thu 12 tháng).
+6. **Khung Pháp lý Tài sản Mã hóa tại Việt Nam (2025–2030):** *Nghị quyết số 05/2025/NQ-CP* ngày 09/09/2025 của Chính phủ về việc triển khai thí điểm thị trường tài sản mã hóa tại Việt Nam (hiệu lực thi hành từ 09/09/2025, thời gian thí điểm 5 năm; quy định điều kiện tổ chức cung cấp dịch vụ tài sản mã hóa được Bộ Tài chính cấp phép với vốn điều lệ đã góp tối thiểu 10.000 tỷ đồng VND và Điều 6 quy định tài sản mã hóa chỉ được chào bán, phát hành cho nhà đầu tư nước ngoài).
+7. **Đối chiếu Quy ước Phiên bản Phần mềm & Phân phối Game:** Chuẩn *Semantic Versioning 2.0.0* (`semver.org`), mô hình phát hành theo chu kỳ cố định 4 tuần của Chromium/Firefox, *Calendar Versioning* (`calver.org`), và kiến trúc tách nhãn hiển thị khỏi mã định danh bất biến trên Steamworks (`BuildID` / `ManifestID`) và Apple App Store / Google Play (`CFBundleVersion` / `versionCode`).
