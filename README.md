@@ -14,7 +14,7 @@
 
 | # | Tài liệu | Pha AI-Agile | Mô tả |
 |---|---|---|---|
-| ★ | [**`docs/WHITEPAPER.md`**](./docs/WHITEPAPER.md) | **Strategy / Fundraising** | **Whitepaper Gọi vốn v1.1:** Luận điểm đầu tư, 5W1H, TAM/SAM/SOM, so sánh đối thủ (FOMO, Virtuals, B3/BSMNT, Pump.fun, Poki), *Gate-First vs. Infra-First* & cảnh báo Play-Gate, Dual Business Model, SWOT/TOWS, lộ trình gọi vốn đa vòng (`$1M Pre-Seed → $3M Seed → $12M Series A → $25M Series B`) & dự phóng P&L 4 năm |
+| ★ | [**`docs/WHITEPAPER.md`**](./docs/WHITEPAPER.md) | **Strategy / Fundraising** | **Whitepaper Gọi vốn v1.2:** Luận điểm đầu tư, 5W1H, TAM/SAM/SOM, chuẩn Phiên bản 3 Lớp, so sánh đối thủ, *Gate-First* & cơ chế Tự khóa tay on-chain, tuân thủ NQ `05/2025/NQ-CP`, kinh tế đơn vị chống bot (`0%` token nền tảng), SWOT/TOWS, lộ trình S0–S12 & gọi vốn 4 vòng (`$1M → $3M → $12M → $25M`) |
 | ✦ | [**`docs/MetaPump-Pitch-Deck.pdf`**](./docs/MetaPump-Pitch-Deck.pdf) | **Investor Deck** | **Pitch Deck Gọi vốn (14 slides, 16:9):** Bản trình bày nhà đầu tư cô đọng từ Whitepaper v1.1 (kèm bản chỉnh sửa trực tiếp trên Google Slides) |
 | 0 | [`docs/00-open-source-landscape.md`](./docs/00-open-source-landscape.md) | P01 / P04 | Danh mục mã nguồn mở đã xác minh cho từng module, ma trận Build/Adopt/CPI, kiểm soát License & cấu trúc Monorepo |
 | 1 | [**`docs/PRD.md`**](./docs/PRD.md) | **P01 → P06** | **PRD Tổng thể:** Tầm nhìn, OKRs, Personas, Cơ chế Version-Gated Growth & 6 lớp chống bot, FRs, User Stories, BDD, MoSCoW, HITL Gates, NFR & DORA |
