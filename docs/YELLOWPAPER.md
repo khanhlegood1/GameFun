@@ -64,7 +64,7 @@ Toàn bộ phép cộng, trừ, nhân trên hợp đồng thực thi dưới d�
 ### 1.2. Năm Tiên đề Thiết kế Bất khả Xâm phạm (Protocol Axioms)
 
 - **Tiên đề A1 (Tính Nguyên tử của Phiên bản — *Version Atomicity*):** Đơn vị gốc của kiểm định, xếp hạng và giải ngân vốn là bộ phiên bản bất biến $v_k \in \mathcal{V}_g$, không phải định danh tựa game $g \in \mathcal{G}$.
-- **Tiên đề A2 (Tính Đơn điệu Chất lượng — *Quality over Recency*):** Thứ tự tăng của chỉ số phiên bản ($k > k-1$) chỉ là điều kiện cần để lưu trữ; điều kiện đủ để mở trần cung $C_m > C_{m-1}$ là bằng chứng thống kê $v_k$ đạt ngưỡng giữ chân tối thiểu và thắng $v_{k-1}$ trên tập người chơi thật.
+- **Tiên đề A2 (Tính Đơn điệu Chất lượng — *"Không Tốt hơn — Không Cho Mở Thanh khoản Mới"*):** Thứ tự tăng của chỉ số phiên bản ($k > k-1$) chỉ là điều kiện cần để lưu trữ; điều kiện đủ để cho phép mở trần thanh khoản/cung mới $C_m > C_{m-1}$ là bằng chứng thống kê $v_k$ đạt ngưỡng giữ chân tối thiểu và thắng $v_{k-1}$ trên tập người chơi thật.
 - **Tiên đề A3 (Trung lập Đạo đức Tuyệt đối — *Zero Platform Token Allocation*):** Tỷ lệ phân bổ token dự án/phiên bản cho nền tảng MetaPump hằng bằng không với mọi đợt phát hành: $\forall g \in \mathcal{G},\ \alpha_{\text{plat}}(g) \equiv 0$.
 - **Tiên đề A4 (Bảo toàn & Khả năng Thanh toán Đóng — *Closed Solvency*):** Mọi trạng thái khả đạt $\Sigma_t$ phải có đủ tài sản thực trong két sắt để tất toán 100% nghĩa vụ bán lại hoặc hoàn vốn `Ragequit` mà không cần bất kỳ dòng vốn ngoại sinh nào.
 - **Tiên đề A5 (Tự Khóa Tay Không Đảo ngược — *Irreversible Self-Binding*):** Tập quyền quản trị $\mathcal{P}_{\text{gov}}(t)$ là hàm giảm đơn điệu theo thời gian và hội tụ về tập rỗng đối với lô-gic `Play-Gate` khi $t \ge t_0 + T_{\text{imm}}$.

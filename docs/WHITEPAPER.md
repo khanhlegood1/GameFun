@@ -32,7 +32,7 @@ Một studio Việt Nam phát hành tựa game HTML5 chất lượng lên cổng
 > **Câu hỏi tỷ đô chưa một sản phẩm nào trên thị trường trả lời được:**  
 > ***"Bản cập nhật này có tốt hơn bản trước — và có xứng đáng được cộng đồng tài trợ tiếp không?"***
 
-### 1.2. Lời giải của MetaPump: Phiên bản là Đơn vị của Tài sản (*"Không Tốt hơn — Không Mở Thanh khoản Mới"*)
+### 1.2. Lời giải của MetaPump: Phiên bản là Đơn vị của Tài sản (*"Không Tốt hơn — Không Cho Mở Thanh khoản Mới"*)
 
 ```text
                               MỘT TỰA GAME TRÊN METAPUMP
