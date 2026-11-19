@@ -1,7 +1,7 @@
 # METAPUMP WHITEPAPER
 
-## Cổng Phân phối Web Game Tức thì & Bệ phóng Vốn Khóa theo Phiên bản đầu tiên trên Thế giới
-### *(The First Instant-Play Web Game Portal & Version-Gated Capital Formation Protocol on Solana)*
+## MetaPump là Bệ phóng Vốn đồng bộ theo phiên bản Game đầu tiên trên Thế giới (tài trợ game phát triển thật ở cấp độ phiên bản)
+### *(The World's First Version-Synced Game Capital Launchpad — Funding Real Game Development at the Version Level)*
 
 | Thông tin tài liệu | Chi tiết |
 |---|---|
