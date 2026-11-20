@@ -6,7 +6,7 @@
 | Thông tin tài liệu | Chi tiết |
 |---|---|
 | **Dự án** | **MetaPump** (`khanhlegood1/GameFun`) |
-| **Phiên bản** | `v1.4 — Investor & Strategic Whitepaper (Evidence-Audited, Yellow-Paper-Traceable, Unit-Sensitivity & Epistemic Integrity)` |
+| **Phiên bản** | `v1.5 — Investor & Strategic Whitepaper (Evidence-Audited, Version-Unit Decomposed, Yellow-Paper-Traceable, Unit-Sensitivity & Epistemic Integrity)` |
 | **Ngày phát hành** | Tháng 11 / 2026 |
 | **Phân khúc kiến tạo** | **Version-Synced Game Capital Markets** *(Phiên bản Game là Đơn vị của Tài sản)* |
 | **Vòng gọi vốn hiện tại** | **Pre-Seed $1.0M** *(Lộ trình kế tiếp: Seed $3.0M → Series A $12.0M → Series B $25.0M)* |
@@ -190,6 +190,89 @@ Nguyên tắc xuyên suốt của tài liệu này: **mọi con số thị trư�
 | **`D1 / D7 Retention`** | % người chơi quay lại sau 1 ngày (`D1`) và sau 7 ngày (`D7`) | Ngành mobile *(GameAnalytics 2026, 16,262 game)*: `D1` median **~22%**, **`D7` median `<4%`**, top 25% đạt **6–7%**, top 10% đạt **11–12%** | Mục tiêu `D7 ≥ 18%–20%` nằm ở **nhóm top 10% tham vọng** nhờ lọc game qua phễu Fit/Arena — công bố minh bạch là mục tiêu phấn đấu, không phải mức trung bình mặc nhiên. |
 | **`eCPM`** | Doanh thu quảng cáo trên mỗi `1,000` lượt hiển thị | Năm 2026: Rewarded Mỹ/CA **`$15–$28`**, EU **`$8–$15`**, Tier-3 **`$1–$3`**, pha trộn toàn cầu **`$8–$12`** (50–65% người chơi chọn xem) | Mô hình cơ sở tính cực bảo thủ ở mức `$1–$3` (traffic Đông Nam Á giai đoạn đầu) kèm bảng độ nhạy 5 bậc ở Mục 7.1. |
 
+### 1.5. Mỗi Phiên bản có **Bốn Thứ riêng biệt** — và cả bốn đều kiểm chứng được bằng máy
+
+Điểm khác biệt căn bản giữa MetaPump và mọi bệ phóng hiện có: chúng tôi không tài trợ "một tựa game", chúng tôi tài trợ **một phiên bản cụ thể của tựa game đó**. Vì vậy mỗi phiên bản $v_k$ phải sở hữu **bốn thứ độc lập**, không dùng chung, không vay mượn của phiên bản trước:
+
+| Thành phần | Nội dung | Vì sao phải riêng | Neo on-chain *(byte-exact)* |
+|---|---|---|---|
+| **① Điểm chất lượng** | Điểm Bayesian có trọng số *proof-of-play* — co rút về trung bình thể loại $\mu_{\mathcal{C}}$ khi còn ít phiếu | Để bản mới **tốt hơn** được ghi nhận **ngay**, thay vì bị hoà lẫn vào điểm trung bình cả vòng đời game | $R_{\text{Bayes}}(v_k)$ + $\mathrm{RatingTrust}(v_k)$ → lá Merkle → gốc `Root_h` ghi mỗi **`3,600 s`** *(RFC 6962)* |
+| **② Dữ liệu thật** | `VPH`, `D1/D7 retention`, `crash_rate` — **đo theo từng phiên bản**, không gộp | Để nhà đầu tư có **mốc so sánh giữa hai bản**, chứ không chỉ một con số sao mờ nghĩa | `VPH` theo cửa sổ epoch; `D7`, `crash_rate` là **vị từ nghiệm thu** trong `GATE_TABLE` |
+| **③ Version Bond** | Đợt tài trợ cộng đồng **riêng cho bản đó**, đường cong riêng | Để cộng đồng đặt tiền đúng vào **bản họ tin**, không bị khoá vào một "tựa game" mờ | Một `BondingCurve` PDA mới: **`368 B`** · rent **`3,452,160` lamports** (`0.003452 SOL`) |
+| **④ Escrow theo milestone** | Vốn giải ngân **từng phần** khi mốc nghiệm thu thật được ghi nhận | Để **không ai rút hết rồi bỏ đi** — đây là hàng rào chống *soft-rug* duy nhất có hiệu lực | Mỗi mốc neo bằng `MilestoneAttestation` **`162 B`**; tài khoản `VersionMilestone` **`158 B`** · rent **`1,990,560` lamports** |
+
+> **Kiểm chứng được, không phải khẩu hiệu:** cả bốn dòng trên đều là **đối tượng dữ liệu byte-exact** đã đặc tả trong [`YELLOWPAPER.md`](./YELLOWPAPER.md) — kích thước tài khoản, mức rent-exempt `rent_min(L) = (128 + L) × 6,960` và cấu trúc trường đều được kiểm tự động mỗi lần chạy `python3 scripts/verify_protocol_math.py`.
+
+### 1.5b. Ngành game **KHÔNG** có quy ước version cố định — và đó chính là lỗ hổng
+
+Câu hỏi đáng hỏi nhất về mô hình của MetaPump là: *nếu trình duyệt và hệ điều hành đã có quy ước số phiên bản cố định, sao ngành game không có?* Trả lời trung thực: **ngành game cố ý không có**, và chính khoảng trống đó là thứ MetaPump khai thác.
+
+**Bốn hệ thống có quy ước thật, để so sánh:**
+
+| Hệ thống | Quy ước | Ai cưỡng chế | Có ngữ nghĩa **chất lượng**? |
+|---|---|---|---|
+| **Trình duyệt** (Chrome/Chromium) | `MAJOR.MINOR.BUILD.PATCH` — 4 phần, ví dụ `137.0.7151.56` | Google, theo lịch phát hành **`~4 tuần`** *(trước 2021 là `6 tuần`; kênh *Extended Stable* `8 tuần`)* | **Không.** `MAJOR` là *lịch phát hành*, không phải mức độ thay đổi |
+| **Hệ điều hành** (Windows, macOS, iOS, Android) | `MAJOR.MINOR` + số build nội bộ | Nhà sản xuất | **Không.** macOS `10.15 → 11.0` là đổi tên thương mại, không phải đổi kiến trúc |
+| **Google Play / App Store** | `versionName` tự do + `versionCode` **số nguyên tăng nghiêm ngặt** | **Có — cửa hàng từ chối upload** | **Không.** `versionCode` chỉ cần *lớn hơn*, không cần *tốt hơn* |
+| **Ngành game (PC/console)** | Mỗi studio một kiểu. `1.0` = gold master, patch `1.1`, `1.2`… | **Không ai** | **Không.** Không có tổ chức nào định nghĩa "`1.0` nghĩa là gì" |
+
+**Ba điểm quan trọng nhất từ bảng trên:**
+
+**① Ngay cả nơi có luật cứng nhất, luật đó cũng không nói gì về chất lượng.** Google Play là nơi duy nhất *cưỡng chế* bằng cách từ chối upload — nhưng nó chỉ kiểm `versionCode` có **tăng** hay không. Một bản cập nhật làm game tệ đi vẫn được chấp nhận, miễn số lớn hơn số cũ. Đây là điểm khác biệt cốt lõi: **luật hiện có bảo đảm "mới hơn", MetaPump bảo đảm "tốt hơn".** Hai thứ đó không liên quan.
+
+**② Ngành game cố ý không chuẩn hoá, vì chuẩn hoá sẽ bất lợi cho họ.** Nếu có một chuẩn quốc tế định nghĩa `v2.0` là "thay đổi lớn về cơ chế", thì một studio phát hành bản sửa lỗi rồi dán nhãn `v2.0` để marketing sẽ bị bắt lỗi công khai. Giữ mờ nghĩa là **giữ quyền tự định nghĩa**. Với người mua, sự mờ này là bất lợi thuần tuý.
+
+**③ Poki cũng không ngoại lệ — và đây là chỗ gần nhất với mô hình của chúng tôi.** Poki có khái niệm "Version" trong bảng điều khiển nhà phát triển: studio bấm *Upload New Version* để nộp bản mới, và bản mới **phải qua lại đúng quy trình QA như lần đầu**. Đó là **cổng chất lượng thật**, không phải nhãn trang trí. Nhưng Poki dừng ở đó: các bản đã qua cổng **không có số liệu so sánh công khai** giữa bản trước và bản sau, và **không có vốn gắn vào từng bản**. Nói cách khác, Poki có *cổng* nhưng không có *thị trường* cho kết quả của cổng đó.
+
+**Vậy MetaPump thêm đúng ba thứ còn thiếu:**
+
+| Thiếu gì | Ai đã có | MetaPump thêm |
+|---|---|---|
+| Số version **bất biến, kiểm chứng được** | Google Play (`versionCode` tăng) | Băm `SHA-256` của cả gói build, ghi on-chain ⇒ không chỉ "mới hơn" mà **chứng minh được đúng bản nào đã chạy** |
+| **Ngữ nghĩa chất lượng** cho số version | Không ai | `v(n)` phải **thắng `v(n-1)`** bằng đấu mù trên người chơi thật (`LCB₀.₉₅ > 0.50`), nếu không thì không mở được chặng vốn tiếp theo |
+| **Hệ quả kinh tế** gắn với số version | Không ai | Mỗi version có bond riêng; bản tệ hơn **không huy động được** vốn mới |
+
+> **Cách nói chính xác nhất, và chúng tôi giữ đúng câu này:** MetaPump **không phát minh ra cách đánh số phiên bản** — chúng tôi dùng lại quy ước `MAJOR.MINOR.PATCH` mà ngành đã quen. Cái mới là **gắn ngữ nghĩa chất lượng và hệ quả kinh tế vào con số đó**, và **cưỡng chế nó bằng hợp đồng** thay vì bằng niềm tin.
+
+**Hệ quả trực tiếp lên sản phẩm** — cổng nộp bài của portal hiện đã cưỡng chế đúng nguyên tắc này ở tầng mã: bản nộp bị **từ chối** nếu bộ ba thứ tự $\nu_k$ không tăng từ điển nghiêm ngặt so với bản đang có (`ERR_VERSION_OLDER`, `ERR_VERSION_SAME`), và mỗi bản nộp phải khai **đúng bản gốc nó phát triển từ đó** (`base_sha256` phải bằng `latest_build_sha256`, nếu không thì `ERR_ORPHAN_BASE`). Không khai được thì không nộp được.
+
+### 1.6. Ba cơ chế tạo nên hào kinh tế
+
+**① Proof-of-Play (PoPW)** — *không chơi thì không được chấm*
+
+- Phải chơi **`≥ 600 s` (`10 phút`) trong `24 giờ`** mới được gửi phiếu đánh giá; riêng một trận *Blind Version Duel* cần **`≥ 90 s` trên mỗi bản A và B** để phiếu không bị vô hiệu.
+- Trọng số mỗi đánh giá $\tilde{\rho}_u$ tính từ **giờ chơi thật + lịch sử tài khoản + mẫu thiết bị**, rồi đưa vào điểm Bayesian co rút $R_{\text{Bayes}}(v_k)$.
+- Kết quả neo on-chain bằng gốc Merkle **mỗi `3,600 s`** ⇒ studio không thể nói *"portal sửa điểm của tôi"*.
+
+*Cơ chế kinh tế:* muốn thao túng điểm, phải **chơi thật hàng nghìn giờ**. Chi phí thao túng cao hơn giá trị thao túng.
+
+**② Play-gate on-chain** — *không chơi thì không được mua*
+
+- Điều kiện mua token của một phiên bản nằm **trong smart contract**, không ở giao diện; chứng thực `PopBuyAttestation` **`106 B`** được kiểm bằng *nội quan lệnh* (`Ed25519SigVerify`) nên **không thể lách qua RPC**.
+- Kèm hai trần độc lập trong cùng một cơ chế: **`10%` lượng curve mỗi epoch `600 s`** *(toàn cục)* và **`5%` lượng curve mỗi ví** — cộng `24h Gamer Priority Window` (`0.25–2.0 SOL`/ví) trước khi mở công khai.
+
+*Cơ chế kinh tế:* bot sniper không thể vào trước vì **chưa có "dấu chân chơi"**. Muốn có, phải chơi thật.
+
+**③ Escrow theo milestone** — *không đạt thì không có tiền*
+
+- Vốn nằm trong escrow on-chain, giải ngân theo **`M1 → M2 → M3 → M4`** (`15% → 33% → 53% → 70%` cung curve, lũy kế) — chi tiết phân bổ ở **§6.1**, tham số đường cong ở **§6.2**.
+- Trượt hạn mốc ⇒ `Stall` ⇒ **`Ragequit`, hoàn SOL theo tỷ lệ, `0%` phí phạt** (hạn `+60 ngày` cho `M1 → M2`, `+90 ngày` cho các mốc sau). Không có thiếu hụt tài sản đảm bảo: kịch bản `S6` cho `0 lamports` thiếu hụt.
+- Sau **`90 ngày`** vận hành ổn định và vượt kiểm toán độc lập, quyền nâng cấp **tự đặt về `None`** (`immutable`) — không ai sửa được luật giữa đường.
+
+*Cơ chế kinh tế:* biến "lời hứa của studio" thành **điều kiện có thể cưỡng chế**.
+
+### 1.7. Kết quả kỳ vọng — và ranh giới giữa *đo được* và *giả thuyết*
+
+| Chỉ số | Không có MetaPump | Có MetaPump | Cơ chế tạo ra | Trạng thái bằng chứng |
+|---|---|---|---|---|
+| Studio cải thiện được ghi nhận | Không | **Ngay, bằng điểm + `VPH`** | Rating theo version | Cơ chế đã đặc tả *(§4.1 YP)* |
+| Nhà đầu tư có mốc đánh giá | Không | **Có, bằng dữ liệu version** | `VPH` + retention công khai | Cơ chế đã đặc tả *(§3.1, §4.2 YP)* |
+| Bot sniper chiếm giá đáy | Có | **Không** | Play-gate on-chain | **Đo được**: bot lỗ ròng `−5.95%` đến `−12.88%` *(`S1`, `S9` PASS)* |
+| Người chơi đóng góp được cho game họ thích | Không | **Có** | Version Bond | Cơ chế đã đặc tả *(§5 YP)* |
+| Tỷ lệ dự án chết | **85%** *(Virtuals, mẫu `1,232` agent)* | **Mục tiêu `< 50%`** | Gate trước khi mở vốn | ⚠️ **Giả thuyết cần kiểm chứng** — không phải cam kết |
+
+> **Ranh giới trung thực:** mục tiêu `< 50%` là **giả thuyết cần kiểm chứng**, không phải cam kết — chúng tôi ghi rõ ở **§10 (Điều Chúng tôi KHÔNG Hứa)**. Chỉ hai dòng "đo được" ở trên là có bằng chứng tái lập bằng một lệnh duy nhất; ba dòng còn lại là **cơ chế đã đặc tả hình thức**, chưa phải kết quả thị trường.
+
 ---
 
 ## 2. Khung Chiến lược 5W1H (Toàn cảnh Dự án cho Nhà đầu tư)
@@ -259,7 +342,7 @@ Qua khảo sát toàn bộ cả **hệ sinh thái mã nguồn mở trên GitHub*
 
 ### 4.3. Tại sao Ngành Game Chưa từng có Chuẩn Phiên bản Cố định — Và Tiêu chuẩn 3 Lớp của MetaPump
 
-Khác với **thư viện phần mềm** (tuân thủ nghiêm ngặt chuẩn *Semantic Versioning* `MAJOR.MINOR.PATCH` theo tương thích API), **trình duyệt web** (Chrome, Firefox phát hành đều đặn mỗi 4 tuần tăng 1 số chính `v130 → v131 → v132`), hay **hệ điều hành** (iOS/Android theo chu kỳ năm, Ubuntu theo lịch *CalVer* `24.04 → 26.04`), **ngành game toàn cầu hoàn toàn không có một quy ước đánh số phiên bản bắt buộc hay thống nhất**:
+Khác với **thư viện phần mềm** (tuân thủ nghiêm ngặt chuẩn *Semantic Versioning* `MAJOR.MINOR.PATCH` theo tương thích API), **trình duyệt web** (Chrome phát hành đều đặn mỗi **`~4 tuần`** tăng 1 số chính `v130 → v131 → v132` — *trước 2021 là `6 tuần`*), hay **hệ điều hành** (iOS/Android theo chu kỳ năm, Ubuntu theo lịch *CalVer* `24.04 → 26.04`), **ngành game toàn cầu hoàn toàn không có một quy ước đánh số phiên bản bắt buộc hay thống nhất**:
 
 | Phân khúc Game / Nền tảng | Cách đánh số thường gặp | Vấn đề nếu dùng trực tiếp để Mở khóa Vốn |
 |---|---|---|
@@ -280,7 +363,9 @@ Nếu một bệ phóng ngây thơ giải ngân vốn dựa trên việc studio 
 > **Ý nghĩa chiến lược — Từ "Mới hơn" sang "Tốt hơn":**
 > 1. Ngay cả nơi cưỡng chế chặt nhất hiện nay (Google Play từ chối bản nộp nếu `versionCode` không tăng) cũng chỉ bảo đảm bản sau **"mới hơn"**, không bảo đảm **"tốt hơn"**; trong khi ngành game cố ý giữ mập mờ để dễ dán nhãn `v2.0` phục vụ marketing.
 > 2. Poki có nút *Upload New Version* bắt qua lại QA (có *cổng chất lượng thật*), nhưng không công bố độ chênh chất lượng giữa hai bản và không gắn *thị trường vốn* vào kết quả cổng; ngược lại Pump.fun/Virtuals có *thị trường* nhưng không có *cổng*.
-> 3. MetaPump **không phát minh lại cách đánh số** — chúng tôi cưỡng chế ở tầng mã việc từ chối `version_older` / `version_same`, bắt buộc khai báo bản gốc cha (`base_sha256`), và lần đầu tiên **gắn ngữ nghĩa chất lượng (`v(n)` phải thắng `v(n-1)`) cùng hệ quả kinh tế trực tiếp vào từng phiên bản bằng hợp đồng thông minh**.
+> 3. MetaPump **không phát minh lại cách đánh số** — chúng tôi cưỡng chế ở tầng mã việc từ chối `ERR_VERSION_OLDER` / `ERR_VERSION_SAME`, bắt buộc khai báo bản gốc cha (`base_sha256` phải bằng `latest_build_sha256`), và lần đầu tiên **gắn ngữ nghĩa chất lượng (`v(n)` phải thắng `v(n-1)`) cùng hệ quả kinh tế trực tiếp vào từng phiên bản bằng hợp đồng thông minh**.
+>
+> *Bảng đối chiếu đầy đủ 4 hệ thống đánh số (trình duyệt, hệ điều hành, app store, ngành game) và "ba thứ còn thiếu" nằm ở **§1.5b**.*
 
 ### 4.4. Sự Trung thực Công nghệ: Bốn Điều Mới Cụ thể — Và Bốn Điều Chúng tôi Thừa nhận KHÔNG Mới
 

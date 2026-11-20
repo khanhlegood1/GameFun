@@ -3,7 +3,7 @@
 MetaPump Formal Math & Economic Simulation Verifier
 ====================================================
 Self-contained (Python 3 stdlib only) verification suite for:
-  1. Whitepaper v1.4 Unit Economics (VPH infra cost, ad sensitivity matrix,
+  1. Whitepaper v1.5 Unit Economics (VPH infra cost, ad sensitivity matrix,
      4-round fundraising cap-table & MOIC, 4-year Dual-Engine P&L).
   2. Yellow Paper v1.0 Exact Integer (u128) Bonding Curve Mechanics across
      Profile A (VGBC-4T: 4-Tranche Version-Gated Bonding Curve) and
@@ -390,7 +390,7 @@ def compute_popw_shares(vph_list: List[float], gamma: float = 0.65, cap: float =
 
 
 def verify_whitepaper_math() -> None:
-    print("[1/4] Verifying Whitepaper v1.4 Unit Economics, Fundraising & P&L...")
+    print("[1/4] Verifying Whitepaper v1.5 Unit Economics, Fundraising & P&L...")
     # 1. Infrastructure unit cost per 1,000 VPH
     vph_week = 120_000
     weeks_per_month = 4.33
@@ -667,6 +667,12 @@ def verify_document_consistency() -> None:
     assert rents == [1_405_920, 1_607_760, 1_990_560, 1_781_760, 3_452_160,
                      1_586_880, 2_519_520, 1_712_160, 1_510_320]
     assert sum(rents) == 17_567_040                      # 0.017567 SOL
+    # Whitepaper section 1.5 "four things per version": every object it prints
+    # must be one of the nine rows above.
+    assert rents[0] == 1_405_920        # RegistryConfig  74 B
+    assert rents[4] == 3_452_160        # BondingCurve   368 B  (per-version bond)
+    assert rents[2] == 1_990_560        # VersionMilestone 158 B (per-version escrow)
+    assert rents[2] == (128 + 158) * 6_960
     assert 1_405_920 + 1_607_760 + 3_452_160 + 1_586_880 == 8_052_720  # 4 core PDAs
 
     # Infra unit cost rounding: 1230 / (4.33 * 120000) * 1000 = 2.36538...
@@ -728,4 +734,4 @@ if __name__ == "__main__":
     verify_scenarios_s1_to_s9()
     verify_monte_carlo_fuzz(num_ops=10_000)
     verify_document_consistency()
-    print("\nALL WHITEPAPER v1.4 & YELLOW PAPER v1.0 FORMAL CHECKS PASSED (100%).")
+    print("\nALL WHITEPAPER v1.5 & YELLOW PAPER v1.0 FORMAL CHECKS PASSED (100%).")
