@@ -9,7 +9,7 @@
 | **Phiên bản** | `v1.0 — Formal Mathematical, Cryptographic & Mechanism Specification` |
 | **Ngày công bố** | Tháng 11 / 2026 |
 | **Môi trường Thực thi Đích** | Solana SVM (Runtime `BPF/SBF`, Anchor `0.30–0.32`, SPL Token-2022, `Ed25519SigVerify`) + Open Web Sandbox |
-| **Phân biệt với Whitepaper** | [`WHITEPAPER.md` (`v1.3`)](./WHITEPAPER.md) trình bày *luận điểm chiến lược, thị trường, đối thủ và gọi vốn*; **Yellow Paper** này định nghĩa *hệ tiên đề, máy trạng thái, số học điểm cố định `u128`, cấu trúc mật mã, định lý bất biến và chứng minh an toàn kinh tế* đủ chính xác để hai nhóm kỹ sư hoặc kiểm toán viên độc lập cài đặt ra cùng một kết quả đến từng `lamport`. |
+| **Phân biệt với Whitepaper** | [`WHITEPAPER.md` (`v1.4`)](./WHITEPAPER.md) trình bày *luận điểm chiến lược, thị trường, đối thủ và gọi vốn* *(đã bổ sung §1.3 ánh xạ 4 nguyên tử ↔ đặc tả hình thức trong tài liệu này)*; **Yellow Paper** này định nghĩa *hệ tiên đề, máy trạng thái, số học điểm cố định `u128`, cấu trúc mật mã, định lý bất biến và chứng minh an toàn kinh tế* đủ chính xác để hai nhóm kỹ sư hoặc kiểm toán viên độc lập cài đặt ra cùng một kết quả đến từng `lamport`. |
 | **Bộ Kiểm chứng Thực thi** | [`scripts/verify_protocol_math.py`](../scripts/verify_protocol_math.py) *(Python 3 chuẩn, 0 phụ thuộc ngoài — kiểm chứng tự động `S1–S9` + `10,000` phép toán ngẫu nhiên `u128`)* |
 | **Tài liệu Kỹ thuật Liên kết** | [`04-solana-smart-contracts.md`](./04-solana-smart-contracts.md) · [`02-database-schema.md`](./02-database-schema.md) · [`03-api-specification.md`](./03-api-specification.md) · [`05-c4-architecture-and-nfr.md`](./05-c4-architecture-and-nfr.md) |
 

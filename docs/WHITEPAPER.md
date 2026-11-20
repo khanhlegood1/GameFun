@@ -6,7 +6,7 @@
 | Thông tin tài liệu | Chi tiết |
 |---|---|
 | **Dự án** | **MetaPump** (`khanhlegood1/GameFun`) |
-| **Phiên bản** | `v1.3 — Investor & Strategic Whitepaper (Evidence-Audited, Unit-Sensitivity & Epistemic Integrity)` |
+| **Phiên bản** | `v1.4 — Investor & Strategic Whitepaper (Evidence-Audited, Yellow-Paper-Traceable, Unit-Sensitivity & Epistemic Integrity)` |
 | **Ngày phát hành** | Tháng 11 / 2026 |
 | **Phân khúc kiến tạo** | **Version-Synced Game Capital Markets** *(Phiên bản Game là Đơn vị của Tài sản)* |
 | **Vòng gọi vốn hiện tại** | **Pre-Seed $1.0M** *(Lộ trình kế tiếp: Seed $3.0M → Series A $12.0M → Series B $25.0M)* |
@@ -57,7 +57,67 @@ Một studio Việt Nam phát hành tựa game HTML5 chất lượng lên cổng
 > **Luận điểm Đầu tư (Investment Thesis) trong 1 câu:**  
 > *AI đã kéo chi phí sản xuất một bản game HTML5 về gần bằng 0, biến **kiểm định chất lượng theo phiên bản (Version Curation)** và **phân bổ vốn gắn với giờ chơi thật (Gate-First Capital Formation)** thành nút thắt cổ chai đắt giá nhất thập kỷ tới — và MetaPump sở hữu trọn vẹn nút thắt đó.*
 
-### 1.3. Từ điển Nhanh & Kỷ luật Đo lường Dữ liệu *(Dành cho Nhà đầu tư Ngoài ngành Game)*
+### 1.3. Bốn Nguyên tử đã được Đặc tả Hình thức & Kiểm chứng Tái lập — *Vì sao đây không phải Lý thuyết*
+
+Bốn nguyên tử ở trên chỉ đáng tin nếu mỗi nguyên tử trả lời được **4 câu hỏi kiểm toán**: *(a)* nó là **đối tượng dữ liệu byte-exact** nào trên chuỗi; *(b)* nó là **vị từ/hàm chuyển tiếp hình thức** nào mà hai nhóm kỹ sư độc lập cài đặt ra **cùng một kết quả đến từng `lamport`**; *(c)* nó được bảo vệ bởi **bất biến/định lý** nào đã chứng minh; và *(d)* nó có **kịch bản kiểm chứng chạy lại được** bằng một lệnh duy nhất. Toàn bộ bốn câu trả lời đã được đặc tả trong [`YELLOWPAPER.md`](./YELLOWPAPER.md) `v1.0` và **tự động thực thi lại** mỗi lần chạy `python3 scripts/verify_protocol_math.py`.
+
+| Nguyên tử | Đối tượng On-Chain *(byte-exact)* | Đặc tả Hình thức | Bất biến / Định lý Bảo vệ | Bằng chứng Tái lập được |
+|---|---|---|---|---|
+| **1. Immutable Version Registry** | `MilestoneAttestation` **`162 B`** *(chứa `build_sha256`, `base_sha256`, `build_diff_bps`, `build_seq_no`)* | §2.2 *(Lớp 1–3)*, §7.1 | `INV-05`, `INV-12` | Hàm băm tất định **`100%`** *(bỏ dấu thời gian ZIP)* → cùng một gói build cho cùng một `SHA-256` trên mọi máy |
+| **2. Verified Play Version Rating** | Gốc Merkle **`Root_h`** ghi mỗi **`3,600 s`** *(RFC 6962)* | §3.1–3.3, §4.1, §4.3 | `INV-11`, `RatingTrust ≥ 0.85` | `S4` **PASS** *(cá voi `20%` `VPH` → đúng `5.00%` pool)* + `S5` **PASS** *(trần ví `30M` / epoch `600 s`)* |
+| **3. Version-Gated Bonding Curve & Ragequit** | `BondingCurve` PDA **`u128`**, `terms_hash` bất biến | §5 *(số học điểm cố định)*, §6, §7.1 | `INV-01`–`INV-04`, **Định lý 1–6** | `S2` **PASS** `79,245,283,019` lamports · `S6` **PASS** *0 thiếu hụt* · `S7` **PASS** *lệch `1 lamport`* |
+| **4. On-Chain Play-Gate & Anti-Snipe** | `PopBuyAttestation` **`106 B`** cưỡng chế bằng nội quan lệnh `Ed25519` | §5.2–5.3, §7.1, §9 | `INV-07`, `INV-08`, **Định lý 4** | `S1` **PASS** `−12.88%` · `S8` **PASS** `0 bps` · `S9` **PASS** `−20,000` lamports · `FUZZ` **`10,000`** ops, **`0`** vi phạm |
+
+#### Nguyên tử 1 — Phiên bản là một *đối tượng kiểm tra được bằng máy*, không phải một cái nhãn
+
+- **Bộ 10 thành phần bất biến.** Mỗi phiên bản $v_k = (g, k, \ell_k, \nu_k, h_k, h_{\text{base},k}, \delta_k, \kappa_k, m_k, t_k)$ *(§2.2)* — nghĩa là "phiên bản" không phải chuỗi quảng cáo `"v2.0"` mà là **10 trường số/mã băm** mà hợp đồng có thể phán xử.
+- **Mã băm tất định.** Gói HTML5 được giải nén, sắp xếp theo thứ tự byte của đường dẫn, **loại bỏ dấu thời gian ZIP**, rồi băm `SHA-256` trên toàn bộ manifest *(§2.2 Lớp 2)*: hai lần đóng gói lại cùng một mã nguồn **buộc phải** cho cùng một $h_k$ — nên "bản build trên chuỗi" chính là "bản build người chơi đang chơi", không thể tráo.
+- **Ràng buộc phả hệ cứng (`Ancestry Guard`).** Bắt buộc $h_{\text{base},k} = h_{k-1}$ và $h_k \ne h_{k-1}$, kèm thứ tự từ điển nghiêm ngặt $\nu_k >_{\text{lex}} \nu_{k-1}$; vi phạm bị từ chối bằng mã lỗi tường minh `ERR_ORPHAN_BASE` / `ERR_IDENTICAL_BUILD` / `ERR_VERSION_OLDER` / `ERR_VERSION_SAME` — **không có "bản cập nhật ma"** không khai báo cha.
+- **Đo thay đổi thực chất, không đo lời khai.** `BuildDiff` dùng khoảng cách Jaccard có trọng số dung lượng trên các khối *Content-Defined Chunking* (FastCDC, `4 KiB`), chia 3 lớp: $\delta_k = 0.50\,\delta_k^{\text{code}} + 0.30\,\delta_k^{\text{asset}} + 0.20\,\delta_k^{\text{data}}$. Với $\theta_{\text{diff}} = 0.08$, bản sửa dưới **`8%`** bị gán nhãn `HOTFIX` và **bị cấm tuyệt đối** gọi `record_version_milestone` — chặn đứng chiêu *"đổi màu một nút bấm rồi đòi mở vốn"*.
+- **Không thể nới luật về sau.** `terms_hash` *(§7.1)* băm cứng $\Theta$, `GATE_TABLE` và lịch hạn `Stall`; không tồn tại instruction nào ghi đè được (`INV-12`). Quyền nâng cấp đi qua ôtômat `Squads 4/7` + timelock `48 h` và **tự đặt `upgrade_authority = None` sau `90 ngày`** *(§7.2)* — từ đó, việc "nới cổng" trở thành **bất khả thi ở tầng SVM**, không phụ thuộc lời hứa của đội ngũ.
+
+#### Nguyên tử 2 — "Tốt hơn" là một *kiểm định thống kê có cận tin cậy công bố*, không phải một tuyên bố
+
+- **`VPH` không thể cày bằng cách treo máy.** Nhịp tim `15 s` chỉ được tính khi tab ở tiền cảnh, có sự kiện đầu vào hợp lệ **và** entropy của chuỗi khoảng thao tác $H(\Delta t_{\text{input}}) \ge H_{\min}$ *(loại bộ gõ tự động tuần hoàn $H \approx 0$)*; mỗi phiên bị chặn trần `2 giờ`, kèm suy giảm theo ngày $\omega_{\text{day}} \in \{1.0;\ 0.5;\ 0.1\}$ — nên chiến thuật "treo `24/7`" bị **vô hiệu hóa bằng toán** *(§3.1)*.
+- **Lá phiếu phải trả bằng giờ chơi thật.** Chỉ được chấm điểm khi có **`≥ 600 s`** chơi xác minh trong `24 h` *(hoặc `≥ 90 s` trên **mỗi** bản trong một trận đấu mù)* — phiếu không mua được, không thuê được *(§3.1)*.
+- **Cầu dao gian lận tự động.** Lấy mẫu hậu kiểm `0.5%` phiên + ước lượng hiệu chỉnh sai lệch *(difference/HT estimator)*; nếu $\widehat{\mathrm{BotShare}}_E > 0.08$ thì $\mathsf{allow\_new\_launch} \leftarrow \mathsf{false}$ **ngay trên chuỗi** (`INV-11`), chỉ mở lại sau **2 chu kỳ liên tiếp** sạch *(§3.2)* — đây là *hợp đồng tự dừng*, không phải thông cáo báo chí.
+- **Ngưỡng thắng có công thức, không có "cảm nhận".** Mô hình Bradley–Terry có trọng số + tiên nghiệm Gaussian; điều kiện qua cổng là $\mathrm{LCB}_{0.95}(v_k \succ v_{\text{ref}}) > 0.50$ với $z_{0.975} = 1.959964$, kèm `RatingTrust ≥ 0.85` và co rút Bayes $\kappa = 25$ phiếu *(§4.1)*. Nghĩa là: **MetaPump không thể tự tuyên bố một bản là tốt hơn** — nếu dữ liệu không đủ mạnh, cận dưới không vượt `0.50` và trần vốn **không mở**, bất kể ai muốn.
+- **Điểm số không ai sửa được, kể cả cổng game.** Cuối mỗi giờ, toàn bộ điểm/VPH/phiếu được băm theo **RFC 6962 với tách miền** *(`0x00` cho lá, `0x01` cho nút — kháng tấn công tiền ảnh thứ hai)*, gốc `Root_h` ghi lên Solana *(§4.3)*. Studio và nhà đầu tư tự kiểm chứng trong $\mathcal{O}(\log_2 N)$ phép băm, không cần tin ai.
+
+#### Nguyên tử 3 — Cổng vốn là *một bất đẳng thức số nguyên*, không phải một cam kết
+
+- **Chỉ số nguyên `u128`, cấm dấu phẩy động.** Mọi phép chia định nghĩa bằng `floor_div` / `ceil_div`; mọi cộng–trừ–nhân dùng `checked_*` và **hoàn tác nguyên tử** khi tràn *(§1.1)* — loại bỏ toàn bộ lớp lỗi làm tròn kiểu "mất tiền lẻ" hay "in thêm token".
+- **Bộ tham số $\Theta$ chụp cứng vào `terms_hash`, không thể chỉnh giữa đường** *(§5.1)*: `VGBC-4T` có $S_{\text{tot}} = 10^{15}$ base units (`decimals = 6`, `mint_authority = None`), $X_0 = 965\text{M}$, $Y_0 = 30\text{ SOL}$, $K = X_0Y_0 = 2.895 \times 10^{25}$ *(an toàn tuyệt đối so với $2^{128} \approx 3.40 \times 10^{38}$)*, trần lũy kế $\{C_m\} = [150; 330; 530; 700]\text{M}$.
+- **Trần vốn là bất biến `INV-04`:** $0 \le Q_n \le C_{m_{\text{act}}} \le S_{\text{curve}}$ — muốn mở quá `M1` phải có tài khoản `VersionMilestone(m_act)` hợp lệ kèm chứng thực `162 B`; **không có API nào để "bỏ qua" chặng**.
+- **Sáu định lý đã chứng minh** *(§8.2)*, mỗi định lý chặn một kiểu thất bại thực tế:
+  1. **Định lý 1** — làm tròn `ceil` ở dự trữ giữ $X_nY_n \ge K$ và độ trôi $< \max(X_n, Y_n)$ lamports: **không bào mòn két sắt** qua `1,000` lệnh siêu nhỏ `1,000 lamports` *(đo ở `S9`: kẻ tấn công lỗ ròng `−20,000` lamports)*.
+  2. **Định lý 2** — nếu **100%** người giữ bán sạch theo **bất kỳ thứ tự nào**, $R_{\text{final}} \ge 0$: **0 thiếu hụt tài sản đảm bảo**, không cần dòng vốn ngoại sinh *(đo ở `S6` với 25 người dùng)*.
+  3. **Định lý 3** — giá giao ngay đơn điệu nghiêm ngặt theo chiều lệnh: không thể tạo bậc giá ả.
+  4. **Định lý 4** — bot mua–bán vòng tròn trong cùng trạng thái bị chặn trên bởi $\mathrm{PnL}_{\text{RT}} \le (1 - 1\%)(1 - 12\%) - 1 = \mathbf{-12.88\%}$ *(và $-5.95\%$ ở hồ sơ đầm)*: **không tồn tại chiến lược tự giao dịch có lãi**.
+  5. **Định lý 5** — `Ragequit` bất biến theo thứ tự rút *(chênh lệch $\le 1$ lamport)*: triệt tiêu động cơ **tháo chạy hoảng loạn**; người rút sau không bao giờ bị thiệt so với người rút trước.
+  6. **Định lý 6** — thanh khoản DEX **tự tài trợ 100%** từ chính két sắt: $61.836953\text{ SOL} < 79.245283\text{ SOL}$ *(thặng dư $17.408330\text{ SOL}$)* và $14.387943 < 76.109937$; sai lệch giá đo được **`4.27 × 10⁻¹²`** và **`4.19 × 10⁻¹¹`** — đúng cam kết **`0%` chênh lệch giá**, không cần "bơm" thêm SOL.
+- **Hai hồ sơ vận hành, một bộ luật.** `VGBC-4T` *(toàn vòng đời game, graduation `79.245283 SOL`, `13.2606×` qua `1.40× → 2.31× → 4.92× → 13.26×`)* và `VBOND-LV` *(Version Bond đầm giá, `76.109937 SOL`, `5.1461×` chống FOMO)* dùng **cùng một** `terms_hash`, cùng `u128`, cùng `GATE_TABLE` — chứng minh mô hình không "đo ni đóng giày" cho một tham số duy nhất.
+
+#### Nguyên tử 4 — `Play-Gate` nằm *bên trong* lệnh mua, không nằm ở tầng RPC
+
+- **Chứng thực `106 byte` được kiểm tra bằng nội quan lệnh.** Hợp đồng không tự chạy phép nhân đường cong elliptic *(tốn Compute Units)* mà đọc lệnh liền trước và cưỡng chế **5 điều kiện an ninh** *(§7.1)*: `num_signatures == 1`; mọi trường `*_instruction_index == u16::MAX` *(chặn đứng tấn công trỏ chéo sang lệnh giả mạo)*; khóa công khai khớp `RegistryConfig.oracle_pubkey`; vô hướng $s < \ell/2$ *(chuẩn hóa chống biến dạng chữ ký RFC 8032)*; `expiry_ts` còn hiệu lực *(TTL $\le 300 s$)* và `cluster_id` khớp mạng.
+- **Gói tin chống phát lại theo từng chặng.** `PopBuyAttestation` chứa `milestone_level`, `pop_tier`, `max_cum_lamports`, `vph_millis` — nên chứng thực cấp ở `M1` **không dùng lại được** ở `M2`, và không thể "mua một lần, xài cả đời".
+- **Ba lớp chặn sniper.** *(i)* `24 h Gamer Priority Window`: `buy_public` bị khóa cứng ở tầng hợp đồng, chỉ `buy_priority` với chứng thực `VPH` thật mới qua; *(ii)* trần ví $\omega_{\text{wal}}$ và trần epoch $\eta_{\text{ep}}$ cưỡng chế qua $q_{\max} = \min(C_{m} - Q_t,\ \omega_{\text{wal}} - B_u,\ \eta_{\text{ep}} - q_{\text{ep}})$ *(§5.2)*; *(iii)* `INV-07` — `BuyerPosition` **không chuyển nhượng trước `M4`**, nên không thể gom `50` ví ảo trong `1` slot rồi xả *(§9, mục 3)*.
+- **Chi phí thao túng > lợi ích rút ra.** Ràng buộc kinh tế $C_{\text{corrupt}}(m) > V^{\max}_{\text{extract}}(m)$ cho mọi $m \in \{1,2,3,4\}$ *(§9)*: kể cả lách được `M2`, nhà phát triển nhận **`0 SOL` giải ngân trực tiếp**, phí tích lũy trên chặng `M2` chỉ `≈ 0.05–0.15 SOL` và **bị tịch thu 100%** nếu `90 ngày` không qua `M3` — kỳ vọng lợi nhuận của kẻ wash-playing **âm**.
+- **Phí thoát sớm chia tất định đến từng lamport** *(§5.3)*: `50%` → quỹ thưởng người chơi thật, `40%` → quỹ bảo hiểm giá sàn `F_t` *(đắp dày cho `Ragequit`)*, `10%` → `ProtocolTreasury`; không có phần dư "rơi xuống hố".
+
+#### Bảng Tự vấn 4 câu hỏi của Nhà đầu tư *(mỗi câu trả lời đều kèm vị trí kiểm chứng)*
+
+| Câu hỏi thẩm định | Trả lời | Nơi kiểm chứng |
+|---|---|---|
+| *"Ai giữ chìa khóa để đổi luật giữa đường?"* | **Không ai, sau `90 ngày`.** Trước đó cần `≥ 4/7` chữ ký độc lập **và** timelock `48 h` công khai on-chain; sau đó `upgrade_authority = None` ở tầng SVM. | Yellow Paper §7.2; `INV-12` |
+| *"Con số có tin được không, hay chỉ là slide đẹp?"* | Mọi con số trong Whitepaper này đều **tái lập được**: `python3 scripts/verify_protocol_math.py` chạy `S1–S9` + **`10,000` phép toán ngẫu nhiên** *(seed `20261119`)*, in ra **`79,245,283,019` lamports**, `61.836953 SOL`, `−12.88%`, `1 lamport`… — không phải số làm tròn cho vừa mắt. | Yellow Paper §12.1 |
+| *"Nếu dữ liệu chơi thật không đạt thì sao?"* | Cổng **không mở**. Cận dưới `LCB₀.₉₅` không vượt `0.50` ⇒ `m_act` không tăng ⇒ trần cung không tăng ⇒ phí phạt/`Ragequit` hoàn vốn theo tỷ lệ. Thiệt hại bị chặn ở mức **nhỏ hơn nhiều** so với gọi đủ vốn ngay từ ngày đầu. | Yellow Paper §4.2, §6.2 |
+| *"Nếu cơ chế này bị cấm ở một thị trường?"* | **Phép chiếu Fallback $\Pi_{\text{fiat}}$** giữ nguyên `100%` sổ cái phiên bản, `VPH`, `BotShare`, xếp hạng Arena và cây Merkle; chỉ dòng giải ngân được thay bằng hợp đồng chia sẻ doanh thu USD theo đúng các vị từ $\mathcal{P}_{M1}\dots\mathcal{P}_{M4}$ — **lõi kiểm định phiên bản vẫn sống** dù đường cong bị vô hiệu hóa. | Yellow Paper §12.2; NQ `05/2025/NQ-CP` |
+
+> **Ranh giới Trung thực (`Epistemic Boundaries` — YELLOWPAPER §12.3).** Chúng tôi phân định rõ ba tầng: *(1)* **chứng minh tất định `100%`** — bảo toàn cung, `0%` token nền tảng, khả năng thanh toán đóng, đơn điệu giá, lỗ ròng của bot, công bằng `Ragequit`, liên tục giá DEX, bất biến hợp đồng sau thu hồi quyền nâng cấp; *(2)* **phụ thuộc giả định mật mã & hạ tầng** — kháng va chạm `SHA-256`, không thể giả mạo `Ed25519`, toàn vẹn khóa Oracle *(HSM/KMS + kiểm toán công khai)*, độ sống của Solana; *(3)* **không được toán học bảo đảm** — giá thứ cấp sau tốt nghiệp, độ sâu thanh khoản khi nhu cầu thật thấp, và các mục tiêu `D7 ≥ 18–20%` hay tỷ lệ chết `< 50%` **trước khi có dữ liệu vận hành**. **MetaPump tự tin làm được — nhưng tự tin dựa trên phần (1) đã chứng minh và phần (3) công bố là mục tiêu, không phải trên lời hứa.**
+
+### 1.4. Từ điển Nhanh & Kỷ luật Đo lường Dữ liệu *(Dành cho Nhà đầu tư Ngoài ngành Game)*
 
 Nguyên tắc xuyên suốt của tài liệu này: **mọi con số thị trường phải chỉ rõ năm đo, kích thước mẫu và cách tính; mọi con số kế hoạch của MetaPump phải ghi rõ là mục tiêu/dự phóng kèm công thức kiểm tra lại** (chạy tự động bằng [`scripts/verify_protocol_math.py`](../scripts/verify_protocol_math.py)).
 
