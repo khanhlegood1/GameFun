@@ -76,6 +76,7 @@ Bốn nguyên tử ở trên chỉ đáng tin nếu mỗi nguyên tử trả l�
 - **Mã băm tất định.** Gói HTML5 được giải nén, sắp xếp theo thứ tự byte của đường dẫn, **loại bỏ dấu thời gian ZIP**, rồi băm `SHA-256` trên toàn bộ manifest *(§2.2 Lớp 2)*: hai lần đóng gói lại cùng một mã nguồn **buộc phải** cho cùng một $h_k$ — nên "bản build trên chuỗi" chính là "bản build người chơi đang chơi", không thể tráo.
 - **Ràng buộc phả hệ cứng (`Ancestry Guard`).** Bắt buộc $h_{\text{base},k} = h_{k-1}$ và $h_k \ne h_{k-1}$, kèm thứ tự từ điển nghiêm ngặt $\nu_k >_{\text{lex}} \nu_{k-1}$; vi phạm bị từ chối bằng mã lỗi tường minh `ERR_ORPHAN_BASE` / `ERR_IDENTICAL_BUILD` / `ERR_VERSION_OLDER` / `ERR_VERSION_SAME` — **không có "bản cập nhật ma"** không khai báo cha.
 - **Đo thay đổi thực chất, không đo lời khai.** `BuildDiff` dùng khoảng cách Jaccard có trọng số dung lượng trên các khối *Content-Defined Chunking* (FastCDC, `4 KiB`), chia 3 lớp: $\delta_k = 0.50\,\delta_k^{\text{code}} + 0.30\,\delta_k^{\text{asset}} + 0.20\,\delta_k^{\text{data}}$. Với $\theta_{\text{diff}} = 0.08$, bản sửa dưới **`8%`** bị gán nhãn `HOTFIX` và **bị cấm tuyệt đối** gọi `record_version_milestone` — chặn đứng chiêu *"đổi màu một nút bấm rồi đòi mở vốn"*.
+- **Không thể "đổi tên rồi làm lại".** `BuildDiff` so sánh trong **cùng một tựa game**, nên nó không tự chặn được chiêu *Rug-and-Rehash*: trượt `M2` thì đóng ZIP lại, đổi tên thành *"Bắn Cá 2"* và nộp như một dự án `M0` hoàn toàn mới để huy động lại từ đầu. Giao thức vì vậy thêm **Global Similarity Check** *(YP §2.2)*: trước khi cấp `k=1` cho một dự án mới, gói build được đối chiếu với **chỉ mục toàn cầu mọi dự án đã `Stalled`**; nếu tương đồng có trọng số **`≥ 92%`** *(tương đương `δ < 0.08`)*, giao dịch tạo dự án **thất bại nguyên tử** với `ERR_GLOBAL_SIMILARITY_FORK`. Ngưỡng này là **chính sách hiệu chỉnh được** *(băm vào `terms_hash`)*, không phải định lý — và kháng nghị đi qua HITL, nên studio dùng chung engine hợp pháp không bị chặn oan.
 - **Không thể nới luật về sau.** `terms_hash` *(§7.1)* băm cứng $\Theta$, `GATE_TABLE` và lịch hạn `Stall`; không tồn tại instruction nào ghi đè được (`INV-12`). Quyền nâng cấp đi qua ôtômat `Squads 4/7` + timelock `48 h` và **tự đặt `upgrade_authority = None` sau `90 ngày`** *(§7.2)* — từ đó, việc "nới cổng" trở thành **bất khả thi ở tầng SVM**, không phụ thuộc lời hứa của đội ngũ.
 
 ##### Case study 1 — “Studio sửa 3 dòng code rồi xin mở két” *(kể bằng ngôn ngữ đời thường)*
@@ -125,7 +126,7 @@ Chuyện gì xảy ra khi con số này đi qua cổng:
   3. **Định lý 3** — giá giao ngay đơn điệu nghiêm ngặt theo chiều lệnh: không thể tạo bậc giá ả.
   4. **Định lý 4** — bot mua–bán vòng tròn trong cùng trạng thái bị chặn trên bởi $\mathrm{PnL}_{\text{RT}} \le (1 - 1\%)(1 - 12\%) - 1 = \mathbf{-12.88\%}$ *(và $-5.95\%$ ở hồ sơ đầm)*: **không tồn tại chiến lược tự giao dịch có lãi**.
   5. **Định lý 5** — `Ragequit` bất biến theo thứ tự rút *(chênh lệch $\le 1$ lamport)*: triệt tiêu động cơ **tháo chạy hoảng loạn**; người rút sau không bao giờ bị thiệt so với người rút trước.
-  6. **Định lý 6** — thanh khoản DEX **tự tài trợ 100%** từ chính két sắt: $61.836953\text{ SOL} < 79.245283\text{ SOL}$ *(thặng dư $17.408330\text{ SOL}$)* và $14.387943 < 76.109937$; sai lệch giá đo được **`4.27 × 10⁻¹²`** và **`4.19 × 10⁻¹¹`** — đúng cam kết **`0%` chênh lệch giá**, không cần "bơm" thêm SOL.
+  6. **Định lý 6** — thanh khoản DEX **tự tài trợ 100%** từ chính két sắt: $61.836953\text{ SOL} < 79.245283\text{ SOL}$ *(thặng dư $15.908330\text{ SOL}$ sau phí tốt nghiệp $1.50\text{ SOL}$)* và $14.387943 < 76.109937$ *(thặng dư $60.221994\text{ SOL}$)*; sai lệch giá đo được **`4.27 × 10⁻¹²`** và **`4.19 × 10⁻¹¹`** — đúng cam kết **`0%` chênh lệch giá**, không cần "bơm" thêm SOL.
 - **Hai hồ sơ vận hành, một bộ luật.** `VGBC-4T` *(toàn vòng đời game, graduation `79.245283 SOL`, `13.2606×` qua `1.40× → 2.31× → 4.92× → 13.26×`)* và `VBOND-LV` *(Version Bond đầm giá, `76.109937 SOL`, `5.1461×` chống FOMO)* dùng **cùng một** `terms_hash`, cùng `u128`, cùng `GATE_TABLE` — chứng minh mô hình không "đo ni đóng giày" cho một tham số duy nhất.
 
 ##### Case study 3 — “Cá voi chia `20` ví gom `28%` cung, `200` người cùng đòi rút” *(két sắt có đáy)*
@@ -249,7 +250,7 @@ Câu hỏi đáng hỏi nhất về mô hình của MetaPump là: *nếu trình 
 **② Play-gate on-chain** — *không chơi thì không được mua*
 
 - Điều kiện mua token của một phiên bản nằm **trong smart contract**, không ở giao diện; chứng thực `PopBuyAttestation` **`106 B`** được kiểm bằng *nội quan lệnh* (`Ed25519SigVerify`) nên **không thể lách qua RPC**.
-- Kèm hai trần độc lập trong cùng một cơ chế: **`10%` lượng curve mỗi epoch `600 s`** *(toàn cục)* và **`5%` lượng curve mỗi ví** — cộng `24h Gamer Priority Window` (`0.25–2.0 SOL`/ví) trước khi mở công khai.
+- Kèm hai trần độc lập trong cùng một cơ chế: **`10%` lượng curve mỗi epoch `600 s`** *(toàn cục)* và **trần ví phân theo hồ sơ** — `2%` tổng cung (`20M` token) với `VGBC-4T`, `5%` lượng curve (`30M` token) với `VBOND-LV` — cộng `24h Gamer Priority Window` (`0.25–2.0 SOL`/ví) trước khi mở công khai. *(Con số `2%`/`5%` này là **duy nhất** trong toàn bộ tài liệu; mọi chương khác dẫn chiếu về đây.)*
 
 *Cơ chế kinh tế:* bot sniper không thể vào trước vì **chưa có "dấu chân chơi"**. Muốn có, phải chơi thật.
 
@@ -282,9 +283,22 @@ Câu hỏi đáng hỏi nhất về mô hình của MetaPump là: *nếu trình 
 | **WHY**<br>*(Tại sao dự án này phải ra đời?)* | Nỗi đau lớn nhất đang bỏ ngỏ trên thị trường là gì? | **3 thất bại thị trường cùng lúc:**<br>1. **Indie Game chết ở "Thung lũng v0.1 → v1.0":** Thiếu người test thật, thiếu dữ liệu cải tiến gameplay và thiếu 5,000–50,000 USD vốn mồi để hoàn thiện game.<br>2. **GameFi & Launchpad chết vì "Bơm trước – Bỏ sau":** Gọi hết vốn ngay lúc mới có ý tưởng/demo khiến nhà phát triển mất động lực làm tiếp, 85–98% dự án chết yểu.<br>3. **Game thủ thật bị biến thành "thanh khoản thoát":** Bot và cá voi mua sớm xả lên đầu người yêu game, phá nát cộng đồng ngay tuần đầu. |
 | **WHAT**<br>*(MetaPump chính xác là gì?)* | Sản phẩm cung cấp giá trị gì khác biệt? | Một nền tảng kép **Web2-First, Web3-Powered**:<br>• **Mặt trước là Cổng Web Game chuẩn Poki + Đấu trường Arena:** Bấm là chơi ngay trên điện thoại/máy tính trong 3 giây, không cần cài đặt, không bắt buộc có ví crypto; so sánh mù từng phiên bản game và tích điểm cộng đồng `SPARK`.<br>• **Mặt sau là Sàn Gọi vốn theo Tiến độ Phiên bản trên Solana:** Mỗi game vượt kiểm định được mở bán token theo từng chặng `M1 → M4` gắn với chất lượng sản phẩm thực, minh bạch 100% giao dịch và có bảo hiểm hoàn vốn *Ragequit*. |
 | **WHO**<br>*(Phục vụ ai?)* | Ai là khách hàng, người dùng và người trả tiền? | **4 nhóm tác nhân cộng sinh:**<br>1. **Game thủ phổ thông & Cộng đồng khám phá (16–32t):** Chơi game giải trí miễn phí, test game bí ẩn (*Mystery Tile*), chấm điểm Arena, lập bang hội (*Squads*), tích `SPARK` và được quyền mua sớm công bằng vào tựa game mình tin tưởng.<br>2. **Indie Developers & AI-Native Game Studios:** Hàng trăm nghìn nhà làm game Godot, Unity WebGL, Phaser, GDevelop, Three.js cần lưu lượng người chơi thật, công cụ kiểm định tự động, vốn phát triển theo cột mốc và doanh thu quảng cáo công bằng (100% traffic tự mang về, 50/50 traffic từ sàn).<br>3. **Nhà giao dịch & Nhà đầu tư sớm hệ Solana:** Tìm kiếm tài sản có **sản phẩm thật, số liệu người chơi thật, chống rug-pull và có giá sàn bảo vệ**, thay vì đánh bạc mù quáng vào memecoin vô nghĩa.<br>4. **Nhãn hàng & Mạng quảng cáo Web Game:** Chi trả dòng tiền doanh thu thực (fiat/stablecoin) cho hàng triệu lượt hiển thị *rewarded ads* trên các game đạt mốc `M4+`. |
-| **WHERE**<br>*(Triển khai ở đâu?)* | Chọn mặt trận phân phối và hạ tầng nào? | • **Kênh phân phối:** **Open Web (Trình duyệt Desktop & Mobile)** — tiếp cận tức thì mọi thiết bị iOS/Android/PC toàn cầu, miễn nhiễm khoản thuế 30% và quy trình duyệt kéo dài của Apple/Google App Store, chia sẻ 1 đường link trên TikTok/X/Discord/Telegram là vào chơi ngay.<br>• **Hạ tầng thanh toán & tài sản:** **Solana** — phí giao dịch dưới $0.01, xác nhận dưới 1 giây, cộng đồng giao dịch bán lẻ sôi động nhất thế giới.<br>• **Thị trường bàn đạp:** Cộng đồng studio indie & game thủ **Đông Nam Á (Việt Nam là cường quốc sản xuất casual/Web3 game toàn cầu)** kết hợp thanh khoản quốc tế (Mỹ, châu Âu, Hàn Quốc, LATAM). |
+| **WHERE**<br>*(Triển khai ở đâu?)* | Chọn mặt trận phân phối và hạ tầng nào? | • **Kênh phân phối:** **Open Web (Trình duyệt Desktop & Mobile)** — tiếp cận tức thì mọi thiết bị iOS/Android/PC toàn cầu, miễn nhiễm khoản thuế 30% và quy trình duyệt kéo dài của Apple/Google App Store, chia sẻ 1 đường link trên TikTok/X/Discord/Telegram là vào chơi ngay.<br>• **Hạ tầng thanh toán & tài sản:** **Solana** — phí giao dịch dưới $0.01, xác nhận dưới 1 giây, cộng đồng giao dịch bán lẻ sôi động nhất thế giới.<br>• **Thị trường bàn đạp — Chiến lược Tách Cầu/Cung:** **Đông Nam Á (trọng tâm Việt Nam)** cung cấp *dữ liệu giờ chơi & nguồn game* qua cổng Web2 miễn phí; **thanh khoản (cầu vốn)** đến từ nhà đầu tư bán lẻ quốc tế (Mỹ, EU, Hàn Quốc, LATAM). Hai mặt trận **tách tuyệt đối về mặt pháp lý** — xem hộp dưới và §5.4. |
 | **WHEN**<br>*(Tại sao là NGAY LÚC NÀY — 2026–2027?)* | Điều kiện lịch sử nào vừa chín muồi? | **3 làn sóng hội tụ đúng năm 2026:**<br>1. **Bùng nổ AI Game Creation:** Công cụ AI giúp 1–2 lập trình viên tạo ra bản prototype web game trong vài ngày thay vì 6 tháng — nguồn cung game tăng gấp 100 lần, làm nhu cầu *bộ lọc chất lượng theo phiên bản* trở nên cấp bách chưa từng có.<br>2. **Sự vỡ mộng của Memecoin & Agent Launchpad đời 1:** Sau khi chứng kiến 98% token Pump.fun không tốt nghiệp và 85% agent Virtuals chết, dòng vốn bán lẻ đang khát khao một cơ chế launchpad **có kỷ luật, có sản phẩm thật và chống bot xả**.<br>3. **Thời kỳ hoàng kim của Browser Gaming:** WebGPU/WebAssembly trưởng thành, băng thông Cloudflare R2 miễn phí phí tải ra (0 egress fee), đưa web game đạt quy mô ngang ngửa mạng console lớn. |
 | **HOW**<br>*(Vận hành như thế nào?)* | Cơ chế nào biến tầm nhìn thành cỗ máy tự vận hành? | **Chu trình 5 bước + Kỷ luật Thứ tự & Điều kiện Dừng (*Kill Criteria*):**<br>• *(1) Studio nộp ZIP kèm `base_sha256` & kiểm tra qua Inspector* → *(2) Đo `VPH`, Player Fit (500 lượt) & đấu mù Arena (tách riêng đường ống Telemetry xử lý 90% tải đo lường)* → *(3) Đạt chuẩn mới ký mở chặng trên Solana, tích lũy kho dữ liệu độc quyền `(rating, VPH, D1/D7, crash_rate)` về "cái gì làm game hay hơn"* → *(4) On-chain Play-Gate + phí thoát sớm bảo vệ game thủ* → *(5) Đạt `M4` tự động lên DEX khóa LP & bật quảng cáo.*<br>• **3 điều chủ đích KHÔNG làm:** Không tự làm game cạnh tranh studio · Không giữ khóa ví người dùng · Không kiếm tiền từ việc người chơi thua lỗ.<br>• **Điều kiện dừng ghi trước (không thương lượng sau):** Không mở Launchpad trước khi cổng game có tối thiểu **`500` người chơi thật/tuần**; nếu hết giai đoạn Launchpad thử nghiệm (`S6–S8`) không có tối thiểu **`3` đợt tài trợ phiên bản hoàn thành milestone đúng hạn**, công khai chuyển hướng (*pivot*) sang mô hình **chia sẻ doanh thu quảng cáo thuần off-chain**. |
+
+> **Chiến lược Tách Cầu/Cung — *Web2 cho Dữ liệu, Web3 cho Vốn* (giải đáp trực tiếp Nghị quyết `05/2025/NQ-CP`):** MetaPump vận hành **hai mặt trận tách tuyệt đối**, vì một nền tảng duy nhất không thể vừa phục vụ người chơi Việt Nam vừa huy động vốn từ họ một cách hợp pháp.
+
+| Mặt trận | Khu vực | Người tham gia | Dòng tiền | Ràng buộc pháp lý |
+|---|---|---|---|---|
+| **Cung — Dữ liệu & Sản phẩm (Web2)** | Việt Nam & Đông Nam Á | Game thủ phổ thông, studio indie | Quảng cáo USD, chia sẻ doanh thu **bằng tiền pháp định** | Không có token nào được chào bán — chỉ là cổng game HTML5 miễn phí |
+| **Cầu — Huy động vốn (Web3)** | Mỹ, EU, LATAM, Hàn Quốc… *(chặn IP **và** KYC với Việt Nam)* | Nhà đầu tư bán lẻ quốc tế | SOL/stablecoin vào đường cong | Tuân thủ `100%` Nghị quyết `05/2025/NQ-CP`, pháp nhân quốc tế độc lập |
+
+**Ba hệ quả vận hành cứng:**
+
+1. **Người chơi Việt Nam vẫn là "công dân hạng nhất" của sản phẩm** — họ tạo ra `VPH`, chấm điểm Arena, quyết định game nào sống. Họ **không** mua token, và **không cần** mua token để được thưởng: quỹ thưởng người chơi thật (`10–20%` cung) trả cho **giờ chơi đã xác minh**, không phải cho việc nắm giữ đầu cơ.
+2. **Studio Việt Nam nhận vốn bằng tiền pháp định, không bằng token** — khi tốt nghiệp `M4`, phần tài trợ được giải ngân qua pháp nhân MetaPump quốc tế dưới dạng **chia sẻ doanh thu ngoài chuỗi** (*Off-Chain Revenue-Share*, §5.4 nguyên tắc 3). Đây là lý do mô hình **không sụp** nếu cấu phần token bị tắt hoàn toàn ở một thị trường.
+3. **Câu "Game thủ thật = Nhà tài trợ sớm" được viết lại cho đúng:** người chơi thật đóng góp **dữ liệu và sự chú ý** — hai tài sản mà nhà đầu tư không thể mua bằng tiền; còn tài trợ vốn là việc của nhà đầu tư quốc tế. Gộp hai vai này lại là **sai về pháp lý**, không phải chỉ sai về truyền thông.
 
 ---
 
@@ -450,11 +464,12 @@ Thay vì yêu cầu nhà đầu tư tin vào lời hứa đạo đức của ban
 
 Tại Việt Nam, **Nghị quyết số `05/2025/NQ-CP` ngày 09/09/2025** của Chính phủ về triển khai thí điểm thị trường tài sản mã hóa (có hiệu lực từ `09/09/2025`, thời gian thí điểm **5 năm**) quy định rõ: hoạt động tổ chức thị trường và cung cấp dịch vụ tài sản mã hóa trong cơ chế thí điểm chỉ được thực hiện bởi tổ chức được Bộ Tài chính cấp phép (vốn điều lệ đã góp tối thiểu **10.000 tỷ đồng VND**), và theo **Điều 6**, tài sản mã hóa theo cơ chế này **chỉ được chào bán, phát hành cho nhà đầu tư nước ngoài**.
 
-MetaPump coi đây là **đường biên thiết kế bắt buộc ngay từ ngày đầu**, với 3 nguyên tắc vận hành cứng:
+MetaPump coi đây là **đường biên thiết kế bắt buộc ngay từ ngày đầu**, với 4 nguyên tắc vận hành cứng:
 
-1. **Giai đoạn 1 — Không chào bán token cho nhà đầu tư Việt Nam:** Tách bạch tuyệt đối cổng giải trí Web Game HTML5 miễn phí với phân khu Launchpad/Version Bond; áp dụng chặn truy cập theo khu vực địa lý (*geo-fencing*) và kiểm soát tuân thủ nghiêm ngặt đối với Việt Nam cùng các khu vực pháp lý hạn chế khác.
+1. **Giai đoạn 1 — Tách Cầu/Cung thay vì "Geo-Fencing" đơn thuần:** đây không phải một bức tường chặn người dùng, mà là **hai sản phẩm khác nhau cho hai nhóm khách hàng khác nhau**. *Mặt Cung* là cổng Web Game HTML5 miễn phí — mở toàn cầu, **không có ví, không có token, không có rào cản nào với Việt Nam**; người chơi Việt Nam tạo `VPH`, chấm điểm Arena, nhận thưởng theo giờ chơi. *Mặt Cầu* là phân khu Launchpad/Version Bond — **chặn đồng thời IP và KYC** với Việt Nam cùng các khu vực hạn chế, chỉ phục vụ nhà đầu tư quốc tế. Việc chặn nằm ở **tầng sản phẩm tài chính**, không nằm ở tầng trải nghiệm game.
 2. **Phạm vi vận hành hợp lệ:** Cơ chế gọi vốn theo phiên bản chỉ chạy thử nghiệm không giá trị tài chính trên mạng **Solana Devnet**, và khi lên Mainnet chỉ phục vụ người tham gia tại các khu vực pháp lý cho phép ngoài phạm vi điều chỉnh hạn chế, dưới pháp nhân quốc tế độc lập đã có ý kiến tư vấn pháp lý.
-3. **Phương án Dự phòng Sống sót (*Off-Chain Fallback*) đã thiết kế sẵn:** Ngay cả tại thị trường tắt hoàn toàn cấu phần token on-chain, toàn bộ lõi *Sổ cái Phiên bản + Phễu Kiểm định Poki + Đấu trường mù Arena* vẫn hoạt động độc lập 100% và chuyển sang mô hình **chia sẻ doanh thu quảng cáo & tài trợ cột mốc bằng tiền pháp định (Off-Chain Revenue-Share)** cho studio — đảm bảo sản phẩm và doanh nghiệp luôn sống khỏe trong mọi kịch bản chính sách.
+3. **Dòng vốn về Studio Việt Nam là tiền pháp định, không phải token:** phần tài trợ `M4` được giải ngân qua pháp nhân MetaPump quốc tế dưới dạng **chia sẻ doanh thu ngoài chuỗi** (*Off-Chain Revenue-Share*) bằng USD/vốn tài trợ cột mốc — không có bước nào studio Việt Nam phải *nhận* hay *bán* token để có tiền làm game. Đây là điểm then chốt khiến chiến lược "lấy Việt Nam làm thị trường bàn đạp" **không mâu thuẫn** với việc "không chào bán token cho nhà đầu tư Việt Nam".
+4. **Phương án Dự phòng Sống sót (*Off-Chain Fallback*) đã thiết kế sẵn:** Ngay cả tại thị trường tắt hoàn toàn cấu phần token on-chain, toàn bộ lõi *Sổ cái Phiên bản + Phễu Kiểm định Poki + Đấu trường mù Arena* vẫn hoạt động độc lập 100% và chuyển sang mô hình **chia sẻ doanh thu quảng cáo & tài trợ cột mốc bằng tiền pháp định (Off-Chain Revenue-Share)** cho studio — đảm bảo sản phẩm và doanh nghiệp luôn sống khỏe trong mọi kịch bản chính sách.
 
 ---
 
@@ -470,6 +485,31 @@ MetaPump coi đây là **đường biên thiết kế bắt buộc ngay từ ng�
 | **Thanh khoản DEX Khóa (Locked LP)** | **15%** (`150M` — khóa vĩnh viễn) | **5%** (`50M` — khóa ≥12 tháng) | Tự động chuyển lên Meteora DAMM v2 / Raydium CPMM ở **đúng 100% giá cuối trên đường cong** (0% chênh lệch giá cho bot trục lợi). |
 | **Team / Đội ngũ Nền tảng MetaPump** | **`0%`** (`0 Token`) | **`0%`** (`0 Token`) | **Nền tảng chỉ nhận phí giao dịch & chia sẻ quảng cáo minh bạch, KHÔNG nhận bất kỳ token nào của game hay phiên bản.** |
 
+#### 6.1b. Kỷ luật Giải ngân SOL — Hai Đường Dòng tiền, Không Đường Nào Mù mờ *(Vá lỗi thẩm định: "Studio nhận 0 SOL trước v1.0")*
+
+Điểm nghẽn của mọi mô hình GameFi cũ nằm ở chỗ: hoặc nhà phát triển **nhận hết tiền trước khi làm game** (rồi bỏ đi), hoặc **không có một đồng vốn lưu động nào** trong suốt quá trình phát triển. MetaPump tách bạch hai mục tiêu bằng **hai hồ sơ hợp đồng**, để mỗi studio chọn đúng loại vốn mình cần — và để nhà đầu tư nhìn thấy chính xác từng lamport đi đâu:
+
+| Hạng mục Phân bổ SOL *(ở mức trần, `@ $150/SOL`)* | **Hồ sơ A — `VGBC-4T`**<br>*Tối ưu thanh khoản DEX* | **Hồ sơ B — `VBOND-LV`**<br>*Tối ưu vốn phát triển Studio* | Mục đích Kinh tế |
+|---|---|---|---|
+| **Tổng SOL thực tích lũy khi tốt nghiệp** ($R_{\text{end}}$) | `79.245283 SOL` | `76.109937 SOL` | Trần huy động của một đường cong — **không phải doanh thu**, là tiền của người mua |
+| **Khóa Thanh khoản DEX (Locked LP)** | **`61.836953 SOL`** *(`78.0%`)* | **`14.387943 SOL`** *(`18.9%`)* | Độ sâu thanh khoản mở sàn; A dồn tiền vào đây để chịu được lệnh lớn |
+| **Phí Tốt nghiệp Nền tảng** (`1.50 SOL`) | `1.50 SOL` | `1.50 SOL` | Phí cố định thu khi pool DEX tạo thành công *(§7, dòng 2)* |
+| **Ngân sách Phát triển Thực tế cho Studio** | **`15.908330 SOL`** *(~`$2,386`)*<br>*`10 SOL` Dev Grant giải ngân ở `M4` + `2.908330 SOL` về Season 1 Prize Vault* | **`60.221994 SOL`** *(~`$9,033`)*<br>*giải ngân theo 4 mốc `M1 → M4`* | Đây mới là **vốn mồi thật** để trả lương team, thuê máy chủ và mua asset |
+
+**Lộ trình giải ngân của `VBOND-LV` — `60.221994 SOL` chia đúng bốn mốc** *(escrow không mở sớm hơn một lamport)*:
+
+| Cột mốc nghiệm thu | Giải ngân | Quy đổi `@ $150/SOL` | Dùng để làm gì |
+|---|---|---|---|
+| **Hoàn tất `M1`** *(Playtest & Base Retention)* | **`5.00 SOL`** | ~`$750` | Bù chi phí prototype & máy chủ cơ sở |
+| **Hoàn tất `M2`** *(Player Fit + Arena)* | **`15.00 SOL`** | ~`$2,250` | Khi game chứng minh sức hút bằng dữ liệu thật |
+| **Hoàn tất `M3`** *(Web Fit + Category)* | **`20.00 SOL`** | ~`$3,000` | Marketing nội dung & mở rộng máy chủ |
+| **Hoàn tất `M4`** *(Global Release v1.0)* | **`20.221994 SOL`** | ~`$3,033` | Giải ngân cùng lúc đẩy thanh khoản lên DEX |
+| **TỔNG** | **`60.221994 SOL`** | **~`$9,033`** | Khớp **đến từng lamport** với `ΔR_surplus` ở YP §6.1, khóa bằng test `S3` |
+
+> **Nếu studio bỏ cuộc:** trượt hạn mốc kế tiếp quá `90 ngày` ⇒ `Stall` ⇒ toàn bộ SOL **chưa giải ngân** trong escrow mở cho người góp vốn rút theo tỷ lệ (`Ragequit`, `0%` phí phạt). Tiền **đã** giải ngân cho mốc đã nghiệm thu thì không thu hồi — đúng nguyên tắc "nghiệm thu rồi mới trả".
+
+> **Trả lời thẳng câu hỏi thẩm định khó nhất:** *"Nếu `VGBC-4T` chỉ rót `15.91 SOL` ở `M4`, tại sao gọi là 'tài trợ phát triển game'?"* — Vì `VGBC-4T` **không phải** hồ sơ tài trợ; nó là **hồ sơ bệ phóng thanh khoản** cho game đã có studio tự chủ vốn, nơi `78%` SOL phải nằm lại làm thanh khoản DEX. Studio cần vốn lưu động để sống qua `M1–M3` **bắt buộc chọn `VBOND-LV`** — nơi `79.1%` SOL vào thẳng escrow của họ. Whitepaper này không hứa một cơ chế làm được cả hai việc; nó cung cấp hai cơ chế và nói rõ cơ chế nào làm việc gì.
+
 > **Ranh giới Đạo đức Bất khả xâm phạm (`0% Platform Allocation`):** Dòng cuối cùng trong bảng trên là nền tảng đạo đức của toàn bộ giao thức. **MetaPump không sở hữu dù chỉ 1 token của bất kỳ phiên bản game nào.** Nếu nền tảng cầm token dự án, nền tảng sẽ nảy sinh xung đột lợi ích để bơm giá hoặc dễ dãi khi duyệt cổng — và mọi cơ chế kiểm định phía trước sẽ trở nên vô nghĩa.
 
 ### 6.2. Tham số Đường cong & Lá chắn Chống Bot (Khóa bằng Mô phỏng Toán học)
@@ -480,8 +520,10 @@ MetaPump coi đây là **đường biên thiết kế bắt buộc ngay từ ng�
 | **Ngưỡng Tốt nghiệp (Graduation)** | `79.25 SOL` qua 4 chặng (`5.52 → 15.59 → 36.55 → 79.25`) | `76.11 SOL` thực (`~$11,416` @ `$150/SOL`) | Đủ vốn thực chất cho studio indie hoàn thiện phiên bản, nhưng đủ gọn để cộng đồng vài trăm game thủ tự cán đích. |
 | **Biên độ Giá trước Graduation** | Từng chặng dịu (`1.40× → 2.31× → 4.92× → 13.26×`) | **`5.15×`** toàn đường cong | Đủ hấp dẫn thưởng cho người tin tưởng sớm, không tạo bong bóng FOMO cực đoan rồi sập đổ. |
 | **Phí Giao dịch Cơ bản** | `1.00%` (`0.5%` sàn · `0.3%` dev · `0.2%` game thủ) | `1.00%` | Thấp hơn biểu phí curve `1.25%/lệnh` của Pump.fun *(Project Ascend 09/2025; PumpSwap `0.25%`)*; tuy nhiên phí đối thủ biến động thường xuyên — **lợi thế bền vững của MetaPump nằm ở cấu trúc phí thoát sớm dưới đây, thứ Pump.fun không có**. |
-| **Phí Thoát sớm (Early-Exit Fee)** | **`12%` (`<1h`) → `6%` (`<24h`) → `3%` (`<7d`) → `1%`** *(0% phạt nếu giữ qua ≥1 version)* | **`4.00%`** phụ phí bán sớm *(tổng phí bán `5.00%`)* | **Khác biệt cấu trúc chống bot quan trọng nhất:** biến mọi giao dịch mua-xả chớp nhoáng thành lỗ ròng chắc chắn; hoàn trả 50% phạt cho game thủ & 40% đắp quỹ giá sàn. |
+| **Phí Thoát sớm (Early-Exit Fee)** | **`12%` (`<1h`) → `6%` (`<24h`) → `3%` (`<7d`) → `1%`** *(**Miễn phụ phí thoát sớm — chỉ còn thu phí cơ bản `1.00%` — nếu đồng hành qua ≥ 1 version**)* | **`4.00%`** phụ phí bán sớm *(tổng phí bán `= 1.00%` cơ bản `+ 4.00%` = `5.00%`)* | **Khác biệt cấu trúc chống bot quan trọng nhất:** biến mọi giao dịch mua-xả chớp nhoáng thành lỗ ròng chắc chắn; hoàn trả 50% phạt cho game thủ & 40% đắp quỹ giá sàn. |
 | **Giới hạn Tốc độ & Trần Ví** | `24h Gamer Priority Window` (`0.25–2.0 SOL`/ví) + Trần `2%` cung/ví + Lưu ký `BuyerPosition` trước M4 | `Epoch 600s` (tối đa `10%` curve/epoch) · Trần `5%`/ví | Chặn đứng 100% bot sniper block-0, ngăn cá voi bơm vốn đột ngột làm méo giá và ngăn dùng 100 ví ảo gom token xả sập sàn. |
+
+> **Ba con số phí — đọc tách bạch, không cộng dồn nhầm (điểm khiếu nại phổ biến nhất):** *Phí cơ bản* `1.00%` thu ở **cả hai chiều** mua và bán; *phụ phí thoát sớm* chỉ thu ở **chiều bán**; **tổng phí bán = cơ bản + phụ phí**. Vì vậy câu "miễn phí phạt nếu giữ qua ≥ 1 version" **không có nghĩa là bán miễn phí** — người bán vẫn chịu đúng `1.00%` phí cơ bản, và mức `+380.6%` ở §6.3 đã được tính **sau khi trừ `1%` phí bán đó**. Với `VBOND-LV`: `1.00%` + `4.00%` = `5.00%` tổng phí bán ⇒ bot lướt sóng lỗ ròng **`−5.95%`**, không phải `−4%` hay `−8.92%`.
 
 ### 6.3. Kiểm chứng Định lượng: Bot Đầu cơ có Lãi không? *(Chạy kiểm chứng tại `scripts/verify_protocol_math.py`)*
 
@@ -512,7 +554,9 @@ Khác với 99% dự án Web3 "sống nhờ thị trường tăng (bull), chết
 
 Để tránh mọi ảo giác "biên lợi nhuận gộp" thổi phồng, chúng tôi tách bạch hoàn toàn **chi phí hạ tầng máy chủ** khỏi **chi phí nhân sự/vận hành (Mục 9)** và viết tường minh mọi phép tính:
 
-- **Chi phí hạ tầng cơ sở (GA Phase 1 — `120,000 VPH/tuần`):** `$1,230/tháng ÷ (120,000 × 4.33 tuần/tháng) × 1,000` = **`$2.37 / 1,000 VPH`** *(chỉ tính hạ tầng Cloud/Edge/DB/Telemetry, chưa gồm lương đội ngũ; giảm dần theo quy mô)*.
+- **Chi phí hạ tầng cơ sở (GA Phase 1 — công suất chịu tải `120,000 VPH/tuần`):** `$1,230/tháng ÷ (120,000 × 4.33 tuần/tháng) × 1,000` = **`$2.37 / 1,000 VPH`** *(chỉ tính hạ tầng Cloud/Edge/DB/Telemetry, chưa gồm lương đội ngũ; giảm dần theo quy mô)*.
+
+> **Ba con số `VPH` khác nhau — và chúng không mâu thuẫn, vì đo ba thứ khác nhau:** **`120,000 VPH/tuần`** là **công suất chịu tải tối đa** của hạ tầng GA Phase 1 *(dùng để tính đơn giá `$2.37`)*; **`40,000 VPH/tuần`** là **ngưỡng tối thiểu để kích hoạt Mainnet** *(điều kiện nghiệm thu `S12`, §9.4)*; **`~56,000 VPH/tuần`** là **mức trung bình của kịch bản tài chính cơ sở Năm 1** *(suy ra từ `2,933,333 VPH/năm` ở §9.3)*. Con số thứ ba mới là con số **cam kết trong mô hình kinh doanh**; hai con số kia là **biên an toàn kỹ thuật** — và mọi bảng trong tài liệu này đều dùng `~56,000`.
 - **Công thức doanh thu quảng cáo gộp trên `1,000 VPH`** *(giả định thận trọng `8 phút/phiên` = `7.5 phiên/VPH`, thấp hơn nhiều mức TB `30 phút` của CrazyGames vì giai đoạn đầu tập trung game arcade ngắn)*:  
   `Doanh thu / 1,000 VPH = (Lượt hiển thị / phiên) × (60 ÷ 8) × eCPM pha trộn`.
 
@@ -557,15 +601,35 @@ Khác với 99% dự án Web3 "sống nhờ thị trường tăng (bull), chết
 | Vòng gọi vốn | Quy mô Gọi vốn | Định giá Mục tiêu *(Pre / Post-Money)* | Pha loãng | Công cụ Đầu tư *(Instrument)* | Thời điểm & Runway | Quy mô Đội ngũ | Cột mốc Mở khóa Vòng Kế tiếp *(Graduation Gate)* |
 |---|---|---|---|---|---|---|---|
 | **Pre-Seed**<br>*(Đang mở)* | **$1,000,000** | **$9.0M / $10.0M**<br>*(Valuation Cap)* | **10.0%** | Post-Money SAFE + Token Warrant tỷ lệ 1:1 | **M1** *(Q4/2026–Q1/2027)*<br>Runway **15 tháng** (0-rev) / **24+ tháng** (base) | **8 FTE**<br>*(AI-Agile Core)* | Mainnet v1.0 + 2 kiểm toán · `400K` MAU cuối Y1 · `120` game đạt `M1+` (≥45% lên `M2`) · `24` game tốt nghiệp `M4` sống >90d · ARR run-rate **`$1.2M+`** |
-| **Seed** | **$3,000,000** | **$22.0M / $25.0M**<br>*(Cap / Priced)* | **12.0%** | Priced Seed / SAFE + Token Warrant 1:1 | **M12–M15** *(Q1/2028)*<br>Runway **18–21 tháng**<br>*(Đạt hòa vốn trong kỳ)* | **16 FTE**<br>*(Eng + Studio BD)* | `2.0M` MAU · `180M` lượt chơi/năm · `450` game `M1+` · `95` game tốt nghiệp `M4`/năm · D7 Retention `≥18%` · Doanh thu ròng Y2 **`$5.2M`** (EBITDA dương) |
-| **Series A** | **$12,000,000** | **$68.0M / $80.0M**<br>*(Priced Round)* | **15.0%** | Preferred Equity *(tùy chọn Protocol TGE khi đã có lãi thực)* | **M24–M27** *(Q1/2029)*<br>Runway **24+ tháng**<br>*(Dòng tiền tự dương)* | **36 FTE**<br>*(Global Ops & AdTech)* | `6.5M` MAU · `750M` lượt chơi/năm · `1,200` game `M1+` · `260` game tốt nghiệp `M4`/năm · Ad-Stack trực tiếp toàn cầu · Doanh thu ròng Y3 **`$27.0M`** |
-| **Series B**<br>*(Expansion)* | **$25,000,000** | **$225.0M / $250.0M**<br>*(Priced Round)* | **10.0%** | Growth Equity | **M36–M42** *(2030)*<br>Tăng tốc M&A & mở rộng ngang | **65 FTE**<br>*(Ngang quy mô Poki)* | `20.0M+` MAU (= 20% Poki nhưng ARPU cao gấp 4–6 lần) · Mở rộng giao thức sang AI Interactive Apps · Doanh thu ròng Y4 **`$72.0M`**, EBITDA **`$48.0M`** |
+| **Seed** | **$3,000,000** | **$22.0M / $25.0M**<br>*(Cap / Priced)* | **12.0%** | Priced Seed / SAFE + Token Warrant 1:1 | **M12–M15** *(Q1/2028)*<br>Runway **18–21 tháng**<br>*(Chưa hòa vốn — xem J-Curve §9.1b)* | **16 FTE**<br>*(Eng + Studio BD)* | `2.0M` MAU · `180M` lượt chơi/năm · `450` game `M1+` · `95` game tốt nghiệp `M4`/năm · D7 Retention `≥18%` · Doanh thu ròng Y2 **`$1.126M`** (EBITDA **`−$974K`**) |
+| **Series A** | **$12,000,000** | **$68.0M / $80.0M**<br>*(Priced Round)* | **15.0%** | Preferred Equity *(tùy chọn Protocol TGE khi đã có lãi thực)* | **M24–M27** *(Q1/2029)*<br>Runway **24+ tháng**<br>*(EBITDA vẫn âm `−$642K`)* | **36 FTE**<br>*(Global Ops & AdTech)* | `6.5M` MAU · `750M` lượt chơi/năm · `1,200` game `M1+` · `260` game tốt nghiệp `M4`/năm · Ad-Stack trực tiếp toàn cầu · Doanh thu ròng Y3 **`$5.158M`** |
+| **Series B**<br>*(Expansion)* | **$25,000,000** | **$225.0M / $250.0M**<br>*(Priced Round)* | **10.0%** | Growth Equity | **M36–M42** *(2030)*<br>Tăng tốc M&A & mở rộng ngang | **65 FTE**<br>*(Ngang quy mô Poki)* | `20.0M+` MAU (= 20% Poki nhưng ARPU cao gấp 4–6 lần) · Mở rộng giao thức sang AI Interactive Apps · Doanh thu ròng Y4 **`$18.46M`**, EBITDA **`+$3.96M`** *(hòa vốn Năm 4)* |
 
 > **Kỷ luật Cấu trúc Sở hữu (Cap Table Discipline — tổng vốn lũy kế `$41.0M`):** Khởi điểm với `85.0%` Sáng lập & `15.0%` quỹ ESOP thu hút nhân tài, tỷ lệ sở hữu của từng nhóm qua 4 vòng lần lượt là:
 > - **Sau Pre-Seed (`$1M @ $10M`):** Founders `76.50%` · ESOP `13.50%` · Pre-Seed `10.00%`.
 > - **Sau Seed (`$3M @ $25M`):** Founders `67.32%` · ESOP `11.88%` · Pre-Seed `8.80%` · Seed `12.00%`.
 > - **Sau Series A (`$12M @ $80M`):** Founders `57.22%` · ESOP `10.10%` · Pre-Seed `7.48%` · Seed `10.20%` · Series A `15.00%`.
 > - **Sau Series B (`$25M @ $250M`):** Founders `51.50%` · ESOP `9.09%` · Pre-Seed `6.73%` (*tương đương `$16.83M` = **16.8x MOIC***) · Seed `9.18%` (*`$22.95M` = **7.7x MOIC***) · Series A `13.50%` (*`$33.75M` = **2.8x MOIC***) · Series B `10.00%` — chưa bao gồm giá trị gia tăng từ Token Warrant và định giá thoát vốn *(tham chiếu: FOMO đạt định giá ~$550M ở Series B với ~$33.7M doanh thu 12 tháng)*.
+
+### 9.1b. Vì sao ba năm đầu chấp nhận lỗ — *J-Curve Infrastructure Play*
+
+**Không giấu nhà đầu tư một sự thật khó nghe:** mô hình cơ sở của MetaPump **không hòa vốn ở Năm 2**. Điểm hòa vốn rơi vào **Năm 4** *(doanh thu `$18.46M`, EBITDA `+$3.96M`)*, sau ba năm EBITDA âm *(bảng §9.3)*. Đây là lựa chọn có chủ đích, không phải dự phóng lạc quan bị hạ xuống cho khớp.
+
+Nếu chỉ bán "bệ phóng token", MetaPump sẽ có lãi sớm rồi chết chậm: doanh thu phí giao dịch tỷ lệ thuận với **khối lượng đầu cơ**, mà khối lượng đầu cơ tỷ lệ nghịch với **chất lượng cổng** — đúng cái bẫy đã giết 85% agent của Virtuals. Ba năm lỗ là cái giá để mua về **hai tài sản không thể mua bằng tiền marketing**:
+
+| Trụ cột đốt tiền *(Năm 1–3)* | Mua về cái gì | Vì sao đối thủ sau này không copy được |
+|---|---|---|
+| **Trợ giá phía Cung** *(quỹ Version Jam, grant mồi, escrow `M1–M4`)* | **Nguồn game đã qua cổng** — hàng trăm studio đã biết cách vượt `M2/M3` và coi MetaPump là kênh phân phối chính | Đối thủ phải trả lại **toàn bộ** chi phí tuyển studio từ đầu, cộng rủi ro chất lượng chưa kiểm chứng |
+| **Trợ giá phía Cầu** *(thưởng giờ chơi, giải đấu, micro-creator)* | **Hào kinh tế dữ liệu (*Data Moat*):** `VPH`, retention theo **từng phiên bản**, tỷ lệ thắng Arena — bộ dữ liệu không launchpad nào khác thu được vì không ai đo theo version | Dữ liệu này chỉ tích lũy **theo thời gian lịch**; không thể mua lại quá khứ bằng tiền |
+| **Hạ tầng & kiểm toán sớm** *(engine plugin, SDK ads, formal verification)* | **Chi phí biên giảm dần theo quy mô** — `$2.37/1,000 VPH` ở Năm 1 giảm mạnh khi `VPH` tăng `~100×` | Người đến sau trả giá hạ tầng của **Năm 1** trong khi giá thị trường là của Năm 4 |
+
+**Đường cong chữ J đọc đúng cách:** ba năm lỗ **không phải** ba năm mất tiền — đó là ba năm **mua tài sản bằng chi phí vận hành**. `$760,000` OpEx Năm 1 mua về `~56,000` giờ chơi xác minh/tuần; `$14.5M` OpEx Năm 4 tạo ra `$18.46M` doanh thu trên **cùng một bộ máy**, với chi phí biên gần như bằng 0 ở mọi đồng doanh thu cộng thêm.
+
+**Ba điều kiện để J-Curve không thành chữ L — phần nhà đầu tư phải theo dõi hàng quý:**
+
+1. **Doanh thu pháp định phải tăng nhanh hơn doanh thu crypto** *(Năm 1: `$133K` ads+B2B trên `$214K` = `62%`; Năm 4: `$15.2M` trên `$18.46M` = `82%`)* — nếu không, mô hình vẫn chỉ là một sòng bạc đội lốt cổng game.
+2. **`VPH` phải tăng nhanh hơn `MAU`** — nếu người dùng vào rồi bỏ đi trong `8` phút, Data Moat không tồn tại và quảng cáo không bao giờ đạt eCPM mục tiêu.
+3. **Mỗi vòng vốn chỉ mở khi cột mốc trước đã đạt** *(§9.1, §9.2)* — J-Curve chỉ an toàn khi độ sâu của đáy được **đo**, không phải **đoán**.
 
 ---
 
@@ -586,7 +650,7 @@ Khác với 99% dự án Web3 "sống nhờ thị trường tăng (bull), chết
 
 > **Cam kết 3 KHÔNG khi sử dụng vốn nhà đầu tư:** Không đốt tiền mua người dùng ảo (bot/incentivized farm) · Không trả thưởng giả để làm đẹp biểu đồ retention/VPH · Không thuê tạo lập khối lượng giao dịch giả (wash-trading) trên đường cong.
 
-#### B. Vòng Seed — `$3,000,000` *(Mục tiêu: Nhân rộng Hệ sinh thái Studio Toàn cầu & Đạt Hòa vốn Bền vững)*
+#### B. Vòng Seed — `$3,000,000` *(Mục tiêu: Nhân rộng Hệ sinh thái Studio Toàn cầu & Đạt Độ sâu J-Curve có kiểm soát)*
 - **Hồ sơ nhà đầu tư mục tiêu:** Các quỹ VC Tier-1 chuyên sâu về Gaming & Consumer Crypto toàn cầu (tham chiếu nhóm BITKRAFT, Mechanism, Folius, Delphi Ventures, Framework, Animoca).
 - **Tốc độ đốt tiền gộp (Gross Burn):** Trung bình `~$158,000/tháng` cho 18 tháng (cộng `$150,000` dự phòng); trên thực tế dòng tiền ròng chuyển sang **dương ngay trong nửa cuối Năm 2** nhờ doanh thu kép vượt chi phí.
 
@@ -597,38 +661,55 @@ Khác với 99% dự án Web3 "sống nhờ thị trường tăng (bull), chết
 | **3. Mở rộng Người chơi Quốc tế & Ad-Tech Trực tiếp** | **20%** | **$600,000** | Mở rộng tệp người chơi sang Mỹ, EU, Hàn Quốc, Brazil & Đông Nam Á; tích hợp header-bidding & *rewarded video* trực tiếp giúp tăng gấp đôi eCPM quảng cáo; tích hợp sâu ví Solana & kênh phân phối hậu M4 (Jupiter, Phantom, FOMO). |
 | **4. Kiểm toán Liên tục, Pháp lý Đa quốc gia & Vận hành** | **10%** | **$300,000** | Kiểm toán phiên bản hợp đồng v2 & kiểm chứng hình thức (*formal verification*), chuẩn hóa bảo mật SOC2, mở rộng khung pháp lý tuân thủ tại các thị trường lớn. |
 | **5. Quỹ Dự phòng Chiến lược (Treasury Buffer)** | **5%** | **$150,000** | Đảm bảo công ty miễn nhiễm 100% trước chu kỳ mùa đông crypto mà không bao giờ phải nới lỏng cổng Play-Gate. |
-| **TỔNG CỘNG VÒNG SEED** | **100%** | **$3,000,000** | **Tăng tốc từ `400K` → `2.0M` MAU, `95` game tốt nghiệp M4/năm & `$5.2M` doanh thu ròng (EBITDA `+$3.0M`).** |
+| **TỔNG CỘNG VÒNG SEED** | **100%** | **$3,000,000** | **Tăng tốc từ `400K` → `2.0M` MAU, `95` game tốt nghiệp M4/năm & `$1.126M` doanh thu ròng (EBITDA `−$974K` — vẫn trong giai đoạn J-Curve, §9.1b).** |
 
 #### C. Các Vòng Mở rộng Kế tiếp — Series A (`$12,000,000`) & Series B (`$25,000,000`)
 
 | Vòng vốn | Cơ cấu Phân bổ Nguồn vốn (USD & %) | Mục tiêu Chiến lược Trọng tâm |
 |---|---|---|
-| **Series A**<br>**`$12,000,000`** | • **30% (`$3.60M`)** Mạng phân phối toàn cầu & đội bán quảng cáo thương hiệu trực tiếp *(Direct Brand Ads)*<br>• **30% (`$3.60M`)** Quỹ phát hành Flagship AA-Indie & hệ thống giải đấu mùa `M5+` LiveOps<br>• **25% (`$3.00M`)** Giao thức v3, công cụ *AI Playtest Diagnostic Co-Pilot* giúp studio sửa điểm rơi người chơi tự động & hạ tầng Edge toàn cầu<br>• **10% (`$1.20M`)** Giấy phép pháp lý quốc tế, tuân thủ & an ninh cấp định chế<br>• **5% (`$0.60M`)** Dự phòng chiến lược | Đưa MetaPump trở thành **Top 5 cổng Web Game độc lập thế giới về doanh thu** (`6.5M` MAU, `$27.0M` doanh thu ròng/năm), sở hữu kho dữ liệu đánh giá phiên bản game lớn nhất hành tinh. |
-| **Series B**<br>**`$25,000,000`** | • **35% (`$8.75M`)** M&A chiến lược (mua lại cổng web game khu vực, công nghệ ad-tech & studio chủ lực)<br>• **30% (`$7.50M`)** Mở rộng ngang bộ giao thức *Version-Gated Launchpad + Blind Arena* sang **AI Consumer Apps & Interactive Media**<br>• **20% (`$5.00M`)** Thương hiệu toàn cầu chinh phục cột mốc `20M+` MAU<br>• **10% (`$2.50M`)** R&D hạ tầng thế hệ mới (Cloud/WebGPU streaming nhẹ)<br>• **5% (`$1.25M`)** Dự phòng ngân quỹ | Trở thành **tiêu chuẩn toàn cầu về Kiểm định Phiên bản & Khởi tạo Vốn cho Sản phẩm Số Tương tác**, đạt `$72.0M+` doanh thu ròng/năm với cơ cấu nhân sự siêu tinh gọn (~65 FTE). |
+| **Series A**<br>**`$12,000,000`** | • **30% (`$3.60M`)** Mạng phân phối toàn cầu & đội bán quảng cáo thương hiệu trực tiếp *(Direct Brand Ads)*<br>• **30% (`$3.60M`)** Quỹ phát hành Flagship AA-Indie & hệ thống giải đấu mùa `M5+` LiveOps<br>• **25% (`$3.00M`)** Giao thức v3, công cụ *AI Playtest Diagnostic Co-Pilot* giúp studio sửa điểm rơi người chơi tự động & hạ tầng Edge toàn cầu<br>• **10% (`$1.20M`)** Giấy phép pháp lý quốc tế, tuân thủ & an ninh cấp định chế<br>• **5% (`$0.60M`)** Dự phòng chiến lược | Đưa MetaPump trở thành **Top 5 cổng Web Game độc lập thế giới về doanh thu** (`6.5M` MAU, `$5.158M` doanh thu ròng/năm — vẫn trong J-Curve, EBITDA `−$642K`), sở hữu kho dữ liệu đánh giá phiên bản game lớn nhất hành tinh. |
+| **Series B**<br>**`$25,000,000`** | • **35% (`$8.75M`)** M&A chiến lược (mua lại cổng web game khu vực, công nghệ ad-tech & studio chủ lực)<br>• **30% (`$7.50M`)** Mở rộng ngang bộ giao thức *Version-Gated Launchpad + Blind Arena* sang **AI Consumer Apps & Interactive Media**<br>• **20% (`$5.00M`)** Thương hiệu toàn cầu chinh phục cột mốc `20M+` MAU<br>• **10% (`$2.50M`)** R&D hạ tầng thế hệ mới (Cloud/WebGPU streaming nhẹ)<br>• **5% (`$1.25M`)** Dự phòng ngân quỹ | Trở thành **tiêu chuẩn toàn cầu về Kiểm định Phiên bản & Khởi tạo Vốn cho Sản phẩm Số Tương tác**, đạt `$18.46M` doanh thu ròng/năm — **điểm hòa vốn đầu tiên** (EBITDA `+$3.96M`) — với cơ cấu nhân sự siêu tinh gọn (~65 FTE). |
 
 ---
 
-### 9.3. Lộ trình Thực thi & Dự phóng Tài chính 4 Năm (Base-Case Financial Model)
+### 9.3. Dự phóng Tài chính 4 Năm — Mô hình *Bottom-Up* Khóa theo Trần Đường cong & eCPM Đông Nam Á (Base-Case Financial Model)
 
-Mô hình kịch bản cơ sở (*Base Case*) giả định MetaPump giữ nguyên chuẩn **Play-Gate nghiêm ngặt** (chỉ ~20% game đạt `M1` đi trọn tới `M4`, nhưng tỷ lệ sống sót trên 90 ngày của game tốt nghiệp `M4` đạt `>65%` — cao gấp 4–10 lần sàn launchpad cũ) và duy trì kỷ luật nhân sự tinh gọn theo chuẩn Poki kết hợp AI-Agile:
+**Bảng dưới đây thay thế hoàn toàn phiên bản trước của §9.3.** Bản cũ dự phóng `$0.75M → $72.0M` doanh thu và hòa vốn ngay Q4 Năm 1; khi kiểm toán lại, nó **vi phạm hai trần cứng của chính tài liệu này**: (i) phí VGBC `$0.42M` ở Năm 1 đòi hỏi `$84.0M` khối lượng giao dịch *trước tốt nghiệp* — gấp **`59×`** trần huy động `$11,888`/game; đến Năm 4 (`$21.0M` phí) thì cần `$4.20 tỷ` = **`126×`** trần; (ii) doanh thu "quảng cáo + B2B" `$0.14M`/Năm 1 tương đương **`$47.73 / 1,000 VPH`** — vượt cả trần `$11.25` ròng của thị trường Đông Nam Á ở §7.1. Một con số không thể đồng thời đúng với "chống đầu cơ" và "phí từ vòng quay khổng lồ"; bảng mới chọn **chống đầu cơ**.
 
-| Chỉ số Vận hành & Tài chính | **Năm 1**<br>*(Hậu Pre-Seed $1M)* | **Năm 2**<br>*(Hậu Seed $3M)* | **Năm 3**<br>*(Hậu Series A $12M)* | **Năm 4**<br>*(Hậu Series B $25M)* |
+Ba ràng buộc cứng mà mọi dòng của bảng phải thỏa *(được khóa bằng test trong `scripts/verify_protocol_math.py`)*:
+
+1. **Trần đường cong `VGBC-4T`:** tối đa `$11,888` huy động/game và `$9,276` thanh khoản DEX/game ⇒ phí launchpad là **nguồn thu phụ trợ**, không phải động cơ chính.
+2. **eCPM Đông Nam Á `$1–$3`:** Năm 1 không được vượt **`$11.25` ròng / `1,000 VPH`**; chỉ từ Năm 2 mới mở rộng sang Mỹ/EU (`$15 → $25 → $35`).
+3. **Kỷ luật đốt tiền Pre-Seed `$63,300/tháng`:** OpEx Năm 1 khóa ở **`$760,000`** = `12 × $63,300` *(làm tròn)*.
+
+| Chỉ số Vận hành & Tài chính | **Năm 1**<br>*(Hậu Pre-Seed `$1M`)* | **Năm 2**<br>*(Hậu Seed `$3M`)* | **Năm 3**<br>*(Hậu Series A `$12M`)* | **Năm 4**<br>*(Hậu Series B `$25M`)* |
 |---|---|---|---|---|
-| **Giai đoạn sản phẩm** | Phase 1–2: Portal, Arena & Genesis Launchpad | Phase 3: Engine SDKs, Global Studio Fund & Ad-Stack | Phase 4: Flagship LiveOps `M5+` & Direct Brand Ads | Phase 5: Global Scale, M&A & AI Apps Protocol |
+| **Giai đoạn sản phẩm** | Phase 1–2: Portal, Arena & Genesis Launchpad | Phase 3: Engine SDKs, Studio Fund & Ad-Stack | Phase 4: Flagship LiveOps `M5+` & Direct Brand Ads | Phase 5: Global Scale, M&A & AI Apps Protocol |
 | **MAU cuối kỳ** *(Người chơi/tháng)* | `400,000` | `2,000,000` | `6,500,000` | `20,000,000` |
 | **Tổng lượt chơi trong năm** | `22M` | `180M` | `750M` | `2,400M` |
+| **Giờ chơi Xác minh (`VPH`)** *(`8` phút/phiên)* | `2,933,333` *(`~56,000`/tuần)* | `24,000,000` | `100,000,000` | `320,000,000` |
 | **Số game vượt cổng `M1` trong năm** | `120` | `450` | `1,200` | `2,800` |
 | **Số game tốt nghiệp `M4 (v1.0)` trong năm** | `24` | `95` | `260` | `620` |
-| **1. Doanh thu Phí VGBC & Anti-Dump** *(Web3)* | `$0.42M` | `$2.10M` | `$8.50M` | `$21.00M` |
-| **2. Phí Tốt nghiệp M4 & Locked DEX LP** *(Lũy kế)* | `$0.19M` | `$1.65M` | `$9.80M` | `$26.00M` |
-| **3. Quảng cáo Web 50/50 & Studio B2B** *(Fiat USD)* | `$0.14M` *(18.7%)* | `$1.45M` *(27.9%)* | `$8.70M` *(32.2%)* | `$25.00M` *(34.7%)* |
-| **TỔNG DOANH THU RÒNG (NET REVENUE)** | **`$0.75M`** *(Exit ARR $1.2M)* | **`$5.20M`** | **`$27.00M`** | **`$72.00M`** |
-| **Chi phí Vận hành Gộp (OpEx & Grants)** | `$0.85M` *(8 FTE)* | `$2.20M` *(16 FTE)* | `$8.40M` *(36 FTE)* | `$24.00M` *(65 FTE)* |
-| **Lợi nhuận Hoạt động (EBITDA)** | `-$0.10M` *(Hòa vốn Q4)* | **`+$3.00M`** *(Biên 57.7%)* | **`+$18.60M`** *(Biên 68.9%)* | **`+$48.00M`** *(Biên 66.7%)* |
+| **1. Phí Đường cong VGBC & Anti-Dump** *(Web3)* | `$22,000` | `$122,000` | `$432,000` | `$1,340,000` |
+| **2. Phí Tốt nghiệp `M4` & Locked DEX LP** *(Web3)* | `$59,000` | `$244,000` | `$726,000` | `$1,920,000` |
+| **3. Quảng cáo Web** *(Net `50%`, Fiat USD)* | `$33,000` | `$360,000` | `$2,500,000` | `$11,200,000` |
+| **4. B2B, Tài trợ Giải đấu & Grants** *(Fiat USD)* | `$100,000` | `$400,000` | `$1,500,000` | `$4,000,000` |
+| **TỔNG DOANH THU RÒNG (NET REVENUE)** | **`$214,000`** | **`$1,126,000`** | **`$5,158,000`** | **`$18,460,000`** |
+| **Chi phí Vận hành Gộp (OpEx & Grants)** | `$760,000` *(8 FTE)* | `$2,100,000` *(16 FTE)* | `$5,800,000` *(36 FTE)* | `$14,500,000` *(65 FTE)* |
+| **Lợi nhuận Hoạt động (EBITDA)** | **`−$546,000`** | **`−$974,000`** | **`−$642,000`** | **`+$3,960,000`** *(Biên `21.45%`)* |
 
-**Kiểm chứng tính khả thi của mô hình (Sanity Check):**
-- Ở **Năm 3 (`$27.0M` doanh thu)**, MetaPump chỉ cần đạt **6.5% quy mô MAU của Poki** (6.5M so với 100M) và chưa tới **10% doanh thu đỉnh năm của Pump.fun**, tương đương quy mô doanh thu thực tế của FOMO (`$33.7M`/12 tháng).
-- Tỷ trọng **doanh thu pháp định (Quảng cáo Web + B2B)** tăng đều từ `18.7%` (Năm 1) lên `34.7%` (Năm 4 — `$25.0M`/năm), vừa đủ trang trải **hơn 100% toàn bộ chi phí vận hành công ty (`$24.0M`)** ngay cả trong kịch bản giả định khối lượng giao dịch crypto rơi về 0! Toàn bộ phí giao dịch Launchpad và phí LP khóa vĩnh viễn trở thành biên lợi nhuận ròng thuần khiết.
+**Cơ sở tính từng dòng (Unit Economics) — để nhà đầu tư tự bấm lại máy tính:**
+
+- **(1) Phí VGBC & Anti-Dump:** mỗi game có trần huy động `$11,888`, nên khối lượng giao dịch bình quân/game giả định `$30,000` *(Năm 1)* → `$80,000` *(Năm 4)*; phí thực thu `0.6%` *(0.50% nền tảng + 0.10% chia sẻ quỹ phạt chống bot)*. Kiểm tra trần: `120 × $11,888 × 6% ≈ $85,600` là **cận trên tuyệt đối** của Năm 1 — dự phóng `$22,000` nằm dưới cận trên đó **`3.9×`**.
+- **(2) Phí Tốt nghiệp & DEX LP:** `$225` phí tốt nghiệp/game + `1%` phí swap trên pool `$9,276`. Năm 1: `24 × $225 = $5,400` phí cứng, phần còn lại `$53,600` là phí LP ⇒ vòng quay `~24×` TVL/năm *(≈ `2×`/tháng — thông thường với micro-cap có cộng đồng thật, và **không** phải `41.5×` như bảng cũ)*. Toàn bộ `$76.11–79.25 SOL` huy động được **không** hạch toán vào doanh thu — đó là tiền của người mua, nằm trong LP và escrow.
+- **(3) Quảng cáo Web:** Năm 1 đúng bảng §7.1 với eCPM ĐNA `$1–$3` ⇒ `$11.25` ròng/`1,000 VPH` × `2,933` = **`$33,000`**. Từ Năm 2 mở rộng tệp sang Mỹ/EU nên mức thu ròng tăng `$15 / $25 / $35` per `1,000 VPH`.
+- **(4) B2B, Giải đấu & Grants:** Năm 1 chủ yếu là **quỹ hệ sinh thái** *(Solana Foundation, Superteam)* và `6` kỳ Version Jam có nhà tài trợ; từ Năm 2 chuyển sang **Playtest Analytics B2B** và tài trợ giải đấu Arena. Đây là dòng **không phụ thuộc giá token** — và là lý do doanh thu pháp định chiếm `62%` ngay Năm 1.
+- **(5) OpEx:** `$760,000` Năm 1 = `$63,300/tháng × 12`, khớp **chính xác** tốc độ đốt gộp của vòng Pre-Seed (§9.2). Vòng Pre-Seed `$1M` gánh được khoản lỗ `$546K` của Năm 1 và để lại đệm cho `6–9` tháng runway.
+
+**Kiểm chứng tính khả thi (Sanity Check):**
+- **Điểm hòa vốn: Năm 4** — không sớm hơn. Năm 4 cần `20M` MAU *(= `20%` quy mô Poki)* và `$18.46M` doanh thu *(≈ `55%` doanh thu 12 tháng của FOMO `$33.7M`)*. Đây là mục tiêu **tham vọng nhưng không viển vông**; nó chỉ đạt được nếu cả ba điều kiện J-Curve ở §9.1b đều đúng.
+- **Năm 1 `$214,000` doanh thu là con số nhỏ — và đó là điểm mạnh thẩm định:** nó suy ra trực tiếp từ `24` game tốt nghiệp, `120` game qua `M1`, `~56,000 VPH/tuần` và eCPM ĐNA. Một nhà đầu tư có thể kiểm tra từng biến số và thay bằng giả định riêng của mình; bảng cũ thì không thể.
+- **Rủi ro được nêu thẳng:** nếu eCPM ĐNA chỉ đạt `$1` *(đáy §7.1)* thay vì `$3`, doanh thu quảng cáo Năm 3 giảm `~2/3` và điểm hòa vốn lùi sang **Năm 5**. Mô hình **không** có kịch bản nào hòa vốn trước Năm 3, và chúng tôi không trình bày một kịch bản như vậy.
 
 ---
 
@@ -647,7 +728,7 @@ Mô hình kịch bản cơ sở (*Base Case*) giả định MetaPump giữ nguy�
 | **`S9`** | Hệ thống nhận thưởng (`Claim`), trả thưởng tuyến tính & Bảng Minh bạch Công khai | Người chơi thật rút thành công phần thưởng kiểm thử trên môi trường thực |
 | **`S10`** | Chống gian lận **Sybil v2** (chặn đa danh tính ảo farm thưởng), khiếu nại & A/B Arena | Tỷ lệ gian lận đo lường độc lập đạt **`BotShare < 8%`** |
 | **`S11`** | Gia cố bảo mật (Hardening), kiểm thử chịu tải, diễn tập sự cố & Kiểm toán độc lập | Vượt qua `10/10` bài diễn tập sự cố (Chaos/Incident Drills), **2 đợt Audit `0` lỗi Critical** |
-| **`S12`** | Phát hành chính thức **GA Phase 1** + quỹ thời gian đệm an toàn | Đạt mốc **`40,000+` giờ chơi thật xác minh (`VPH`) / tuần** |
+| **`S12`** | Phát hành chính thức **GA Phase 1** + quỹ thời gian đệm an toàn | Đạt mốc **`40,000+` giờ chơi thật xác minh (`VPH`) / tuần** *(ngưỡng tối thiểu để mở Mainnet — kịch bản cơ sở hướng tới `~56,000`/tuần, xem §7.1)* |
 
 > **Đường găng Bất di bất dịch (Critical Path):** `P01 → P02 → P03 → S6 (Curve & Escrow) → Audit #1 → S8 (Graduation & Ragequit) → Audit #2 → Mainnet GA`.  
 > **Kỷ luật tiến độ:** Nếu phát sinh chậm trễ ở `S6`, ban điều hành **bắt buộc dời ngày `GA` — tuyệt đối không cắt giảm kiểm thử, không rút ngắn kiểm toán và không hạ chuẩn `BotShare < 8%`**.

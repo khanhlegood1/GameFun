@@ -292,7 +292,7 @@ flowchart TD
     CheckPath -- "Kịch bản Thành công:<br/>Đạt M4 (Global Release v1.0)<br/>VÀ bán đủ 700,000,000 token<br/>(thu 79.2453 SOL thực)" --> Grad["Permissionless Crank: graduate_to_dex()<br/>Trạng thái Curve → Graduated"]
     Grad --> LP["CPI tạo Pool Meteora DAMM v2 / Raydium CPMM:<br/>Nạp 150,000,000 Token + 61.8370 SOL<br/>(Khớp 100% giá cuối 4.1225e-7 SOL/token, 0% trượt giá)"]
     LP --> LockLP["Khóa vĩnh viễn vị thế LP<br/>(Phí giao dịch LP chia cho Player Pool & Dev)"]
-    Grad --> SplitSurplus["Phân bổ 17.4083 SOL thặng dư + penalty_floor:<br/>• 10.00 SOL → Game Dev Milestone Grant (làm LiveOps M5+)<br/>• 4.41 SOL + penalty_floor → Season 1 Player Tournament Vault<br/>• 1.50 SOL → Phí khởi tạo pool & crank reward<br/>• 1.50 SOL → Protocol Treasury"]
+    Grad --> SplitSurplus["Phân bổ 15.9083 SOL thặng dư (đã trừ 1.50 SOL phí tốt nghiệp) + penalty_floor:<br/>• 10.00 SOL → Game Dev Milestone Grant (làm LiveOps M5+)<br/>• 2.91 SOL + penalty_floor → Season 1 Player Tournament Vault<br/>• 1.50 SOL → Phí khởi tạo pool & crank reward<br/>• 1.50 SOL → Protocol Treasury"]
 
     CheckPath -- "Kịch bản Bỏ rơi (Soft-Rug):<br/>Chưa Graduate VÀ quá hạn<br/>milestone_deadline_ts (60-90 ngày)<br/>không vượt mốc kế tiếp" --> Stall["Permissionless Crank: trigger_stall()<br/>Trạng thái Curve → Stalled"]
     Stall --> FreezeDev["Đóng băng ngay Dev Vesting chưa mở<br/>& khóa claim Creator Fee"]

@@ -89,11 +89,13 @@ Luôn làm tròn có lợi cho vault (`ceil` cho dự trữ sau giao dịch, `fl
 - Token nạp LP: $T_{\text{LP}} = 150{,}000{,}000\text{ tokens}$
 - SOL nạp LP: $S_{\text{LP}} = \lfloor T_{\text{LP}} \times V_{\text{sol},M4} / V_{\text{tok},M4} \rfloor = 61{,}836{,}952{,}652\text{ lamports}\ (\mathbf{61.836953\text{ SOL}})$
 - Giá mở cửa DEX: $P_{\text{DEX}} = 61.836952652 / 150{,}000{,}000 = \mathbf{4.12246351 \times 10^{-7}\text{ SOL/token}} = P_{M4}$ (**sai lệch `0.00000000%`**, không tạo kẽ hở cho bot arbitrage rút ruột pool lúc migrate!).
-- Phân bổ thặng dư $R_{\text{sol},M4} - S_{\text{LP}} = \mathbf{17.408330\text{ SOL}}$:
+- Phân bổ thặng dư $\Delta R_{\text{surplus}} = R_{\text{sol},M4} - S_{\text{LP}} - F_{\text{grad}} = \mathbf{15.908330\text{ SOL}}$ *(đã trừ Phí Tốt nghiệp $F_{\text{grad}} = 1.50$ SOL, YP §6.1)*:
   1. `10.000000 SOL` → **Developer v1.0 Milestone Grant** (tài trợ vốn phát triển LiveOps M5+, giải ngân qua `metapump_rewards`).
-  2. `4.408330 SOL` + `100% penalty_floor_lamports` → **Community Season 1 Prize Vault** (thưởng cho game thủ thật của game).
+  2. `2.908330 SOL` + `100% penalty_floor_lamports` → **Community Season 1 Prize Vault** (thưởng cho game thủ thật của game).
   3. `1.500000 SOL` → Chi phí rent tạo pool DEX + phần thưởng `0.1 SOL` cho người gọi crank `graduate_to_dex`.
   4. `1.500000 SOL` → **Protocol Treasury** (Squads v4 Multisig).
+
+> *Tổng: `10 + 2.908330 + 1.5 + 1.5 = 15.908330 SOL` — khớp đến từng lamport với test `S3` của `scripts/verify_protocol_math.py` và với bảng §6.1 của Yellow Paper.*
 
 ---
 
@@ -290,7 +292,7 @@ pub struct RewardEpoch {
 | `curve` | `sell` | `buyer` | Khi `status == Active`; trừ `token_balance`, tính `sol_gross`, áp `base_fee` + `early_exit_fee` theo `weighted_buy_ts` & `entry_milestone`, kiểm tra `sol_net >= min_sol_out`, chia phí phạt `50% Community / 40% PenaltyFloor / 10% Treasury`. |
 | `curve` | `trigger_stall` | Permissionless | Khi `status == Active` & `now > milestone_deadline_at` & chưa bán hết M4; chuyển `status = Stalled`, gộp `creator_fee_accrued` vào `penalty_floor_lamports`, CPI đặt `DevVestingVault.frozen = true`. |
 | `curve` | `ragequit` | `buyer` | Khi `status == Stalled`; rút tỷ lệ thuận `refund = floor(amount * (real_sol_reserves + penalty_floor_lamports) / net_tokens_sold)`, đốt `amount` token tương ứng trong vault, giảm `net_tokens_sold`, `real_sol_reserves` và `penalty_floor_lamports` theo đúng tỷ lệ, **0% phí**. |
-| `curve` | `graduate_to_dex` | Permissionless | Khi `status == Active`, `active_milestone == 4` và `net_tokens_sold == 700M * 10^6`; chuyển `status = Graduated`, CPI tạo pool Meteora DAMM v2 / Raydium CPMM (`150M` token + `61.836953 SOL`), khóa vĩnh viễn LP NFT/token, chia `17.408330 SOL` thặng dư. |
+| `curve` | `graduate_to_dex` | Permissionless | Khi `status == Active`, `active_milestone == 4` và `net_tokens_sold == 700M * 10^6`; chuyển `status = Graduated`, CPI tạo pool Meteora DAMM v2 / Raydium CPMM (`150M` token + `61.836953 SOL`), khóa vĩnh viễn LP NFT/token, thu phí tốt nghiệp `1.50 SOL`, rồi chia `15.908330 SOL` thặng dư. |
 | `curve` | `withdraw_graduated_tokens` | `buyer` | Khi `status == Graduated`; chuyển 1:1 `BuyerPosition.token_balance` từ `curve_token_vault` sang ATA Token-2022 của người chơi để tự do giao dịch trên DEX/Jupiter. |
 | `curve` | `claim_creator_fees` | `creator` | Khi `status ∈ {Active, Graduated}`; rút `creator_fee_accrued` (bị chặn nếu `Stalled` hoặc `Paused`). |
 | `rewards` | `publish_reward_epoch` | `oracle` / `multisig` | Yêu cầu `VersionMilestone(m)` đã tồn tại; công bố `merkle_root` cho đợt thưởng `SPARK` của mốc `m` (không vượt định mức `15M/20M/25M/20M/20M`) + chốt số dư SOL phí phạt Early-Exit tích lũy. |
