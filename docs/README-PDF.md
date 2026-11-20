@@ -2,8 +2,8 @@
 
 | Tệp | Nội dung | Số trang |
 |---|---|---|
-| [`MetaPump-Whitepaper-v1.5.pdf`](./MetaPump-Whitepaper-v1.5.pdf) | Whitepaper `v1.5` — bản in/chia sẻ cho nhà đầu tư | 32 |
-| [`MetaPump-Yellow-Paper-v1.0.pdf`](./MetaPump-Yellow-Paper-v1.0.pdf) | Yellow Paper `v1.0` — đặc tả hình thức (audit) | 16 |
+| [`MetaPump-Whitepaper-v1.5.pdf`](./MetaPump-Whitepaper-v1.5.pdf) | Whitepaper `v1.5` — bản in/chia sẻ cho nhà đầu tư | 35 |
+| [`MetaPump-Yellow-Paper-v1.0.pdf`](./MetaPump-Yellow-Paper-v1.0.pdf) | Yellow Paper `v1.0` — đặc tả hình thức (audit) | 17 |
 | [`MetaPump-Pitch-Deck.pdf`](./MetaPump-Pitch-Deck.pdf) | Pitch deck 14 slides (nguồn: Google Slides) | 14 |
 
 ## Dựng lại

@@ -27,6 +27,32 @@ from dataclasses import dataclass, field
 from typing import List, Tuple
 
 LAMPORTS_PER_SOL = 1_000_000_000
+GRADUATION_FEE_LAMPORTS = 1_500_000_000   # 1.50 SOL — Yellow Paper §6.1 (F_grad)
+THETA_DIFF = 0.08                        # Yellow Paper §2.2 (BuildDiff 8%)
+THETA_FORK = 0.92                        # Yellow Paper §2.2 (Global Similarity Check)
+
+
+def phi_prog(k: int, delta_k: float, n_duel: int, lcb: float) -> bool:
+    """Version Progress Predicate (Yellow Paper §4.2).
+
+    k = 1 (Genesis release, h_base = 0^32) has no `v_ref` to duel, so the whole
+    arena clause (N_duel >= 50 AND LCB_0.95 > 0.50) is replaced by `k == 1`.
+    Any k >= 2 keeps the full adversarial clause. This is the deadlock fix:
+    without it every first release is permanently stuck at M2.
+    """
+    if k == 1:
+        return True
+    return delta_k >= THETA_DIFF and n_duel >= 50 and lcb > 0.50
+
+
+def global_similarity(code_sim: float, asset_sim: float, data_sim: float) -> float:
+    """Global Similarity Check (Yellow Paper §2.2, cross-game anti-forking)."""
+    return 0.50 * code_sim + 0.30 * asset_sim + 0.20 * data_sim
+
+
+def is_global_fork(code_sim: float, asset_sim: float, data_sim: float) -> bool:
+    return global_similarity(code_sim, asset_sim, data_sim) >= THETA_FORK
+
 TOKEN_DECIMALS = 1_000_000
 BPS_DENOM = 10_000
 TOTAL_SUPPLY_TOKENS = 1_000_000_000
@@ -351,7 +377,10 @@ class CurveState:
         assert self.net_sold == p.curve_supply
         lp_sol = floor_div(p.lp_tokens * self.v_sol, self.v_tok)
         assert lp_sol <= self.real_sol
-        surplus = self.real_sol - lp_sol
+        # Settlement order is fixed: LP first, then the 1.50 SOL graduation fee,
+        # then whatever remains is escrowed (Yellow Paper §6.1).
+        surplus = self.real_sol - lp_sol - GRADUATION_FEE_LAMPORTS
+        assert surplus >= 0
         p_curve = self.v_sol / self.v_tok
         p_dex = lp_sol / p.lp_tokens
         rel_gap = abs(p_dex - p_curve) / p_curve
@@ -441,18 +470,79 @@ def verify_whitepaper_math() -> None:
     assert abs((cap["PreSeed"] / 100.0) * 250.0 - 16.83) < 0.01
     assert abs((cap["Seed"] / 100.0) * 250.0 - 22.95) < 0.01
 
-    # 4. 4-Year Dual-Engine P&L
-    pnl = [
-        (0.42, 0.19, 0.14, 0.75, 0.85, -0.10),
-        (2.10, 1.65, 1.45, 5.20, 2.20, 3.00),
-        (8.50, 9.80, 8.70, 27.00, 8.40, 18.60),
-        (21.00, 26.00, 25.00, 72.00, 24.00, 48.00),
-    ]
-    for r1, r2, r3, rev, opex, ebitda in pnl:
-        assert abs((r1 + r2 + r3) - rev) < 1e-9
-        assert abs((rev - opex) - ebitda) < 1e-9
-    assert pnl[3][2] > pnl[3][4]  # Y4 fiat revenue ($25M) > 100% Y4 OpEx ($24M)
-    print(f"  OK: Infra=${cost_per_1k:.2f}/1k VPH | 5 ad sensitivity rows | 4 rounds ($41M) | Y1-Y4 P&L.")
+    # 4. 4-Year Bottom-Up P&L (Whitepaper §9.3 — rebuilt after the 2026-11 audit:
+    # the old table implied $84M of pre-graduation volume in Y1 = 59x the curve
+    # ceiling, and ad revenue of $47.73/1,000 VPH vs a $11.25 hard ceiling).
+    YEARS = ("Y1", "Y2", "Y3", "Y4")
+    mau = [400_000, 2_000_000, 6_500_000, 20_000_000]
+    plays = [22_000_000, 180_000_000, 750_000_000, 2_400_000_000]
+    vph = [2_933_333, 24_000_000, 100_000_000, 320_000_000]
+    games_m1 = [120, 450, 1_200, 2_800]
+    games_m4 = [24, 95, 260, 620]
+    vgbc = [22_000, 122_000, 432_000, 1_340_000]
+    grad_lp = [59_000, 244_000, 726_000, 1_920_000]
+    ads = [33_000, 360_000, 2_500_000, 11_200_000]
+    b2b = [100_000, 400_000, 1_500_000, 4_000_000]
+    opex = [760_000, 2_100_000, 5_800_000, 14_500_000]
+    revenue = [vgbc[i] + grad_lp[i] + ads[i] + b2b[i] for i in range(4)]
+    ebitda = [revenue[i] - opex[i] for i in range(4)]
+
+    assert revenue == [214_000, 1_126_000, 5_158_000, 18_460_000], revenue
+    assert ebitda == [-546_000, -974_000, -642_000, 3_960_000], ebitda
+    # Breakeven lands in Y4 -- the J-Curve claim must stay falsifiable.
+    assert all(e < 0 for e in ebitda[:3]) and ebitda[3] > 0
+    # Audit quoted "21.4%"; exact figure is 21.45% (3.96 / 18.46) -- the docs print both.
+    assert abs(ebitda[3] / revenue[3] * 100 - 21.45) < 0.01
+    # Y1 OpEx must equal the Pre-Seed gross burn: 63,300/month x 12 = 759,600.
+    assert opex[0] == 760_000
+    assert abs(63_300 * 12 - 759_600) < 1 and abs(759_600 - opex[0]) / opex[0] < 0.001
+    # Y1 VPH/week ~ 56,000 (financial base case) -- matches the §7.1 / §9.4
+    # narrative that 120k = capacity, 40k = mainnet launch floor, 56k = base case.
+    vph_week_y1 = vph[0] / 52
+    assert abs(vph_week_y1 - 56_410) < 10, vph_week_y1
+    assert 40_000 < vph_week_y1 < 120_000
+    # Ads must respect the SEA eCPM ceiling of $11.25 net / 1,000 VPH (Y1 only:
+    # Y2+ explicitly expand to US/EU where §7.1 prints a $75 gross row).
+    ads_per_kvph_y1 = ads[0] / (vph[0] / 1_000)
+    assert ads_per_kvph_y1 <= 11.2501, ads_per_kvph_y1   # $33k / 2,933.3k VPH = $11.25
+    # VGBC fees must stay inside the curve ceiling: 120 games x $11,888 max raise.
+    assert vgbc[0] <= games_m1[0] * 11_888 * 0.06, vgbc[0]
+    # Plays / MAU must stay a plausible 4.6 sessions-per-MAU-per-month shape.
+    for i in range(4):
+        assert 40 <= plays[i] / mau[i] <= 130, (i, plays[i] / mau[i])
+    # Graduation fee + locked-LP fees: each M4 game pays a flat $225 and locks a
+    # $9,276 pool; MetaPump keeps 1% of swap fees. Implied annual turnover must
+    # stay in a defensible 20x-32x band -- the old table implied 41.5x TVL.
+    turnover = []
+    for i in range(4):
+        lp_fee = grad_lp[i] - games_m4[i] * 225
+        t = lp_fee / (games_m4[i] * 0.01 * 9_276)
+        assert 20.0 <= t <= 32.0, (i, t)
+        turnover.append(t)
+    assert abs(turnover[0] - 24.1) < 0.2
+
+    # 5. Phi_prog (Yellow Paper §4.2) -- k=1 must be reachable, k>=2 must not.
+    assert phi_prog(1, 0.0, 0, 0.0) is True          # Genesis: no duel possible
+    assert phi_prog(2, 0.50, 200, 0.99) is True      # real improvement + wins duel
+    assert phi_prog(2, 0.50, 49, 0.99) is False      # not enough duels
+    assert phi_prog(2, 0.50, 200, 0.50) is False     # LCB not > 0.50
+    assert phi_prog(2, 0.05, 200, 0.99) is False     # cosmetic diff -> HOTFIX
+
+    # 6. Global Similarity Check (Yellow Paper §2.2) -- cross-game anti-forking.
+    assert is_global_fork(0.95, 0.95, 0.95) is True            # renamed zip
+    assert is_global_fork(0.95, 0.90, 0.92) is True            # 92.9% weighted
+    # The check is on the WEIGHTED similarity, not a per-class max: 93% code
+    # with 90% asset scores 91.9% and passes -- that asymmetry is deliberate.
+    assert abs(global_similarity(0.93, 0.90, 0.92) - 0.919) < 1e-9
+    assert is_global_fork(0.93, 0.90, 0.92) is False
+    assert is_global_fork(0.80, 0.60, 0.40) is False           # genuine new game
+    # A fork of a stalled project is rejected exactly when BuildDiff < 8%.
+    for sim in (0.92, 0.95, 1.00):
+        assert is_global_fork(sim, sim, sim) is True
+        assert 1 - global_similarity(sim, sim, sim) < THETA_DIFF
+    print(f"  OK: Infra=${cost_per_1k:.2f}/1k VPH | 5 ad sensitivity rows | 4 rounds ($41M) | "
+          f"Bottom-Up P&L Y1=${revenue[0]:,} -> Y4=${revenue[3]:,} (EBITDA +${ebitda[3]:,}, breakeven Y4) | "
+          f"Phi_prog k=1 deadlock fixed | Global Similarity >= {THETA_FORK:.0%} reject.")
 
 
 def verify_scenarios_s1_to_s9() -> None:
@@ -502,11 +592,18 @@ def verify_scenarios_s1_to_s9() -> None:
     # S3: Zero-MEV-Gap DEX Graduation
     lp_sol_a, surp_a, gap_a = c_grad_a.graduate()
     lp_sol_b, surp_b, gap_b = c_grad_b.graduate()
-    assert lp_sol_a == 61_836_952_652 and surp_a == 17_408_330_367 and gap_a < 1.0 / lp_sol_a
-    assert lp_sol_b == 14_387_942_555 and surp_b == 61_721_994_021 and gap_b < 1.0 / lp_sol_b
+    # Surplus = R_end - S_LP_sol - F_grad(1.50 SOL)  =>  15.908330 / 60.221994 SOL
+    assert lp_sol_a == 61_836_952_652 and surp_a == 15_908_330_367 and gap_a < 1.0 / lp_sol_a
+    assert lp_sol_b == 14_387_942_555 and surp_b == 60_221_994_021 and gap_b < 1.0 / lp_sol_b
+    # Escrow ladder printed in Whitepaper §6.1 must sum exactly to the surplus.
+    # Exact lamport ladder: 5 + 15 + 20 + 20.221994 SOL == surplus to the lamport.
+    ladder_b_lamports = [5_000_000_000, 15_000_000_000, 20_000_000_000, 20_221_994_021]
+    assert sum(ladder_b_lamports) == surp_b
+    ladder_a_lamports = [10_000_000_000, 2_908_330_367, 1_500_000_000, 1_500_000_000]
+    assert sum(ladder_a_lamports) == surp_a
     print(
         f"  S3 PASS (Zero-Gap Graduation): VGBC-4T LP={lp_sol_a/1e9:.6f} SOL (gap={gap_a:.2e}) | "
-        f"VBOND-LV LP={lp_sol_b/1e9:.6f} SOL, Escrow={surp_b/1e9:.6f} SOL (gap={gap_b:.2e})"
+        f"VBOND-LV LP={lp_sol_b/1e9:.6f} SOL, Escrow={surp_b/1e9:.6f} SOL after F_grad=1.50 SOL (gap={gap_b:.2e})"
     )
 
     # S4: Concave Anti-Monopoly PoPW Reward Cap (20% hours -> capped 5.0% pool)
