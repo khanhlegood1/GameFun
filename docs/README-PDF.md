@@ -4,7 +4,7 @@
 |---|---|---|
 | [`MetaPump-Whitepaper-v1.5.pdf`](./MetaPump-Whitepaper-v1.5.pdf) | Whitepaper `v1.5` — bản in/chia sẻ cho nhà đầu tư | 35 |
 | [`MetaPump-Yellow-Paper-v1.0.pdf`](./MetaPump-Yellow-Paper-v1.0.pdf) | Yellow Paper `v1.0` — đặc tả hình thức (audit) | 17 |
-| [`MetaPump-Pitch-Deck.pdf`](./MetaPump-Pitch-Deck.pdf) | Pitch deck 14 slides (nguồn: Google Slides) | 14 |
+| [`MetaPump-Pitch-Deck.pdf`](./MetaPump-Pitch-Deck.pdf) | Pitch deck 14 slides, 16:9, dựng bằng script (không còn nguồn Google Slides) | 14 |
 
 ## Dựng lại
 
@@ -17,6 +17,10 @@ sudo apt install fonts-dejavu-core                       # phương án dự ph�
 # Whitepaper
 .venv/bin/python scripts/build_whitepaper_pdf.py \
     docs/WHITEPAPER.md docs/MetaPump-Whitepaper-v1.5.pdf
+
+# Pitch Deck (14 slides, 16:9) — kiểm tra sau khi dựng
+.venv/bin/python scripts/build_pitch_deck.py docs/MetaPump-Pitch-Deck.pdf
+.venv/bin/python scripts/check_pitch_deck.py --with-verifier
 
 # Yellow Paper
 .venv/bin/python - <<'PY'
@@ -32,6 +36,12 @@ PY
 
 Script sẽ tự gộp font (Latin + tiếng Việt + box-drawing) vào cache `~/.cache/metapump-pdf-fonts`
 ở lần chạy đầu tiên; trong repo chỉ có tệp PDF thành phẩm.
+
+> **Kiểm chứng deck:** `scripts/check_pitch_deck.py` đối chiếu từng con số trên deck với
+> `docs/YELLOWPAPER.md` (phí tốt nghiệp cố định `1,50 SOL`, thang `b_exit`, `−5,95%` cấu hình
+> chuẩn) và tự tính lại phép trừ escrow, tổng doanh thu 4 dòng, EBITDA = doanh thu − OpEx.
+> Chạy kèm `--with-verifier` để nối tiếp `scripts/verify_protocol_math.py`; mọi con số đã nghỉ
+> hưu (`Q4 Năm 1`, `$72,0M`, `$0,75M`, `176/176`…) làm script trả mã lỗi 1.
 
 ## Đặc điểm bản PDF
 
