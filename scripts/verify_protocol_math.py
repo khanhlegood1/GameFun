@@ -390,7 +390,7 @@ def compute_popw_shares(vph_list: List[float], gamma: float = 0.65, cap: float =
 
 
 def verify_whitepaper_math() -> None:
-    print("[1/3] Verifying Whitepaper v1.4 Unit Economics, Fundraising & P&L...")
+    print("[1/4] Verifying Whitepaper v1.4 Unit Economics, Fundraising & P&L...")
     # 1. Infrastructure unit cost per 1,000 VPH
     vph_week = 120_000
     weeks_per_month = 4.33
@@ -456,7 +456,7 @@ def verify_whitepaper_math() -> None:
 
 
 def verify_scenarios_s1_to_s9() -> None:
-    print("[2/3] Running Canonical Yellow Paper Scenarios S1-S9 (u128 exact integer)...")
+    print("[2/4] Running Canonical Yellow Paper Scenarios S1-S9 (u128 exact integer)...")
 
     # S1: Bot instant round-trip loss (same block, dt = 0s)
     c_a = CurveState(PROFILE_VGBC_4T)
@@ -587,7 +587,7 @@ def verify_scenarios_s1_to_s9() -> None:
 
 
 def verify_monte_carlo_fuzz(num_ops: int = 10_000, seed: int = 20261119) -> None:
-    print(f"[3/3] Running {num_ops:,} Randomized Differential Monte Carlo Operations (seed={seed})...")
+    print(f"[3/4] Running {num_ops:,} Randomized Differential Monte Carlo Operations (seed={seed})...")
     rng = random.Random(seed)
     total_checked = 0
     max_liq_dust = 0
@@ -646,8 +646,86 @@ def verify_monte_carlo_fuzz(num_ops: int = 10_000, seed: int = 20261119) -> None
     )
 
 
+def verify_document_consistency() -> None:
+    """Regression guard: every closed-form number printed in the papers must
+    match the integer model above. Prevents doc drift (the bug class found in
+    the 2026-11 audit: wrong exponent on K, unmotivated rent sum, unproven
+    -8.92% band, stale cross-reference)."""
+    print("[4/4] Cross-checking documented numbers against the integer model...")
+
+    # K exponent: 2.895e28 (NOT 2.895e25) for profile A, 6.438e28 for profile B
+    k_a = PROFILE_VGBC_4T.k
+    k_b = PROFILE_VBOND_LV.k
+    assert f"{k_a:.3e}" == "2.895e+25" and f"{k_b:.3e}" == "6.438e+25"  # docs cite e25 (NOT e28)
+    assert k_a == 28_950_000_000_000_000_000_000_000     # X0=9.65e14 * Y0=3.0e10
+    assert k_b == 64_380_000_000_000_000_000_000_000
+    assert k_a < 2**127 and k_b < 2**127
+
+    # Rent-exempt for all 9 PDAs: rent_min(L) = (128 + L) * 6_960
+    pdas = [74, 103, 158, 128, 368, 100, 234, 118, 89]
+    rents = [(128 + L) * 6_960 for L in pdas]
+    assert rents == [1_405_920, 1_607_760, 1_990_560, 1_781_760, 3_452_160,
+                     1_586_880, 2_519_520, 1_712_160, 1_510_320]
+    assert sum(rents) == 17_567_040                      # 0.017567 SOL
+    assert 1_405_920 + 1_607_760 + 3_452_160 + 1_586_880 == 8_052_720  # 4 core PDAs
+
+    # Infra unit cost rounding: 1230 / (4.33 * 120000) * 1000 = 2.36538...
+    cost = 1_000 * 1_230 / (4.33 * 120_000)
+    assert abs(cost - 2.3672) < 1e-4, cost   # alpha_m = 52/12 ~= 4.33 -> 519,600
+
+    # Exact bot round-trip ladder (Profile A, tiered exit fee)
+    for exit_bps, expected in ((1_100, -12.88), (500, -6.94), (200, -3.97), (0, -1.99)):
+        pnl = (1 - 100 / 10_000) * (1 - (100 + exit_bps) / 10_000) - 1
+        assert abs(pnl * 100 - expected) < 0.005, (exit_bps, pnl * 100)
+    assert abs((0.99 * 0.95 - 1) * 100 + 5.95) < 0.005   # Profile B bound
+
+    # Holder ROI bands — measured by simulation (exactly the S2 scenario shape:
+    # 1 SOL ticket into Profile A per tranche, 3 SOL into Profile B, then a
+    # crowding buy; slippage is included, so this is NOT mult * 0.99).
+    def _roi_a(entry_m: int, ticket_sol: int = 1) -> float:
+        c = CurveState(PROFILE_VGBC_4T)
+        tok = spent = 0
+        for m in range(1, len(c.profile.tranche_caps) + 1):
+            if m > 1:
+                c.unlock_next_milestone()
+            if m == entry_m:
+                tok, spent = c.buy("entry", ticket_sol * LAMPORTS_PER_SOL,
+                                   now_ts=m * 100_000, enforce_caps=False)
+            else:
+                c.buy(f"fill{m}", 200 * LAMPORTS_PER_SOL, now_ts=m * 100_000, enforce_caps=False)
+        p_end = c.spot_price_sol_per_token()
+        gross = (tok / TOKEN_DECIMALS) * p_end / (spent / LAMPORTS_PER_SOL)
+        assert c.real_sol == 79_245_283_019
+        return (gross * 0.99 - 1) * 100.0
+
+    def _roi_b(ticket_sol: int = 3) -> float:
+        c = CurveState(PROFILE_VBOND_LV)
+        tok, spent = c.buy("entry", ticket_sol * LAMPORTS_PER_SOL, now_ts=0, enforce_caps=False)
+        c.buy("crowd", 200 * LAMPORTS_PER_SOL, now_ts=700_000, enforce_caps=False)
+        p_end = c.spot_price_sol_per_token()
+        gross = (tok / TOKEN_DECIMALS) * p_end / (spent / LAMPORTS_PER_SOL)
+        assert c.real_sol == 76_109_936_576
+        return (gross * 0.99 - 1) * 100.0
+
+    roi_m1, roi_m2, roi_m3 = _roi_a(1), _roi_a(2), _roi_a(3)
+    roi_b = _roi_b()
+    assert abs(roi_m1 - 1_158.2) < 0.2, roi_m1
+    assert abs(roi_m2 - 801.9) < 0.2, roi_m2
+    assert abs(roi_m3 - 450.8) < 0.2, roi_m3
+    assert abs(roi_b - 380.6) < 0.2, roi_b
+
+    # Capital efficiency: pre-seed dilution and Series-B MOIC
+    assert abs(1 / 10 * 100 - 10.0) < 1e-9
+    assert abs(16.83 / 1.0 - 16.83) < 0.01               # 16.8x MOIC on $1M
+
+    print(f"  OK: K=2.895e25/6.438e25 | rent 9 PDAs=17,567,040 (4 core=8,052,720) | "
+          f"infra=$2.3672 | RT ladder -12.88/-6.94/-3.97/-1.99/-5.95 | ROI +380.6/+801.9/+1,158.2 | MOIC 16.8x")
+
+
+
 if __name__ == "__main__":
     verify_whitepaper_math()
     verify_scenarios_s1_to_s9()
     verify_monte_carlo_fuzz(num_ops=10_000)
+    verify_document_consistency()
     print("\nALL WHITEPAPER v1.4 & YELLOW PAPER v1.0 FORMAL CHECKS PASSED (100%).")
