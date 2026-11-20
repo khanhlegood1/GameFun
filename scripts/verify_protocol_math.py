@@ -3,7 +3,7 @@
 MetaPump Formal Math & Economic Simulation Verifier
 ====================================================
 Self-contained (Python 3 stdlib only) verification suite for:
-  1. Whitepaper v1.3 Unit Economics (VPH infra cost, ad sensitivity matrix,
+  1. Whitepaper v1.4 Unit Economics (VPH infra cost, ad sensitivity matrix,
      4-round fundraising cap-table & MOIC, 4-year Dual-Engine P&L).
   2. Yellow Paper v1.0 Exact Integer (u128) Bonding Curve Mechanics across
      Profile A (VGBC-4T: 4-Tranche Version-Gated Bonding Curve) and
@@ -390,7 +390,7 @@ def compute_popw_shares(vph_list: List[float], gamma: float = 0.65, cap: float =
 
 
 def verify_whitepaper_math() -> None:
-    print("[1/3] Verifying Whitepaper v1.3 Unit Economics, Fundraising & P&L...")
+    print("[1/3] Verifying Whitepaper v1.4 Unit Economics, Fundraising & P&L...")
     # 1. Infrastructure unit cost per 1,000 VPH
     vph_week = 120_000
     weeks_per_month = 4.33
@@ -650,4 +650,4 @@ if __name__ == "__main__":
     verify_whitepaper_math()
     verify_scenarios_s1_to_s9()
     verify_monte_carlo_fuzz(num_ops=10_000)
-    print("\nALL WHITEPAPER v1.3 & YELLOW PAPER v1.0 FORMAL CHECKS PASSED (100%).")
+    print("\nALL WHITEPAPER v1.4 & YELLOW PAPER v1.0 FORMAL CHECKS PASSED (100%).")
