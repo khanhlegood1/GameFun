@@ -51,7 +51,7 @@ Toàn bộ phép cộng, trừ, nhân trên hợp đồng thực thi dưới d�
 | $B_{\text{bps}}$ | $10^4$ | `u64` | Mẫu số điểm cơ bản (`1 bps = 0.01%`, `10,000 bps = 100%`). |
 | $S_{\text{tot}}$ | $10^9 \cdot D_{\text{tok}} = 10^{15}$ | `u64` | Tổng cung cố định bất biến của mỗi token dự án/phiên bản (`mint_authority = None`). |
 | $X_0, Y_0$ | Tùy hồ sơ $\Theta$ | `u64` | Dự trữ token ảo ban đầu (base units) và dự trữ SOL ảo ban đầu (`lamports`). |
-| $K$ | $X_0 \cdot Y_0$ | `u128` | Tích bất biến khởi tạo ($K \approx 2.895 \times 10^{25}$ hoặc $6.438 \times 10^{25} \ll 2^{128} \approx 3.40 \times 10^{38}$). |
+| $K$ | $X_0 \cdot Y_0$ | `u128` | Tích bất biến khởi tạo ($K \approx 2.895 \times 10^{25}$ ở hồ sơ A, $6.438 \times 10^{25}$ ở hồ sơ B — nhỏ hơn $2^{127} \approx 1.70 \times 10^{38}$ khoảng **13 bậc độ lớn**, nên không có nguy cơ tràn `u128`). |
 | $X_t, Y_t$ | Trạng thái tại bước $t$ | `u64` | Dự trữ ảo hiện hành của token và SOL trên đường cong. |
 | $R_t$ | $Y_t - Y_0$ | `u64` | Dự trữ SOL thực đối ứng đường cong trong `CurveSolVault` (`lamports`). |
 | $Q_t$ | $X_0 - X_t$ | `u64` | Lượng token ròng đang lưu hành trong các `BuyerPosition` (base units). |
@@ -289,7 +289,7 @@ Lệnh không cần cấp phép (*permissionless crank*) `graduate_to_dex` thự
 
 $$S_{\text{LP}}^{\text{sol}} = \mathrm{floor\_div}\big(S_{\text{LP}} \cdot Y_{\text{end}},\ X_{\text{end}}\big), \qquad \Delta R_{\text{surplus}} = R_{\text{end}} - S_{\text{LP}}^{\text{sol}}$$
 
-Sai lệch giá tương đối giữa sàn DEX và đường cong bị chặn chặt bởi đúng **1 `lamport`**:
+Vì $S_{\text{LP}}^{\text{sol}}$ được **làm tròn xuống** *(tối đa mất `1 lamport`)*, sai lệch giá tương đối giữa sàn DEX và đường cong bị chặn trên bởi **đúng `1 lamport` quy đổi ra tỷ lệ**:
 
 $$0 \le \frac{P_{\text{curve}}^{\text{end}} - P_{\text{DEX}}^{\text{open}}}{P_{\text{curve}}^{\text{end}}} = 1 - \frac{S_{\text{LP}}^{\text{sol}} \cdot X_{\text{end}}}{S_{\text{LP}} \cdot Y_{\text{end}}} < \frac{X_{\text{end}}}{S_{\text{LP}} \cdot Y_{\text{end}}} = \frac{1}{S_{\text{LP}}^{\text{sol}}}$$
 
@@ -320,7 +320,7 @@ $$r_u = \mathrm{floor\_div}\Big(\Delta q \cdot (R_t + F_t),\ Q_t\Big)$$
 
 ### 7.1. Định dạng Byte của Chứng thực `Ed25519` & Cam kết `TermsHash`
 
-Hợp đồng không tự thực thi phép nhân đường cong elliptic tốn Compute Units mà kiểm tra nội quan (*sysvar instruction introspection*) lệnh liền trước $I_{\text{idx}-1}$ thuộc chương trình gốc `Ed25519SigVerify111111111111111111111111111`, cưỡng chế đồng thời 5 điều kiện an ninh: *(1)* `num_signatures == 1`; *(2)* mọi trường `*_instruction_index == u16::MAX` (dữ liệu nằm trọn trong chính $I_{\text{idx}-1}$, chặn đứng tấn công trỏ chéo sang lệnh giả mạo); *(3)* khóa công khai khớp đúng `RegistryConfig.oracle_pubkey`; *(4)* phần vô hướng $s$ của chữ ký thỏa $s < \ell / 2$ (chuẩn hóa chống biến dạng chữ ký RFC 8032); *(5)* `expiry_ts >= Clock::get().unix_timestamp` và `cluster_id` khớp mạng hiện hành.
+Hợp đồng không tự thực thi phép nhân đường cong elliptic tốn Compute Units mà kiểm tra nội quan (*sysvar instruction introspection*) lệnh liền trước $I_{\text{idx}-1}$ thuộc chương trình gốc `Ed25519SigVerify111111111111111111111111111`, cưỡng chế đồng thời 5 điều kiện an ninh: *(1)* `num_signatures == 1`; *(2)* mọi trường `*_instruction_index == u16::MAX` (dữ liệu nằm trọn trong chính $I_{\text{idx}-1}$, chặn đứng tấn công trỏ chéo sang lệnh giả mạo); *(3)* khóa công khai khớp đúng `RegistryConfig.oracle_pubkey`; *(4)* **tính chuẩn tắc của chữ ký do chính chương trình `Ed25519SigVerify` cưỡng chế:** chữ ký phải thỏa $0 \le s < \ell$ (chuẩn RFC 8032 §5.1.7) — hợp đồng **không** tự thêm một ngưỡng riêng như $s < \ell/2$, vì $s$ phân bố đều trên $[0, \ell)$ nên ngưỡng đó sẽ **từ chối ≈ 50\% chữ ký hợp lệ** (lỗi liveness) mà **không** tăng thêm bảo mật nào; *(5)* `expiry_ts >= Clock::get().unix_timestamp` và `cluster_id` khớp mạng hiện hành.
 
 ```text
 [1] PopBuyAttestation (106 bytes, little-endian)
@@ -424,7 +424,7 @@ $$\mathrm{PnL}_{\text{RT}} = \frac{\Delta s_{\text{net}} - G}{G} \le \left(1 - \
 $$\Delta s_{\text{net}} \le \Delta s \left(1 - \frac{b_{\text{base}} + b_{\text{exit}}}{B_{\text{bps}}}\right) \le G\left(1 - \frac{b_{\text{base}}}{B_{\text{bps}}}\right)\left(1 - \frac{b_{\text{base}} + b_{\text{exit}}}{B_{\text{bps}}}\right)$$
 
 Thay số:
-- Với **Hồ sơ B (`VBOND-LV`)** ($b_{\text{base}} = 1\%$, $b_{\text{exit}} = 4\%$): $\mathrm{PnL}_{\text{RT}} \le 0.99 \times 0.95 - 1 = \mathbf{-5.95\%}$ (và lỗ tới $\mathbf{-8.92\%}$ khi chịu thêm trượt giá tranh chấp khối hoặc phí hai chiều).
+- Với **Hồ sơ B (`VBOND-LV`)** ($b_{\text{base}} = 1\%$, $b_{\text{exit}} = 4\%$): $\mathrm{PnL}_{\text{RT}} \le 0.99 \times 0.95 - 1 = \mathbf{-5.95\%}$ (đây là **cận trên** — trượt giá tranh chấp khối hay phí hai chiều chỉ làm khoản lỗ **sâu thêm**, không bao giờ đưa bot về hòa vốn).
 - Với **Hồ sơ A (`VGBC-4T`)** trong $< 1\text{ giờ}$ ($b_{\text{base}} = 1\%$, $b_{\text{exit}} = 11\%$): $\mathrm{PnL}_{\text{RT}} \le 0.99 \times 0.88 - 1 = \mathbf{-12.88\%}$; trong $1\text{–}24\text{h}$: $\mathbf{-6.94\%}$; trong $1\text{–}7\text{d}$: $\mathbf{-3.97\%}$. Bot không tồn tại chiến lược tự giao dịch có lãi. $\blacksquare$
 
 #### Định lý 5 (Tính Bất biến theo Thứ tự Rút khi `Ragequit` — *Bank-Run Immunity*)
@@ -499,7 +499,7 @@ Theo công thức chuẩn của Solana Runtime $\mathrm{rent}_{\min}(L) = (128 +
 | `RewardEpoch` | `metapump_rewards` | `118 B` | `1,712,160` | `0.001712 SOL` |
 | `UserClaimState` | `metapump_rewards` | `89 B` | `1,510,320` | `0.001510 SOL` |
 
-Tổng tiền ký quỹ tạo 4 PDA lõi khi khởi chạy một dự án mới chỉ là **`9,570,000 lamports` (`0.009570 SOL` $\approx \$1.44$ @ `$150/SOL`)** — làm cho các đợt tài trợ phiên bản quy mô nhỏ của studio indie hoàn toàn khả thi về mặt kinh tế.
+Tổng tiền ký quỹ cho **toàn bộ 9 loại PDA** của một dự án chỉ là **`17,567,040 lamports` (`0.017567 SOL` $\approx \$2.64$ @ `$150/SOL`)**; riêng **4 PDA lõi** *(`RegistryConfig` + `GameRegistry` + `BondingCurve` + `BuyerPosition`)* là **`8,052,720 lamports` (`0.008053 SOL` $\approx \$1.21$)** — *kiểm tra: `rent_min(L) = (128 + L) × 6,960` lamports, đúng cho cả 9 dòng trong bảng* — làm cho các đợt tài trợ phiên bản quy mô nhỏ của studio indie hoàn toàn khả thi về mặt kinh tế.
 
 ### 11.2. Ngân sách Compute Units (`CU`) & Giới hạn Gói tin `1,232 Bytes`
 
@@ -526,7 +526,7 @@ Mọi độc giả và kiểm toán viên có thể tái lập chính xác 100% 
 | Mã Kịch bản | Mục tiêu Kiểm chứng | Kết quả Đo Chính xác trên Số nguyên `u128` | Trạng thái |
 |---|---|---|---|
 | **`S1`** | Bot mua `1 SOL` rồi bán ngay cùng khối ($\Delta t = 0$) | `VGBC-4T`: **`−12.88%`** (`<1h`) · `VBOND-LV`: **`−5.95%`** (phí bán `1%+4%`) | **PASS** |
-| **`S2`** | Người chơi mua sớm & giữ tới điểm tốt nghiệp | `VGBC-4T`: $R_{\text{grad}} = 79{,}245{,}283{,}019$ (`13.26×`, `+1,158.2%`) · `VBOND-LV`: $R_{\text{grad}} = 76{,}109{,}936{,}576$ (**`5.15×`**, **`+380.6% – +383%`**) | **PASS** |
+| **`S2`** | Người chơi mua sớm & giữ tới điểm tốt nghiệp | `VGBC-4T`: $R_{\text{grad}} = 79{,}245{,}283{,}019$ (`13.26×`, `+1,158.2%`) · `VBOND-LV`: $R_{\text{grad}} = 76{,}109{,}936{,}576$ (**`5.15×`**, **`+380.6%`** *(đã trừ `1%` phí bán; mua ở `M1`)*) | **PASS** |
 | **`S3`** | Di chuyển thanh khoản DEX `0%` chênh giá | `VGBC-4T`: sai lệch **`4.27 × 10⁻¹²`** · `VBOND-LV`: sai lệch **`4.19 × 10⁻¹¹`** ($S_{\text{LP}}^{\text{sol}} = 14.387943\text{ SOL}$, Escrow $= 61.721994\text{ SOL}$) | **PASS** |
 | **`S4`** | Hàm thưởng lõm `PoPW` chống độc quyền ($\gamma = 0.65, \phi_{\max} = 0.05$) | Cá voi chiếm `20.0%` tổng `VPH` nhận đúng **`5.00%` pool**; tổng phân bổ $\sum_u s_u = 1.000000$ | **PASS** |
 | **`S5`** | Cưỡng chế trần ví `5%` & giới hạn Epoch `600s / 10%` | Cá voi nạp `50 SOL` bị chặn đúng ở `30M` token; ví thứ 3 trong cùng `600s` bị chặn ở `0`, mở lại tại $t = 1{,}201\text{ s}$ | **PASS** |
@@ -534,6 +534,7 @@ Mọi độc giả và kiểm toán viên có thể tái lập chính xác 100% 
 | **`S7`** | `Stall`, đóng băng Creator & `Ragequit` đảo thứ tự rút | `creator_vest_frozen == true`, `creator_fee == 0`; chênh lệch đảo thứ tự Alice/Bob đúng **`1 lamport`** | **PASS** |
 | **`S8`** | Miễn phí thoát sớm khi đồng hành qua phiên bản mới | Mua ở `M1`, bán sau khi mở `M2` ($60\text{ s}$): phụ phí phạt = **`0 bps`** | **PASS** |
 | **`S9`** | Tấn công bào mòn bụi `1,000` lệnh siêu nhỏ (`1,000 lamports`) | Lợi nhuận lũy kế kẻ tấn công = **`−20,000 lamports` $< 0$** (két sắt không mất 1 `lamport`) | **PASS** |
+| **`DOC`** | **Đối chiếu tài liệu ↔ mô hình** (mọi hằng số in trong Whitepaper/Yellow Paper) | `K = 2.895 × 10²⁵` / `6.438 × 10²⁵` lamport·unit · rent 9 PDA = `17,567,040` lamports (`17,567,040 = Σ(128+L)·6,960`) · `$2.3672 / 1,000 VPH` · thang lỗ bot `−12.88 / −6.94 / −3.97 / −1.99 / −5.95%` · ROI `+1,158.2 / +801.9 / +450.8 / +380.6%` | **PASS** |
 | **`FUZZ`** | **`10,000` phép toán ngẫu nhiên** (mua/bán/mở mốc/stall/ragequit) | **`0` vi phạm bất biến `INV-01..INV-08`** · `0` cơ hội arbitrage · giá đơn điệu `100%` | **PASS** |
 
 ### 12.2. Vị từ Tuân thủ Pháp lý (`05/2025/NQ-CP`) & Phép chiếu Bảo toàn `Off-Chain Fallback`
