@@ -61,6 +61,8 @@ Một studio Việt Nam phát hành tựa game HTML5 chất lượng lên cổng
 
 Bốn nguyên tử ở trên chỉ đáng tin nếu mỗi nguyên tử trả lời được **4 câu hỏi kiểm toán**: *(a)* nó là **đối tượng dữ liệu byte-exact** nào trên chuỗi; *(b)* nó là **vị từ/hàm chuyển tiếp hình thức** nào mà hai nhóm kỹ sư độc lập cài đặt ra **cùng một kết quả đến từng `lamport`**; *(c)* nó được bảo vệ bởi **bất biến/định lý** nào đã chứng minh; và *(d)* nó có **kịch bản kiểm chứng chạy lại được** bằng một lệnh duy nhất. Toàn bộ bốn câu trả lời đã được đặc tả trong [`YELLOWPAPER.md`](./YELLOWPAPER.md) `v1.0` và **tự động thực thi lại** mỗi lần chạy `python3 scripts/verify_protocol_math.py`.
 
+> **Dành cho nhà đầu tư không chuyên game:** mỗi nguyên tử dưới đây được minh chứng bằng **toán – mật mã – lập trình**, và **ngay sau phần chứng minh** là một **case study kể bằng ngôn ngữ đời thường**, có nhân vật, có đồng tiền, có hậu quả cụ thể. Các case study là **tình huống giả định** *(nhân vật và tên game là hư cấu)* nhưng **mọi con số đều tính đúng theo tham số `VGBC-4T` đã khóa** và chạy lại được bằng bộ kiểm chứng của giao thức.
+
 | Nguyên tử | Đối tượng On-Chain *(byte-exact)* | Đặc tả Hình thức | Bất biến / Định lý Bảo vệ | Bằng chứng Tái lập được |
 |---|---|---|---|---|
 | **1. Immutable Version Registry** | `MilestoneAttestation` **`162 B`** *(chứa `build_sha256`, `base_sha256`, `build_diff_bps`, `build_seq_no`)* | §2.2 *(Lớp 1–3)*, §7.1 | `INV-05`, `INV-12` | Hàm băm tất định **`100%`** *(bỏ dấu thời gian ZIP)* → cùng một gói build cho cùng một `SHA-256` trên mọi máy |
@@ -76,6 +78,20 @@ Bốn nguyên tử ở trên chỉ đáng tin nếu mỗi nguyên tử trả l�
 - **Đo thay đổi thực chất, không đo lời khai.** `BuildDiff` dùng khoảng cách Jaccard có trọng số dung lượng trên các khối *Content-Defined Chunking* (FastCDC, `4 KiB`), chia 3 lớp: $\delta_k = 0.50\,\delta_k^{\text{code}} + 0.30\,\delta_k^{\text{asset}} + 0.20\,\delta_k^{\text{data}}$. Với $\theta_{\text{diff}} = 0.08$, bản sửa dưới **`8%`** bị gán nhãn `HOTFIX` và **bị cấm tuyệt đối** gọi `record_version_milestone` — chặn đứng chiêu *"đổi màu một nút bấm rồi đòi mở vốn"*.
 - **Không thể nới luật về sau.** `terms_hash` *(§7.1)* băm cứng $\Theta$, `GATE_TABLE` và lịch hạn `Stall`; không tồn tại instruction nào ghi đè được (`INV-12`). Quyền nâng cấp đi qua ôtômat `Squads 4/7` + timelock `48 h` và **tự đặt `upgrade_authority = None` sau `90 ngày`** *(§7.2)* — từ đó, việc "nới cổng" trở thành **bất khả thi ở tầng SVM**, không phụ thuộc lời hứa của đội ngũ.
 
+##### Case study 1 — “Studio sửa 3 dòng code rồi xin mở két” *(kể bằng ngôn ngữ đời thường)*
+
+**Tình huống giả định.** Một studio `3` người ở Đà Nẵng làm game bắn cá HTML5. Họ đã qua `M1`, két sắt mở ra `5.52 SOL` *(~`$828`)*, và `11` ngày sau gửi lên “phiên bản `v0.3`” để xin mở tiếp `M2` *(thêm `180M` token)*. Nhưng bản “`v0.3`” thật ra chỉ **đổi màu nút Play và thêm một banner quảng cáo**.
+
+| Câu hỏi của nhà đầu tư | Launchpad thông thường | MetaPump |
+|---|---|---|
+| **Ai xác nhận “đây là bản mới thật”?** | Không ai. Nhãn `v0.3` do studio tự gõ vào ô mô tả. | **Máy.** Gói ZIP được giải nén, sắp xếp theo đường dẫn, **bỏ dấu thời gian ZIP** rồi băm `SHA-256` — cùng một mã nguồn luôn cho **cùng một dấu vân tay**, không thể “đóng gói lại cho khác đi”. |
+| **Khác bản cũ bao nhiêu? Có con số không?** | Không có. | `BuildDiff` đo phần **thực chất thay đổi**: bản `v0.3` chỉ đổi `2.1%` nội dung, dưới ngưỡng `8%` ⇒ bị xếp loại `HOTFIX`. |
+| **Vậy có mở được `M2` không?** | Vẫn gọi vốn tiếp bình thường, vì chẳng có cổng nào. | **Không.** Hợp đồng **cấm** `HOTFIX` gọi `record_version_milestone`; không có chứng thực `162 B` nào được ký ⇒ **trần vốn không nhích một đồng**. Studio buộc phải làm nội dung thật vượt `8%`, rồi vượt `500` phiên chơi thật. |
+| **Studio có “tráo bản” sau khi đã duyệt?** | Có — duyệt xong vẫn đẩy bản khác lên máy chủ. | Không. Bản đang chạy trên CDN phải băm ra đúng `h_k` đã ghi trong chứng thực; lệch là bị từ chối (`ERR_ORPHAN_BASE` / `ERR_IDENTICAL_BUILD`). |
+| **Nhà đầu tư mất gì trong `11` ngày đó?** | Mất tiền cho một “bản cập nhật giả”. | **Không mất đồng nào** — SOL vẫn nằm trong escrow, chưa mở. |
+
+**Hình dung đời thường:** đây là **giải ngân xây dựng theo nghiệm thu từng tầng**. Chủ thầu sơn lại cái cửa mà đòi tiền xây tầng 2 thì ngân hàng không giải ngân — chỉ khác ở chỗ “ngân hàng” ở đây là một đoạn code **không biết thương lượng, không biết uống cà phê**.
+
 #### Nguyên tử 2 — "Tốt hơn" là một *kiểm định thống kê có cận tin cậy công bố*, không phải một tuyên bố
 
 - **`VPH` không thể cày bằng cách treo máy.** Nhịp tim `15 s` chỉ được tính khi tab ở tiền cảnh, có sự kiện đầu vào hợp lệ **và** entropy của chuỗi khoảng thao tác $H(\Delta t_{\text{input}}) \ge H_{\min}$ *(loại bộ gõ tự động tuần hoàn $H \approx 0$)*; mỗi phiên bị chặn trần `2 giờ`, kèm suy giảm theo ngày $\omega_{\text{day}} \in \{1.0;\ 0.5;\ 0.1\}$ — nên chiến thuật "treo `24/7`" bị **vô hiệu hóa bằng toán** *(§3.1)*.
@@ -83,6 +99,20 @@ Bốn nguyên tử ở trên chỉ đáng tin nếu mỗi nguyên tử trả l�
 - **Cầu dao gian lận tự động.** Lấy mẫu hậu kiểm `0.5%` phiên + ước lượng hiệu chỉnh sai lệch *(difference/HT estimator)*; nếu $\widehat{\mathrm{BotShare}}_E > 0.08$ thì $\mathsf{allow\_new\_launch} \leftarrow \mathsf{false}$ **ngay trên chuỗi** (`INV-11`), chỉ mở lại sau **2 chu kỳ liên tiếp** sạch *(§3.2)* — đây là *hợp đồng tự dừng*, không phải thông cáo báo chí.
 - **Ngưỡng thắng có công thức, không có "cảm nhận".** Mô hình Bradley–Terry có trọng số + tiên nghiệm Gaussian; điều kiện qua cổng là $\mathrm{LCB}_{0.95}(v_k \succ v_{\text{ref}}) > 0.50$ với $z_{0.975} = 1.959964$, kèm `RatingTrust ≥ 0.85` và co rút Bayes $\kappa = 25$ phiếu *(§4.1)*. Nghĩa là: **MetaPump không thể tự tuyên bố một bản là tốt hơn** — nếu dữ liệu không đủ mạnh, cận dưới không vượt `0.50` và trần vốn **không mở**, bất kể ai muốn.
 - **Điểm số không ai sửa được, kể cả cổng game.** Cuối mỗi giờ, toàn bộ điểm/VPH/phiếu được băm theo **RFC 6962 với tách miền** *(`0x00` cho lá, `0x01` cho nút — kháng tấn công tiền ảnh thứ hai)*, gốc `Root_h` ghi lên Solana *(§4.3)*. Studio và nhà đầu tư tự kiểm chứng trong $\mathcal{O}(\log_2 N)$ phép băm, không cần tin ai.
+
+##### Case study 2 — “`500` người chơi thuê giá `$175`” *(vì sao “làm giả sự tiến bộ” là bài toán lỗ)*
+
+**Tình huống giả định.** Một studio muốn nhảy thẳng `M2` nên thuê dịch vụ “cày chỉ số”: `500` tài khoản, mỗi tài khoản mở game `10` phút, bấm vài nút, bình chọn “bản mới hay hơn bản cũ”. Giá thị trường `~$0.35`/tài khoản ⇒ tổng **`$175`** — rẻ hơn một buổi ăn tối của cả team.
+
+Chuyện gì xảy ra khi con số này đi qua cổng:
+
+1. **Máy chấm “người thật” bằng hành vi, không bằng lời khai.** Nhịp tim `15 s` chỉ tính khi tab ở **tiền cảnh**, có sự kiện đầu vào thật, và **entropy** của nhịp bấm phải đủ cao. Bộ gõ tự động lặp đều có entropy `≈ 0` ⇒ **bị loại ngay từ giây đầu**.
+2. **Tài khoản mới tinh không có “uy tín”.** Ví chưa có lịch sử chơi nhiều game, chưa có đồng thuận từ đấu trường chỉ được hệ số tin cậy `ρ ≤ 0.25`. Với `γ = 0.65`, muốn **bằng `1` người chơi thật** phải có **`~99` danh tính thiết bị/mạng sạch độc lập** — chi phí vận hành `99` máy sạch **vượt xa** giá trị phần thưởng.
+3. **Lá phiếu phải trả bằng giờ chơi.** Cần `≥ 600 s` chơi xác minh trong `24 h` mới được chấm điểm; đấu mù cần `≥ 50` trận hợp lệ, `RatingTrust ≥ 0.85` và cận dưới `LCB₀.₉₅ > 0.50` — tức **“hay hơn” phải đúng về mặt thống kê**, không phải đa số phiếu rác.
+4. **Cầu dao tự cắt.** Hệ thống lấy mẫu hậu kiểm `0.5%` số phiên bằng người thật; nếu tỷ lệ gian lận ước lượng `> 8%`, hợp đồng **tự khóa mọi đợt phát hành mới** cho tới khi có `2` chu kỳ liên tiếp sạch (`INV-11`).
+5. **Cửa hậu cũng đóng.** Dù lọt được `M2`, studio nhận **`0 SOL`** giải ngân trực tiếp; phí tích lũy cả chặng chỉ `≈ 0.05–0.15 SOL` (`~$8–$25`), và **bị tịch thu 100%** nếu `90` ngày không qua `M3`.
+
+**Hình dung đời thường:** như **thẻ tín dụng khi nhận phòng khách sạn 5 sao**. Kẻ gian luôn có thể thử, nhưng phải **trả giá cao hơn giá trị món hàng** để giả làm khách. Ở đây `$175` mua được **`0`** tiến bộ; còn `$175` trả cho `500` người chơi thật thì **mở được cổng thật**. Chi phí làm thật luôn **rẻ hơn** chi phí làm giả — đó là điều duy nhất cần nhớ.
 
 #### Nguyên tử 3 — Cổng vốn là *một bất đẳng thức số nguyên*, không phải một cam kết
 
@@ -98,6 +128,21 @@ Bốn nguyên tử ở trên chỉ đáng tin nếu mỗi nguyên tử trả l�
   6. **Định lý 6** — thanh khoản DEX **tự tài trợ 100%** từ chính két sắt: $61.836953\text{ SOL} < 79.245283\text{ SOL}$ *(thặng dư $17.408330\text{ SOL}$)* và $14.387943 < 76.109937$; sai lệch giá đo được **`4.27 × 10⁻¹²`** và **`4.19 × 10⁻¹¹`** — đúng cam kết **`0%` chênh lệch giá**, không cần "bơm" thêm SOL.
 - **Hai hồ sơ vận hành, một bộ luật.** `VGBC-4T` *(toàn vòng đời game, graduation `79.245283 SOL`, `13.2606×` qua `1.40× → 2.31× → 4.92× → 13.26×`)* và `VBOND-LV` *(Version Bond đầm giá, `76.109937 SOL`, `5.1461×` chống FOMO)* dùng **cùng một** `terms_hash`, cùng `u128`, cùng `GATE_TABLE` — chứng minh mô hình không "đo ni đóng giày" cho một tham số duy nhất.
 
+##### Case study 3 — “Cá voi chia `20` ví gom `28%` cung, `200` người cùng đòi rút” *(két sắt có đáy)*
+
+**Tình huống giả định.** Một tựa game đang ở chặng `M3` *(trần `530M` token, chưa lên sàn DEX)*. Một cá voi đã gom `280M` token — tức **`28%` cung** — bằng cách chia thành `20` ví, mỗi ví đúng `14M` *(dưới trần `2%`/ví = `20M`)*. Và vì trần chu kỳ là `10%` curve = `70M` mỗi `600 s`, việc gom đủ `280M` ngốn của cá voi **tối thiểu `4` chu kỳ ≈ `40` phút**, chứ không phải `1` khối. Ngày thứ `12`, cá voi xả toàn bộ trong `40` phút. Nhóm chat hoảng loạn: `200` người chơi thật bấm bán cùng ngày, ai cũng sợ mình là người “rút cuối cùng”.
+
+| Câu hỏi then chốt | Trả lời đã được chứng minh | Đo thực tế |
+|---|---|---|
+| **Vì sao cá voi phải chia `20` ví mới gom được `28%` cung?** | Trần `2%` cung/ví *(=`20M`)* cưỡng chế ngay trong lệnh mua, cộng trần `70M`/`600 s` cho cả đường cong — **không có lệnh nào mua vượt trần**, và ví đã chạm trần trong chu kỳ bị trả `ERR_CAP_REACHED`. | `S5`: ví nạp `50 SOL` vẫn bị chặn đúng ở trần *(hồ sơ B: `30M` token, `5%` curve)*; ví thứ `3` trong cùng `600 s` bị chặn ở `0`, chỉ mở lại tại `t = 1,201 s` |
+| **Két có đủ tiền cho `100%` người bán không?** | **Có** — dù họ bán theo **bất kỳ thứ tự nào**, số dư cuối `R_final ≥ 0`. Két **tự tài trợ**, không cần ai “bơm giá cứu”. | `S6`: `25` người bán sạch `100%` đường cong ⇒ thiếu hụt **`0`** lamport |
+| **Người bấm sau có bị thiệt hơn người bấm trước?** | **Không.** Tỷ giá hoàn vốn không bao giờ giảm; chênh lệch do làm tròn số nguyên tối đa **`1` lamport** (`~$0.00000015`). | Định lý 5 · `S7` |
+| **Khi game lên sàn DEX, bot có ăn được chênh lệch giá?** | **Không.** Thanh khoản DEX `61.836953 SOL` được rót **từ chính két sắt**, giá mở cửa lệch `4.27 × 10⁻¹²` — nhỏ hơn cả sai số đo. | Định lý 6 · `S3` |
+| **Nếu studio bỏ game giữa chừng?** | **`Ragequit`**: rút lại SOL còn trong két theo đúng tỷ lệ, **`0%` phí phạt**; phần thưởng chưa mở của studio bị **đóng băng vĩnh viễn**. | `S7` · `INV-09` |
+| **Vậy rủi ro thật nằm ở đâu?** | Ở **giá thị trường sau tốt nghiệp** (không được toán học bảo đảm — xem `Epistemic Boundaries`), **không** ở việc két sắt thiếu tiền. | Yellow Paper §12.3 |
+
+**Hình dung đời thường:** đây là **đặt cọc mua nhà có công chứng**. Tiền không nằm trong tay chủ thầu, mà nằm trong két do luật chơi khóa, mỗi đợt giải ngân ứng với một mốc nghiệm thu thật. Khác biệt duy nhất — và là khác biệt lớn nhất: **“công chứng viên” ở đây là toán học `u128` trên Solana**, không phải một nhân viên ngân hàng có thể bị thuyết phục ngoài giờ làm việc.
+
 #### Nguyên tử 4 — `Play-Gate` nằm *bên trong* lệnh mua, không nằm ở tầng RPC
 
 - **Chứng thực `106 byte` được kiểm tra bằng nội quan lệnh.** Hợp đồng không tự chạy phép nhân đường cong elliptic *(tốn Compute Units)* mà đọc lệnh liền trước và cưỡng chế **5 điều kiện an ninh** *(§7.1)*: `num_signatures == 1`; mọi trường `*_instruction_index == u16::MAX` *(chặn đứng tấn công trỏ chéo sang lệnh giả mạo)*; khóa công khai khớp `RegistryConfig.oracle_pubkey`; vô hướng $s < \ell/2$ *(chuẩn hóa chống biến dạng chữ ký RFC 8032)*; `expiry_ts` còn hiệu lực *(TTL $\le 300 s$)* và `cluster_id` khớp mạng.
@@ -105,6 +150,22 @@ Bốn nguyên tử ở trên chỉ đáng tin nếu mỗi nguyên tử trả l�
 - **Ba lớp chặn sniper.** *(i)* `24 h Gamer Priority Window`: `buy_public` bị khóa cứng ở tầng hợp đồng, chỉ `buy_priority` với chứng thực `VPH` thật mới qua; *(ii)* trần ví $\omega_{\text{wal}}$ và trần epoch $\eta_{\text{ep}}$ cưỡng chế qua $q_{\max} = \min(C_{m} - Q_t,\ \omega_{\text{wal}} - B_u,\ \eta_{\text{ep}} - q_{\text{ep}})$ *(§5.2)*; *(iii)* `INV-07` — `BuyerPosition` **không chuyển nhượng trước `M4`**, nên không thể gom `50` ví ảo trong `1` slot rồi xả *(§9, mục 3)*.
 - **Chi phí thao túng > lợi ích rút ra.** Ràng buộc kinh tế $C_{\text{corrupt}}(m) > V^{\max}_{\text{extract}}(m)$ cho mọi $m \in \{1,2,3,4\}$ *(§9)*: kể cả lách được `M2`, nhà phát triển nhận **`0 SOL` giải ngân trực tiếp**, phí tích lũy trên chặng `M2` chỉ `≈ 0.05–0.15 SOL` và **bị tịch thu 100%** nếu `90 ngày` không qua `M3` — kỳ vọng lợi nhuận của kẻ wash-playing **âm**.
 - **Phí thoát sớm chia tất định đến từng lamport** *(§5.3)*: `50%` → quỹ thưởng người chơi thật, `40%` → quỹ bảo hiểm giá sàn `F_t` *(đắp dày cho `Ragequit`)*, `10%` → `ProtocolTreasury`; không có phần dư "rơi xuống hố".
+
+##### Case study 4 — “Bot `0.2` giây, `40` ví ảo, `1` khối” *(vì sao bot là nhà tài trợ bất đắc dĩ)*
+
+**Tình huống giả định.** Ngày mở bán một tựa game mới, một nhóm sniper tạo `40` ví và cố mua `20 SOL`/ví **ngay khối đầu tiên**, mục tiêu ôm `30–40%` cung giá đáy rồi xả lên người chơi thật sau `2` giờ.
+
+Từng bước trên MetaPump:
+
+1. **`24` giờ đầu mỗi chặng:** lệnh `buy_public` **bị khóa cứng ở tầng hợp đồng**. Chỉ `buy_priority` chạy được — mà nó đòi chứng thực `106 B` ký `Ed25519` gắn với **giờ chơi thật** của chính ví đó. Bot chưa chơi thì **không có chữ ký**.
+2. **Trần ví & trần chu kỳ:** một ví rót `20 SOL` **không** mua được `383.7M` token như trên đường cong trơn, mà bị chặn ở **`20M` token** *(trần `2%` cung)*, và hợp đồng chỉ thu đúng **`0.6413 SOL`** — phần dư **không bị trừ** *(khớp lệnh một phần chính xác)*. Trần chu kỳ `10%` curve *(=`70M`/`600 s`)* nghĩa là `40` ví *(cần `800M`)* chỉ có **`~3.5` ví lọt mỗi `10` phút**. Gom `40` ví **không mua nhanh hơn `1` người** — chỉ nhanh hơn ở chỗ **trả nhiều phí hơn**.
+3. **Không sang tay trước `M4`** (`INV-07`): token mua ở `M1` không thể chuyển cho ví khác để “gom hàng”, nên mọi đường xả đều phải đi qua phí thoát sớm.
+4. **Nếu vẫn mua rồi xả ngay:** mua `1 SOL` rồi bán trong `< 1 giờ` thu về **nhiều nhất** `0.8712 SOL` ⇒ **lỗ `−12.88%`**. Với vòng vốn `1,000 SOL`, bot **mất `128.8 SOL`** (`~$19,320`).
+5. **Tiền lỗ đó đi đâu?** `50%` vào **quỹ thưởng người chơi thật**, `40%` vào **quỹ bảo hiểm giá sàn** *(đắp dày cho `Ragequit`)*, `10%` vào treasury giao thức — chia **đến từng lamport**, không có phần “rơi xuống hố”.
+
+**Hình dung đời thường:** như **vé concert gắn tên và xác thực khuôn mặt**. Mua sỉ `40` vé trong `1` giây là chuyện của hệ thống cũ; ở đây mỗi vé phải do **một người thật đã thực sự ngồi xem** nhận.
+
+Và đây là nghịch lý đẹp nhất dành cho nhà đầu tư: **bot càng hung hăng, quỹ thưởng cho người chơi thật càng dày.** Tiền phạt của kẻ đầu cơ trở thành **học bổng** cho người chơi thật — dòng tiền chảy ngược chiều với mọi launchpad hiện có.
 
 #### Bảng Tự vấn 4 câu hỏi của Nhà đầu tư *(mỗi câu trả lời đều kèm vị trí kiểm chứng)*
 
