@@ -1,11 +1,11 @@
-# METAPUMP YELLOW PAPER
+# GAME9K YELLOW PAPER
 
 ## Đặc tả Hình thức Giao thức Bệ phóng Vốn Đồng bộ theo Phiên bản Game
 ### *(A Formal Specification of Version-Synced Game Capital Formation, Proof-of-Play-Work & Self-Binding On-Chain Governance)*
 
 | Thuộc tính Đặc tả | Chi tiết |
 |---|---|
-| **Định danh Giao thức** | `METAPUMP-YP-1.0` (`khanhlegood1/GameFun`) |
+| **Định danh Giao thức** | `GAME9K-YP-1.0` (`khanhlegood1/GameFun`) |
 | **Phiên bản** | `v1.0 — Formal Mathematical, Cryptographic & Mechanism Specification` |
 | **Ngày công bố** | Tháng 11 / 2026 |
 | **Môi trường Thực thi Đích** | Solana SVM (Runtime `BPF/SBF`, Anchor `0.30–0.32`, SPL Token-2022, `Ed25519SigVerify`) + Open Web Sandbox |
@@ -13,7 +13,7 @@
 | **Bộ Kiểm chứng Thực thi** | [`scripts/verify_protocol_math.py`](../scripts/verify_protocol_math.py) *(Python 3 chuẩn, 0 phụ thuộc ngoài — kiểm chứng tự động `S1–S9` + `10,000` phép toán ngẫu nhiên `u128`)* |
 | **Tài liệu Kỹ thuật Liên kết** | [`04-solana-smart-contracts.md`](./04-solana-smart-contracts.md) · [`02-database-schema.md`](./02-database-schema.md) · [`03-api-specification.md`](./03-api-specification.md) · [`05-c4-architecture-and-nfr.md`](./05-c4-architecture-and-nfr.md) |
 
-> **Tóm tắt Học thuật (Abstract).** Chúng tôi định nghĩa hình thức giao thức **MetaPump** — một máy trạng thái lai (*hybrid replicated state machine*) biến mỗi **phiên bản trò chơi web** $v_k$ thành một đơn vị tài sản có thể kiểm chứng mật mã, xếp hạng xác suất và giải ngân vốn có điều kiện. Giao thức giải quyết đồng thời ba bài toán mở của thị trường khởi tạo vốn phi tập trung: *(i)* **lạm phát phiên bản** (*version inflation*), thông qua cấu trúc đồ thị có hướng phi chu trình (DAG) neo mã băm `SHA-256` kèm hàm khoảng cách thay đổi $\delta(v_k, v_{k-1})$; *(ii)* **lựa chọn bất lợi Akerlof** (*Market for Lemons*), thông qua vị từ `Play-Gate` cưỡng chế trên chuỗi kết hợp kiểm định giữ chân, chỉ số giờ chơi thật đã xác minh ($\mathrm{VPH}$), giới hạn gian lận $\widehat{\mathrm{BotShare}} \le 0.08$, và cận dưới khoảng tin cậy $95\%$ của mô hình đối kháng mù Bradley–Terry $\mathrm{LCB}_{0.95}(\Pr[v_k \succ v_{k-1}]) > 0.5$; và *(iii)* **trục lợi đầu cơ chớp nhoáng & rủi ro bỏ dự án**, thông qua đường cong tích bất biến số nguyên `u128` có làm tròn định hướng có lợi cho két sắt, phí thoát sớm làm âm tuyệt đối lợi nhuận mua-bán vòng tròn ($\mathrm{PnL}_{\text{RT}} \in [-12.88\%, -5.95\%]$), di chuyển thanh khoản DEX với sai lệch giá tương đối $< 5 \times 10^{-11}$, hoàn vốn tỷ lệ `Ragequit` bất biến theo thứ tự rút (sai lệch $\le 1\text{ lamport}$), và ôtômat quản trị tự khóa tay (`Squads 4/7` + `48h timelock` $\to$ bất biến vĩnh viễn sau $7{,}776{,}000\text{ giây}$). Toàn bộ giao thức tuân thủ tiên đề phân bổ `0%` token cho nền tảng ($\alpha_{\text{plat}} \equiv 0$) và tồn tại một phép chiếu bảo toàn trạng thái $\Pi_{\text{fiat}}$ sang mô hình chia sẻ doanh thu ngoài chuỗi khi gặp ràng buộc pháp lý khu vực.
+> **Tóm tắt Học thuật (Abstract).** Chúng tôi định nghĩa hình thức giao thức **Game9K** — một máy trạng thái lai (*hybrid replicated state machine*) biến mỗi **phiên bản trò chơi web** $v_k$ thành một đơn vị tài sản có thể kiểm chứng mật mã, xếp hạng xác suất và giải ngân vốn có điều kiện. Giao thức giải quyết đồng thời ba bài toán mở của thị trường khởi tạo vốn phi tập trung: *(i)* **lạm phát phiên bản** (*version inflation*), thông qua cấu trúc đồ thị có hướng phi chu trình (DAG) neo mã băm `SHA-256` kèm hàm khoảng cách thay đổi $\delta(v_k, v_{k-1})$; *(ii)* **lựa chọn bất lợi Akerlof** (*Market for Lemons*), thông qua vị từ `Play-Gate` cưỡng chế trên chuỗi kết hợp kiểm định giữ chân, chỉ số giờ chơi thật đã xác minh ($\mathrm{VPH}$), giới hạn gian lận $\widehat{\mathrm{BotShare}} \le 0.08$, và cận dưới khoảng tin cậy $95\%$ của mô hình đối kháng mù Bradley–Terry $\mathrm{LCB}_{0.95}(\Pr[v_k \succ v_{k-1}]) > 0.5$; và *(iii)* **trục lợi đầu cơ chớp nhoáng & rủi ro bỏ dự án**, thông qua đường cong tích bất biến số nguyên `u128` có làm tròn định hướng có lợi cho két sắt, phí thoát sớm làm âm tuyệt đối lợi nhuận mua-bán vòng tròn ($\mathrm{PnL}_{\text{RT}} \in [-12.88\%, -5.95\%]$), di chuyển thanh khoản DEX với sai lệch giá tương đối $< 5 \times 10^{-11}$, hoàn vốn tỷ lệ `Ragequit` bất biến theo thứ tự rút (sai lệch $\le 1\text{ lamport}$), và ôtômat quản trị tự khóa tay (`Squads 4/7` + `48h timelock` $\to$ bất biến vĩnh viễn sau $7{,}776{,}000\text{ giây}$). Toàn bộ giao thức tuân thủ tiên đề phân bổ `0%` token cho nền tảng ($\alpha_{\text{plat}} \equiv 0$) và tồn tại một phép chiếu bảo toàn trạng thái $\Pi_{\text{fiat}}$ sang mô hình chia sẻ doanh thu ngoài chuỗi khi gặp ràng buộc pháp lý khu vực.
 
 ---
 
@@ -65,7 +65,7 @@ Toàn bộ phép cộng, trừ, nhân trên hợp đồng thực thi dưới d�
 
 - **Tiên đề A1 (Tính Nguyên tử của Phiên bản — *Version Atomicity*):** Đơn vị gốc của kiểm định, xếp hạng và giải ngân vốn là bộ phiên bản bất biến $v_k \in \mathcal{V}_g$, không phải định danh tựa game $g \in \mathcal{G}$.
 - **Tiên đề A2 (Tính Đơn điệu Chất lượng — *"Không Tốt hơn — Không Cho Mở Thanh khoản Mới"*):** Thứ tự tăng của chỉ số phiên bản ($k > k-1$) chỉ là điều kiện cần để lưu trữ; điều kiện đủ để cho phép mở trần thanh khoản/cung mới $C_m > C_{m-1}$ là bằng chứng thống kê $v_k$ đạt ngưỡng giữ chân tối thiểu và thắng $v_{k-1}$ trên tập người chơi thật.
-- **Tiên đề A3 (Trung lập Đạo đức Tuyệt đối — *Zero Platform Token Allocation*):** Tỷ lệ phân bổ token dự án/phiên bản cho nền tảng MetaPump hằng bằng không với mọi đợt phát hành: $\forall g \in \mathcal{G},\ \alpha_{\text{plat}}(g) \equiv 0$.
+- **Tiên đề A3 (Trung lập Đạo đức Tuyệt đối — *Zero Platform Token Allocation*):** Tỷ lệ phân bổ token dự án/phiên bản cho nền tảng Game9K hằng bằng không với mọi đợt phát hành: $\forall g \in \mathcal{G},\ \alpha_{\text{plat}}(g) \equiv 0$.
 - **Tiên đề A4 (Bảo toàn & Khả năng Thanh toán Đóng — *Closed Solvency*):** Mọi trạng thái khả đạt $\Sigma_t$ phải có đủ tài sản thực trong két sắt để tất toán 100% nghĩa vụ bán lại hoặc hoàn vốn `Ragequit` mà không cần bất kỳ dòng vốn ngoại sinh nào.
 - **Tiên đề A5 (Tự Khóa Tay Không Đảo ngược — *Irreversible Self-Binding*):** Tập quyền quản trị $\mathcal{P}_{\text{gov}}(t)$ là hàm giảm đơn điệu theo thời gian và hội tụ về tập rỗng đối với lô-gic `Play-Gate` khi $t \ge t_0 + T_{\text{imm}}$.
 
@@ -112,7 +112,7 @@ $$v_k = \left(g,\ k,\ \ell_k,\ \nu_k,\ h_k,\ h_{\text{base},k},\ \delta_k,\ \kap
 
 2. **Lớp 2 — Cam kết Mật mã Tất định & Hàm Khoảng cách `BuildDiff` ($h_k, h_{\text{base},k}, \delta_k, \kappa_k$):**
    - Gói HTML5 được giải nén thành tập hữu hạn các tệp hợp lệ $\mathcal{F}_k = \{(p_i, b_i)\}_{i=1}^{N_k}$, sắp xếp tăng dần theo thứ tự byte UTF-8 của đường dẫn chuẩn hóa $p_i$ (loại bỏ dấu thời gian ZIP để đảm bảo tái tạo tất định 100%). Mã băm gói build được tính:
-     $$h_k \triangleq \mathrm{H}\Big(\texttt{"METAPUMP\_BUILD\_V1"} \,\|\, \Vert_{i=1}^{N_k} \big(\mathrm{len}(p_i) \,\|\, p_i \,\|\, \mathrm{len}(b_i) \,\|\, \mathrm{H}(b_i)\big)\Big)$$
+     $$h_k \triangleq \mathrm{H}\Big(\texttt{"GAME9K\_BUILD\_V1"} \,\|\, \Vert_{i=1}^{N_k} \big(\mathrm{len}(p_i) \,\|\, p_i \,\|\, \mathrm{len}(b_i) \,\|\, \mathrm{H}(b_i)\big)\Big)$$
    - **Ràng buộc phả hệ (`Ancestry Guard`):** Với $k = 1$, yêu cầu $h_{\text{base},1} = 0^{32}$. Với mọi $k \ge 2$, bắt buộc $h_{\text{base},k} = h_{k-1}$ và $h_k \ne h_{k-1}$; nếu sai, từ chối với $\texttt{ERR\_ORPHAN\_BASE}$ hoặc $\texttt{ERR\_IDENTICAL\_BUILD}$.
    - **Hàm khoảng cách thay đổi thực chất (`BuildDiff`):** Phân hoạch $\mathcal{F}_k$ thành ba lớp tệp: mã thực thi $\mathcal{F}_k^{\text{code}}$ (`.js`, `.wasm`), tài nguyên $\mathcal{F}_k^{\text{asset}}$ (`.png`, `.webp`, `.ktx2`, `.ogg`, `.glb`) và cấu hình/dữ liệu màn chơi $\mathcal{F}_k^{\text{data}}$ (`.json`, `.bin`). Trên mỗi lớp $c \in \{\text{code}, \text{asset}, \text{data}\}$, dùng khoảng cách Jaccard có trọng số dung lượng trên tập các khối nội dung *Content-Defined Chunking* (Rabin/FastCDC, kích thước trung bình $4\text{ KiB}$) $S_k^{(c)}$:
      $$\delta_k^{(c)} = 1 - \frac{\sum_{x \in S_k^{(c)} \cap S_{k-1}^{(c)}} \mathrm{size}(x)}{\sum_{x \in S_k^{(c)} \cup S_{k-1}^{(c)}} \mathrm{size}(x)} \in [0, 1], \qquad \delta_k = 0.50\,\delta_k^{\text{code}} + 0.30\,\delta_k^{\text{asset}} + 0.20\,\delta_k^{\text{data}}$$
@@ -244,7 +244,7 @@ Gốc $\mathrm{Root}_h \in \{0,1\}^{256}$ được ghi lên Solana kèm URI dữ
 
 ### 5.1. Hai Hồ sơ Tham số Đã Khóa bằng Mô phỏng (`VGBC-4T` & `VBOND-LV`)
 
-Hợp đồng `metapump_curve` tổng quát hóa cả hai chế độ vận hành dưới cùng một bộ tham số bất biến $\Theta$ chụp cứng vào `terms_hash` khi khởi tạo:
+Hợp đồng `game9k_curve` tổng quát hóa cả hai chế độ vận hành dưới cùng một bộ tham số bất biến $\Theta$ chụp cứng vào `terms_hash` khi khởi tạo:
 
 | Tham số Hình thức | Ký hiệu | **Hồ sơ A: `VGBC-4T`** *(Toàn vòng đời Game)* | **Hồ sơ B: `VBOND-LV`** *(Version Bond Đầm giá)* |
 |---|---|---|---|
@@ -348,7 +348,7 @@ Hợp đồng không tự thực thi phép nhân đường cong elliptic tốn C
 
 ```text
 [1] PopBuyAttestation (106 bytes, little-endian)
-  0..16  (16 B) : domain          = b"METAPUMP_POP_V1\0"
+  0..16  (16 B) : domain          = b"GAME9K_POP_V1\0\0\0" (zero-pad 16 B)
  16..17  ( 1 B) : cluster_id      = 1 (Mainnet) | 2 (Devnet) | 3 (Localnet)
  17..49  (32 B) : curve_pubkey    = Pubkey của BondingCurve PDA
  49..81  (32 B) : buyer_pubkey    = Pubkey ví người chơi ký giao dịch
@@ -359,7 +359,7 @@ Hợp đồng không tự thực thi phép nhân đường cong elliptic tốn C
  99..106 ( 7 B) : expiry_ts_u56   = Hạn hiệu lực chữ ký (TTL <= 300 giây)
 
 [2] MilestoneAttestation (162 bytes, little-endian)
-  0..16  (16 B) : domain          = b"METAPUMP_MILE_V1"
+  0..16  (16 B) : domain          = b"GAME9K_MILE_V1\0\0" (zero-pad 16 B)
  16..17  ( 1 B) : cluster_id      = 1 | 2 | 3
  17..49  (32 B) : game_registry   = Pubkey của GameRegistry PDA
  49..50  ( 1 B) : milestone_level = m* = highest_milestone + 1
@@ -374,7 +374,7 @@ Hợp đồng không tự thực thi phép nhân đường cong elliptic tốn C
 
 **Mã băm Điều khoản Bất biến (`TermsHash` — Nguyên tắc Hiến pháp ②):** Ngay tại lệnh `create_launch`, hợp đồng tính và ghi vĩnh viễn:
 
-$$\mathsf{terms\_hash} = \mathrm{H}\Big(\texttt{"METAPUMP\_TERMS\_V1"} \,\|\, \mathsf{program\_id} \,\|\, \mathrm{borsh}(\Theta) \,\|\, \mathrm{H}(\texttt{GATE\_TABLE}) \,\|\, \mathsf{deadline\_schedule}\Big)$$
+$$\mathsf{terms\_hash} = \mathrm{H}\Big(\texttt{"GAME9K\_TERMS\_V1"} \,\|\, \mathsf{program\_id} \,\|\, \mathrm{borsh}(\Theta) \,\|\, \mathrm{H}(\texttt{GATE\_TABLE}) \,\|\, \mathsf{deadline\_schedule}\Big)$$
 
 Không tồn tại bất kỳ instruction nào trong hợp đồng cho phép ghi đè các trường thuộc $\Theta$ hoặc $\mathsf{terms\_hash}$ sau khi tài khoản `BondingCurve` được khởi tạo.
 
@@ -479,7 +479,7 @@ $$C_{\text{corrupt}}(m) > V_{\text{extract}}^{\max}(m), \qquad \forall m \in \{1
    - Để vượt `M2`, studio gian lận cần $\ge 500$ phiên người thật từ các tài khoản có lịch sử đa game sạch ($\rho_u$ cao, $\widehat{\mathrm{BotShare}} \le 0.08$, $\mathrm{RatingTrust} \ge 0.85$) chơi tích cực $> 3\text{ phút}$ cộng $\ge 50$ trận đấu mù Arena thắng với $\mathrm{LCB}_{0.95} > 0.50$, đồng thời vượt qua lấy mẫu hậu kiểm `0.5%`.
    - Ngay cả nếu lách qua `M2`, nhà phát triển nhận được **`0 SOL` giải ngân trực tiếp** (`DevVestingVault` chỉ rút được sau khi hoàn tất `M4` và qua duyệt con người `HITL` tại `M3/M4`!), và phí giao dịch tối đa tích lũy trên chặng `M2` (`15.59 SOL` dự trữ) chỉ đạt $\approx 0.05\text{–}0.15\text{ SOL}$ (`~$8–$25`) — đồng thời bị **tịch thu 100%** nếu sau $90\text{ ngày}$ không vượt được `M3`! Suy ra $\mathbb{E}[\Pi_{\text{wash}}] = V_{\text{extract}}^{\max}(M_2) - C_{\text{corrupt}}(M_2) < 0$.
 2. **Tấn công Tự Mua Đẩy Tốt nghiệp (*Self-Pumping to Graduation*):**
-   - Khác với sàn không cổng (nơi kẻ tấn công tạo token giả, tự mua đủ đường cong rồi xả trên DEX), trên MetaPump kẻ tấn công *(a)* không thể tự chuyển chặng `M1 → M4` bằng tiền vì cổng kiểm tra `VPH` & `Arena` chứ không kiểm tra số SOL nạp vào; *(b)* chịu phí giao dịch trên toàn bộ vòng vốn tự quay; và *(c)* phần $S_{\text{LP}}$ bị khóa cứng nên không thể rút ruột thanh khoản (*LP rug-pull*).
+   - Khác với sàn không cổng (nơi kẻ tấn công tạo token giả, tự mua đủ đường cong rồi xả trên DEX), trên Game9K kẻ tấn công *(a)* không thể tự chuyển chặng `M1 → M4` bằng tiền vì cổng kiểm tra `VPH` & `Arena` chứ không kiểm tra số SOL nạp vào; *(b)* chịu phí giao dịch trên toàn bộ vòng vốn tự quay; và *(c)* phần $S_{\text{LP}}$ bị khóa cứng nên không thể rút ruột thanh khoản (*LP rug-pull*).
 3. **Tấn công Mua Chặn Đầu Khối 0 (*Block-0 Sniper & Multi-Wallet Bundling*):**
    - Trong $24\text{ giờ}$ đầu mỗi chặng, lệnh `buy_public` bị khóa cứng ở tầng hợp đồng; lệnh `buy_priority` đòi hỏi `PopBuyAttestation` gắn với `VPH` thật. Nhờ `INV-07` (`BuyerPosition` không chuyển nhượng trước `M4`) và giới hạn Epoch `600s`, bot không thể dùng Jito bundle gom 50 ví ảo trong 1 slot để thâu tóm cung giá đáy.
 
@@ -501,7 +501,7 @@ Kiểm tra với $d_{\text{sess}} = 8\text{ phút}$ ($60/8 = 7.5\text{ phiên/VP
 
 $$R_{\text{fiat}}(t) = \frac{V_m(t)}{1{,}000}\,r_{\text{ad,net}}^{(1000)} + R_{\text{B2B}}(t) \ge C_{\text{infra}}(t) + C_{\text{OpEx}}(t)$$
 
-Trong mô hình 4 năm của MetaPump, bất đẳng thức này đạt được toàn phần ở Năm 4 ($R_{\text{fiat}} = \$25.0\text{M} > C_{\text{total}} = \$24.0\text{M}$).
+Trong mô hình 4 năm của Game9K, bất đẳng thức này đạt được toàn phần ở Năm 4 ($R_{\text{fiat}} = \$25.0\text{M} > C_{\text{total}} = \$24.0\text{M}$).
 
 ---
 
@@ -513,15 +513,15 @@ Theo công thức chuẩn của Solana Runtime $\mathrm{rent}_{\min}(L) = (128 +
 
 | Tài khoản PDA | Chương trình | Kích thước $L$ (Bytes, gồm `8 B` discriminator) | Ký quỹ `Rent-Exempt` (`lamports`) | Quy đổi (`SOL`) |
 |---|---|---|---|---|
-| `RegistryConfig` | `metapump_registry` | `74 B` | `1,405,920` | `0.001406 SOL` |
-| `GameRegistry` | `metapump_registry` | `103 B` | `1,607,760` | `0.001608 SOL` |
-| `VersionMilestone` | `metapump_registry` | `158 B` | `1,990,560` | `0.001991 SOL` |
-| `CurveConfig` | `metapump_curve` | `128 B` | `1,781,760` | `0.001782 SOL` |
-| `BondingCurve` | `metapump_curve` | `368 B` | `3,452,160` | `0.003452 SOL` |
-| `BuyerPosition` | `metapump_curve` | `100 B` | `1,586,880` | `0.001587 SOL` |
-| `DevVestingVault` | `metapump_rewards` | `234 B` | `2,519,520` | `0.002520 SOL` |
-| `RewardEpoch` | `metapump_rewards` | `118 B` | `1,712,160` | `0.001712 SOL` |
-| `UserClaimState` | `metapump_rewards` | `89 B` | `1,510,320` | `0.001510 SOL` |
+| `RegistryConfig` | `game9k_registry` | `74 B` | `1,405,920` | `0.001406 SOL` |
+| `GameRegistry` | `game9k_registry` | `103 B` | `1,607,760` | `0.001608 SOL` |
+| `VersionMilestone` | `game9k_registry` | `158 B` | `1,990,560` | `0.001991 SOL` |
+| `CurveConfig` | `game9k_curve` | `128 B` | `1,781,760` | `0.001782 SOL` |
+| `BondingCurve` | `game9k_curve` | `368 B` | `3,452,160` | `0.003452 SOL` |
+| `BuyerPosition` | `game9k_curve` | `100 B` | `1,586,880` | `0.001587 SOL` |
+| `DevVestingVault` | `game9k_rewards` | `234 B` | `2,519,520` | `0.002520 SOL` |
+| `RewardEpoch` | `game9k_rewards` | `118 B` | `1,712,160` | `0.001712 SOL` |
+| `UserClaimState` | `game9k_rewards` | `89 B` | `1,510,320` | `0.001510 SOL` |
 
 Tổng tiền ký quỹ cho **toàn bộ 9 loại PDA** của một dự án chỉ là **`17,567,040 lamports` (`0.017567 SOL` $\approx \$2.64$ @ `$150/SOL`)**; riêng **4 PDA lõi** *(`RegistryConfig` + `GameRegistry` + `BondingCurve` + `BuyerPosition`)* là **`8,052,720 lamports` (`0.008053 SOL` $\approx \$1.21$)** — *kiểm tra: `rent_min(L) = (128 + L) × 6,960` lamports, đúng cho cả 9 dòng trong bảng* — làm cho các đợt tài trợ phiên bản quy mô nhỏ của studio indie hoàn toàn khả thi về mặt kinh tế.
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-MetaPump Formal Math & Economic Simulation Verifier
+Game9K Formal Math & Economic Simulation Verifier
 ====================================================
 Self-contained (Python 3 stdlib only) verification suite for:
   1. Whitepaper v1.5 Unit Economics (VPH infra cost, ad sensitivity matrix,
@@ -511,7 +511,7 @@ def verify_whitepaper_math() -> None:
     for i in range(4):
         assert 40 <= plays[i] / mau[i] <= 130, (i, plays[i] / mau[i])
     # Graduation fee + locked-LP fees: each M4 game pays a flat $225 and locks a
-    # $9,276 pool; MetaPump keeps 1% of swap fees. Implied annual turnover must
+    # $9,276 pool; Game9K keeps 1% of swap fees. Implied annual turnover must
     # stay in a defensible 20x-32x band -- the old table implied 41.5x TVL.
     turnover = []
     for i in range(4):

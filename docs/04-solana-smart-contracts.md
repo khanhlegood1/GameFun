@@ -1,4 +1,4 @@
-# P03-C — Thiết kế Hệ thống Solana Smart Contracts (MetaPump Protocol)
+# P03-C — Thiết kế Hệ thống Solana Smart Contracts (Game9K Protocol)
 
 > **Tài liệu sống (Living Documentation):** `docs/04-solana-smart-contracts.md`  
 > **Nền tảng & Công cụ:** Solana · Rust · Anchor `0.31+` · SPL Token-2022 · Ed25519 Native SigVerify · Meteora DAMM v2 / Raydium CPMM CPI · Squads v4 Multisig · Kiểm thử bằng `LiteSVM` & `Ackee Trident`  
@@ -13,16 +13,16 @@ Tách hệ thống on-chain thành **3 Anchor Programs độc lập, trách nhi�
 ```mermaid
 flowchart TB
     Squads["Squads v4 Multisig<br/>(Upgrade & Config Authority)"]
-    Oracle["MetaPump Attestation Signer<br/>(Ed25519 Hardware/KMS Key)"]
+    Oracle["Game9K Attestation Signer<br/>(Ed25519 Hardware/KMS Key)"]
     Dev["Game Developer Wallet"]
     Gamer["Verified Gamer Wallet<br/>(PoP Tier Bronze..Diamond)"]
     Trader["Public Trader / Crank"]
     DEX["Meteora DAMM v2 / Raydium CPMM<br/>(Permanent Locked LP)"]
 
-    subgraph Solana["MetaPump On-Chain Programs (Anchor / Rust)"]
-        P1["Program 1: metapump_registry<br/>• GlobalRegistryConfig<br/>• GameRegistry PDA<br/>• VersionMilestone PDA (M1..M10)<br/>Lưu build_sha256, fit_hash, arena_win_bps"]
-        P2["Program 2: metapump_curve<br/>• GlobalCurveConfig<br/>• BondingCurve PDA + SOL/Token Vaults<br/>• BuyerPosition PDA (cap + hold_age + lock)<br/>VGBC 4 Tranches | 24h PoP Window | Anti-Dump Tax | Ragequit"]
-        P3["Program 3: metapump_rewards<br/>• DevVestingVault PDA (5%, 90d linear/mốc)<br/>• CommunityVault PDA (10% + 50% Exit Penalty)<br/>• RewardEpoch PDA (Merkle + 21d linear stream)<br/>• UserClaimState PDA"]
+    subgraph Solana["Game9K On-Chain Programs (Anchor / Rust)"]
+        P1["Program 1: game9k_registry<br/>• GlobalRegistryConfig<br/>• GameRegistry PDA<br/>• VersionMilestone PDA (M1..M10)<br/>Lưu build_sha256, fit_hash, arena_win_bps"]
+        P2["Program 2: game9k_curve<br/>• GlobalCurveConfig<br/>• BondingCurve PDA + SOL/Token Vaults<br/>• BuyerPosition PDA (cap + hold_age + lock)<br/>VGBC 4 Tranches | 24h PoP Window | Anti-Dump Tax | Ragequit"]
+        P3["Program 3: game9k_rewards<br/>• DevVestingVault PDA (5%, 90d linear/mốc)<br/>• CommunityVault PDA (10% + 50% Exit Penalty)<br/>• RewardEpoch PDA (Merkle + 21d linear stream)<br/>• UserClaimState PDA"]
     end
 
     Squads -->|"configure / rotate key / pause"| P1
@@ -90,7 +90,7 @@ Luôn làm tròn có lợi cho vault (`ceil` cho dự trữ sau giao dịch, `fl
 - SOL nạp LP: $S_{\text{LP}} = \lfloor T_{\text{LP}} \times V_{\text{sol},M4} / V_{\text{tok},M4} \rfloor = 61{,}836{,}952{,}652\text{ lamports}\ (\mathbf{61.836953\text{ SOL}})$
 - Giá mở cửa DEX: $P_{\text{DEX}} = 61.836952652 / 150{,}000{,}000 = \mathbf{4.12246351 \times 10^{-7}\text{ SOL/token}} = P_{M4}$ (**sai lệch `0.00000000%`**, không tạo kẽ hở cho bot arbitrage rút ruột pool lúc migrate!).
 - Phân bổ thặng dư $\Delta R_{\text{surplus}} = R_{\text{sol},M4} - S_{\text{LP}} - F_{\text{grad}} = \mathbf{15.908330\text{ SOL}}$ *(đã trừ Phí Tốt nghiệp $F_{\text{grad}} = 1.50$ SOL, YP §6.1)*:
-  1. `10.000000 SOL` → **Developer v1.0 Milestone Grant** (tài trợ vốn phát triển LiveOps M5+, giải ngân qua `metapump_rewards`).
+  1. `10.000000 SOL` → **Developer v1.0 Milestone Grant** (tài trợ vốn phát triển LiveOps M5+, giải ngân qua `game9k_rewards`).
   2. `2.908330 SOL` + `100% penalty_floor_lamports` → **Community Season 1 Prize Vault** (thưởng cho game thủ thật của game).
   3. `1.500000 SOL` → Chi phí rent tạo pool DEX + phần thưởng `0.1 SOL` cho người gọi crank `graduate_to_dex`.
   4. `1.500000 SOL` → **Protocol Treasury** (Squads v4 Multisig).
@@ -116,7 +116,7 @@ Luôn làm tròn có lợi cho vault (`ceil` cho dự trữ sau giao dịch, `fl
   - **Quan trọng — Chống lách phí bằng cách chuyển ví:** Token mua trên Bonding Curve trước khi Graduate được giữ hạch toán trong `curve_custody_vault` gắn với `BuyerPosition` PDA (non-transferable giữa các ví cá nhân trong giai đoạn bonding curve, tương tự cổ phần pre-graduation, mở khóa rút 1:1 ra SPL Token-2022 ATA tự do ngay khi `Graduated`!). Thiết kế này một mũi tên trúng 3 đích:
     1. **Không thể** chuyển token sang ví khác để reset/lách `weighted_buy_ts`.
     2. **Không thể** dùng 100 ví bot mua lẻ 0.25 SOL trong Priority Window rồi gom về 1 ví hoặc tự tạo pool thanh khoản lậu trên DEX trước khi game đạt M4!
-    3. Vẫn mua/bán thanh khoản tức thì 24/7 trên `metapump_curve` và `ragequit` 100% permissionless bất cứ lúc nào!
+    3. Vẫn mua/bán thanh khoản tức thì 24/7 trên `game9k_curve` và `ragequit` 100% permissionless bất cứ lúc nào!
 
 ---
 
@@ -126,24 +126,24 @@ Luôn làm tròn có lợi cho vault (`ceil` cho dự trữ sau giao dịch, `fl
 
 | Program | Account | PDA Seeds | Ghi chú |
 |---|---|---|---|
-| `metapump_registry` | `RegistryConfig` | `["registry_config"]` | Singleton lưu `multisig`, `oracle_pubkey`, `paused` |
-| `metapump_registry` | `GameRegistry` | `["game", game_id_bytes]` (`[u8; 16]` UUID) | Danh tính on-chain của game, `creator`, `highest_milestone` |
-| `metapump_registry` | `VersionMilestone` | `["milestone", game_registry.key(), &[milestone_level]]` | Bằng chứng bất biến cho từng mốc `M1..M10` |
-| `metapump_curve` | `CurveConfig` | `["curve_config"]` | Tham số mặc định cho các đợt launch mới, phí, trần Tier |
-| `metapump_curve` | `BondingCurve` | `["curve", game_registry.key()]` | Trạng thái curve, dự trữ, mốc, cửa sổ ưu tiên, hạn stall |
-| `metapump_curve` | `CurveSolVault` | `["sol_vault", bonding_curve.key()]` | System account PDA chỉ giữ lamports thực + penalty floor |
-| `metapump_curve` | `BuyerPosition` | `["position", bonding_curve.key(), buyer.key()]` | Số dư pre-grad, `weighted_buy_ts`, số SOL đã mua ở tranche hiện tại |
-| `metapump_rewards` | `DevVestingVault` | `["dev_vest", bonding_curve.key()]` | Quản lý 50M token dev vest 90 ngày theo từng mốc + 10 SOL M4 grant |
-| `metapump_rewards` | `CommunityVault` | `["comm_vault", bonding_curve.key()]` | Quản lý 100M token cộng đồng + SOL từ phí phạt Early-Exit |
-| `metapump_rewards` | `RewardEpoch` | `["epoch", bonding_curve.key(), &[milestone_level]]` | Merkle root phân bổ `SPARK` + thời gian stream 21 ngày |
-| `metapump_rewards` | `UserClaimState` | `["claim", reward_epoch.key(), user.key()]` | Theo dõi lượng token/SOL người chơi đã rút dần từ stream |
+| `game9k_registry` | `RegistryConfig` | `["registry_config"]` | Singleton lưu `multisig`, `oracle_pubkey`, `paused` |
+| `game9k_registry` | `GameRegistry` | `["game", game_id_bytes]` (`[u8; 16]` UUID) | Danh tính on-chain của game, `creator`, `highest_milestone` |
+| `game9k_registry` | `VersionMilestone` | `["milestone", game_registry.key(), &[milestone_level]]` | Bằng chứng bất biến cho từng mốc `M1..M10` |
+| `game9k_curve` | `CurveConfig` | `["curve_config"]` | Tham số mặc định cho các đợt launch mới, phí, trần Tier |
+| `game9k_curve` | `BondingCurve` | `["curve", game_registry.key()]` | Trạng thái curve, dự trữ, mốc, cửa sổ ưu tiên, hạn stall |
+| `game9k_curve` | `CurveSolVault` | `["sol_vault", bonding_curve.key()]` | System account PDA chỉ giữ lamports thực + penalty floor |
+| `game9k_curve` | `BuyerPosition` | `["position", bonding_curve.key(), buyer.key()]` | Số dư pre-grad, `weighted_buy_ts`, số SOL đã mua ở tranche hiện tại |
+| `game9k_rewards` | `DevVestingVault` | `["dev_vest", bonding_curve.key()]` | Quản lý 50M token dev vest 90 ngày theo từng mốc + 10 SOL M4 grant |
+| `game9k_rewards` | `CommunityVault` | `["comm_vault", bonding_curve.key()]` | Quản lý 100M token cộng đồng + SOL từ phí phạt Early-Exit |
+| `game9k_rewards` | `RewardEpoch` | `["epoch", bonding_curve.key(), &[milestone_level]]` | Merkle root phân bổ `SPARK` + thời gian stream 21 ngày |
+| `game9k_rewards` | `UserClaimState` | `["claim", reward_epoch.key(), user.key()]` | Theo dõi lượng token/SOL người chơi đã rút dần từ stream |
 
 ---
 
 ### 3.2. Cấu trúc Account Cốt lõi (Anchor Rust Definitions)
 
 ```rust
-// ===================== PROGRAM 1: metapump_registry =====================
+// ===================== PROGRAM 1: game9k_registry =====================
 #[account]
 #[derive(InitSpace)]
 pub struct GameRegistry {
@@ -175,7 +175,7 @@ pub struct VersionMilestone {
     pub unlocked_at: i64,
 }
 
-// ===================== PROGRAM 2: metapump_curve =====================
+// ===================== PROGRAM 2: game9k_curve =====================
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, PartialEq, Eq, InitSpace)]
 pub enum CurveStatus {
     Active,
@@ -234,7 +234,7 @@ pub struct BuyerPosition {
     pub post_grad_claimed: bool,
 }
 
-// ===================== PROGRAM 3: metapump_rewards =====================
+// ===================== PROGRAM 3: game9k_rewards =====================
 #[account]
 #[derive(InitSpace)]
 pub struct DevVestingVault {
@@ -286,8 +286,8 @@ pub struct RewardEpoch {
 | `registry` | `set_game_status` | `multisig` | Tạm ngưng `Suspended` khi phát hiện mã độc/vi phạm pháp lý nghiêm trọng. |
 | `curve` | `initialize_curve_config` | `multisig` | Thiết lập cấu hình đường cong, phí, trần Tier (`[0.25, 0.5, 1.0, 2.0]` SOL) và địa chỉ Treasury. |
 | `curve` | `create_launch` | `creator` | Yêu cầu `GameRegistry.highest_milestone == 1`; tạo Mint Token-2022 `1B`, nạp `850M` vào `curve_token_vault`, CPI nạp `100M` vào `CommunityVault` & `50M` vào `DevVestingVault`, **revoke mint & freeze authority**, mở M1 (`cap = 150M`, `priority = +24h`, `deadline = +60d`). |
-| `curve` | `unlock_milestone_tranche` | Permissionless | Đọc `VersionMilestone(active_milestone + 1)` từ `metapump_registry`; nâng `unlocked_curve_supply` lên tranche mới, đặt lại `priority_window_ends_at = now + 24h`, gia hạn `milestone_deadline_at = now + 90d`, CPI kích hoạt đợt `DevVestingVault` tương ứng. |
-| `curve` | `buy_priority` | `buyer` + Ed25519 Oracle | Chỉ khi `status == Active` & `now <= priority_window_ends_at`; introspect `Instructions` sysvar xác minh chữ ký `PopBuyAttestation` (`domain = "METAPUMP_POP_V1"`, `chain_id`, `curve`, `buyer`, `milestone`, `max_cum_lamports`, `expiry_ts >= now`); kiểm tra hạn mức Tier & `token_balance <= max_wallet_tokens`. |
+| `curve` | `unlock_milestone_tranche` | Permissionless | Đọc `VersionMilestone(active_milestone + 1)` từ `game9k_registry`; nâng `unlocked_curve_supply` lên tranche mới, đặt lại `priority_window_ends_at = now + 24h`, gia hạn `milestone_deadline_at = now + 90d`, CPI kích hoạt đợt `DevVestingVault` tương ứng. |
+| `curve` | `buy_priority` | `buyer` + Ed25519 Oracle | Chỉ khi `status == Active` & `now <= priority_window_ends_at`; introspect `Instructions` sysvar xác minh chữ ký `PopBuyAttestation` (`domain = "GAME9K_POP_V1"`, `chain_id`, `curve`, `buyer`, `milestone`, `max_cum_lamports`, `expiry_ts >= now`); kiểm tra hạn mức Tier & `token_balance <= max_wallet_tokens`. |
 | `curve` | `buy_public` | `buyer` | Chỉ khi `status == Active` & `now > priority_window_ends_at`; không cần chữ ký Oracle (phi tập trung 100%); kiểm tra `net_tokens_sold <= unlocked_curve_supply`, `token_balance <= max_wallet_tokens` và `min_tokens_out` (chống slippage/sandwich). |
 | `curve` | `sell` | `buyer` | Khi `status == Active`; trừ `token_balance`, tính `sol_gross`, áp `base_fee` + `early_exit_fee` theo `weighted_buy_ts` & `entry_milestone`, kiểm tra `sol_net >= min_sol_out`, chia phí phạt `50% Community / 40% PenaltyFloor / 10% Treasury`. |
 | `curve` | `trigger_stall` | Permissionless | Khi `status == Active` & `now > milestone_deadline_at` & chưa bán hết M4; chuyển `status = Stalled`, gộp `creator_fee_accrued` vào `penalty_floor_lamports`, CPI đặt `DevVestingVault.frozen = true`. |
@@ -308,8 +308,8 @@ Không truyền private key lên chương trình; program đọc instruction li�
 ```text
 Offset | Size | Trường dữ liệu
 -------|------|------------------------------------------------------------
-0..16  | 16 B | Domain separator cố định: b"METAPUMP_POP_V1\0"
-16..48 | 32 B | program_id (metapump_curve) — chống replay chéo program/cluster
+0..16  | 16 B | Domain separator cố định: b"GAME9K_POP_V1\0\0\0" (zero-pad 16 B)
+16..48 | 32 B | program_id (game9k_curve) — chống replay chéo program/cluster
 48..80 | 32 B | bonding_curve Pubkey
 80..112| 32 B | buyer Pubkey (phải là Signer của buy_priority)
 112    |  1 B | milestone_level (phải == curve.active_milestone)

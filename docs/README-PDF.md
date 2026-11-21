@@ -2,9 +2,9 @@
 
 | Tệp | Nội dung | Số trang |
 |---|---|---|
-| [`MetaPump-Whitepaper-v1.5.pdf`](./MetaPump-Whitepaper-v1.5.pdf) | Whitepaper `v1.5` — bản in/chia sẻ cho nhà đầu tư | 35 |
-| [`MetaPump-Yellow-Paper-v1.0.pdf`](./MetaPump-Yellow-Paper-v1.0.pdf) | Yellow Paper `v1.0` — đặc tả hình thức (audit) | 17 |
-| [`MetaPump-Pitch-Deck.pdf`](./MetaPump-Pitch-Deck.pdf) | Pitch deck 14 slides, 16:9, dựng bằng script (không còn nguồn Google Slides) | 14 |
+| [`Game9K-Whitepaper-v1.5.pdf`](./Game9K-Whitepaper-v1.5.pdf) | Whitepaper `v1.5` — bản in/chia sẻ cho nhà đầu tư | 35 |
+| [`Game9K-Yellow-Paper-v1.0.pdf`](./Game9K-Yellow-Paper-v1.0.pdf) | Yellow Paper `v1.0` — đặc tả hình thức (audit) | 17 |
+| [`Game9K-Pitch-Deck.pdf`](./Game9K-Pitch-Deck.pdf) | Pitch deck 14 slides, 16:9, dựng bằng script (không còn nguồn Google Slides) | 14 |
 
 ## Dựng lại
 
@@ -16,25 +16,25 @@ sudo apt install fonts-dejavu-core                       # phương án dự ph�
 
 # Whitepaper
 .venv/bin/python scripts/build_whitepaper_pdf.py \
-    docs/WHITEPAPER.md docs/MetaPump-Whitepaper-v1.5.pdf
+    docs/WHITEPAPER.md docs/Game9K-Whitepaper-v1.5.pdf
 
 # Pitch Deck (14 slides, 16:9) — kiểm tra sau khi dựng
-.venv/bin/python scripts/build_pitch_deck.py docs/MetaPump-Pitch-Deck.pdf
+.venv/bin/python scripts/build_pitch_deck.py docs/Game9K-Pitch-Deck.pdf
 .venv/bin/python scripts/check_pitch_deck.py --with-verifier
 
 # Yellow Paper
 .venv/bin/python - <<'PY'
 import sys; sys.path.insert(0, "scripts")
 import build_whitepaper_pdf as B
-B.build("docs/YELLOWPAPER.md", "docs/MetaPump-Yellow-Paper-v1.0.pdf",
-        "MetaPump Yellow Paper v1.0",
+B.build("docs/YELLOWPAPER.md", "docs/Game9K-Yellow-Paper-v1.0.pdf",
+        "Game9K Yellow Paper v1.0",
         "Formal Specification — Version-Synced Game Capital Formation",
         kicker="YELLOW PAPER", paper_label="Yellow Paper v1.0",
         running_tagline="Formal Specification — Version-Synced Game Capital Formation")
 PY
 ```
 
-Script sẽ tự gộp font (Latin + tiếng Việt + box-drawing) vào cache `~/.cache/metapump-pdf-fonts`
+Script sẽ tự gộp font (Latin + tiếng Việt + box-drawing) vào cache `~/.cache/game9k-pdf-fonts`
 ở lần chạy đầu tiên; trong repo chỉ có tệp PDF thành phẩm.
 
 > **Kiểm chứng deck:** `scripts/check_pitch_deck.py` đối chiếu từng con số trên deck với
@@ -49,7 +49,8 @@ Script sẽ tự gộp font (Latin + tiếng Việt + box-drawing) vào cache `~
 - **Mục lục có số trang** + **outline điều hướng** trong trình đọc PDF.
 - **Bảng có header lặp lại** khi sang trang; bảng ≥ 7 cột tự chuyển **trang ngang (landscape)**.
 - Công thức LaTeX trong Markdown được chuyển sang Unicode (chỉ số dưới/trên giữ dạng `<sub>`/`<super>`).
-- Header/footer chạy theo trang: `METAPUMP · <tên tài liệu>` — `github.com/khanhlegood1/GameFun` — số trang.
+- Header/footer chạy theo trang: `GAME9K FUNDING PORTAL · <tên tài liệu>` — `github.com/khanhlegood1/GameFun` — số trang.
+- **Domain separator on-chain là hằng 16 B:** `b"GAME9K_POP_V1\0\0\0"` và `b"GAME9K_MILE_V1\0\0"` (zero-pad), nên mọi offset & kích thước struct trong YP §7.1 không đổi.
 
 > Script kiểm tra hồi quy: sau khi dựng, mọi mục trong mục lục được đối chiếu lại với
 > nội dung trang tương ứng; lệch số trang sẽ hiện ngay khi build.

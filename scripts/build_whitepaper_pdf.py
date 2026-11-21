@@ -5,7 +5,7 @@ Why this exists: this repository's whitepaper is the investor-facing artifact,
 and it is regenerated whenever a section changes. A browser-less renderer keeps
 that reproducible on a bare CI box.
 
-What it produces (see docs/MetaPump-Whitepaper-v1.5.pdf):
+What it produces (see docs/Game9K-Whitepaper-v1.5.pdf):
   * A4, embedded fonts, real selectable/searchable text
   * cover page built from the document-info table (single source of truth)
   * a table of contents with page numbers + a full PDF outline
@@ -27,7 +27,7 @@ written into the repository except the produced PDF.
 
 Usage
 -----
-    python3 scripts/build_whitepaper_pdf.py docs/WHITEPAPER.md docs/MetaPump-Whitepaper-v1.5.pdf
+    python3 scripts/build_whitepaper_pdf.py docs/WHITEPAPER.md docs/Game9K-Whitepaper-v1.5.pdf
 """
 import html as _html
 import os
@@ -50,7 +50,7 @@ from reportlab.platypus.tableofcontents import TableOfContents
 
 # --- font bootstrap -------------------------------------------------------
 FONT_CACHE = os.path.join(os.environ.get("XDG_CACHE_HOME", os.path.expanduser("~/.cache")),
-                          "metapump-pdf-fonts")
+                          "game9k-pdf-fonts")
 
 DEJAVU_DIRS = ["/usr/share/fonts/truetype/dejavu", "/usr/share/fonts/TTF", "/Library/Fonts"]
 NPM_DIRS = ["node_modules/@fontsource", os.path.expanduser("~/.npm/@fontsource")]
@@ -143,7 +143,7 @@ BRAND = {"paper": "Whitepaper v1.5",
          "tagline": "Version-Synced Game Capital Launchpad"}
 
 #!/usr/bin/env python3
-"""Markdown -> print-quality PDF renderer tuned for the MetaPump whitepaper.
+"""Markdown -> print-quality PDF renderer tuned for the Game9K whitepaper.
 
 No pandoc/LaTeX/Chromium in this sandbox, so this builds the PDF directly with
 ReportLab: real text (selectable/searchable), embedded fonts, outline bookmarks,
@@ -635,10 +635,10 @@ class Doc(BaseDocTemplate):
         canv.line(42, height - 34, width - 42, height - 34)
         canv.setFont("MetaSans-Bold", 6.8)
         canv.setFillColor(colors.HexColor("#12325c"))
-        canv.drawString(42, height - 28, "METAPUMP")
+        canv.drawString(42, height - 28, "GAME9K FUNDING PORTAL")
         canv.setFont("MetaSans", 6.8)
         canv.setFillColor(colors.HexColor("#7a828c"))
-        canv.drawString(42 + pdfmetrics.stringWidth("METAPUMP", "MetaSans-Bold", 6.8) + 6,
+        canv.drawString(42 + pdfmetrics.stringWidth("GAME9K FUNDING PORTAL", "MetaSans-Bold", 6.8) + 6,
                         height - 28, seed_left)
         canv.drawRightString(width - 42, height - 28, seed_right)
         # footer
@@ -1047,7 +1047,7 @@ def cover_story(info_rows=None, kicker="WHITEPAPER", tagline=None):
     st = build_styles()
     story = [Spacer(1, 96)]
     story.append(Paragraph(
-        '<font color="#1a4b8c" size="10"><b>METAPUMP</b></font>',
+        '<font color="#1a4b8c" size="10"><b>GAME9K FUNDING PORTAL</b></font>',
         ParagraphStyle("cv1", fontName="MetaSans", fontSize=10, leading=14, alignment=TA_LEFT)))
     story.append(Spacer(1, 6))
     story.append(Paragraph(
@@ -1061,7 +1061,7 @@ def cover_story(info_rows=None, kicker="WHITEPAPER", tagline=None):
     story.append(rule)
     story.append(Spacer(1, 22))
     story.append(Paragraph(
-        "MetaPump là Bệ phóng Vốn đồng bộ theo phiên bản Game đầu tiên trên Thế giới "
+        "Game9K Funding Portal là Bệ phóng Vốn đồng bộ theo phiên bản Game đầu tiên trên Thế giới "
         "(tài trợ game phát triển thật ở cấp độ phiên bản)",
         ParagraphStyle("cvt", fontName="MetaSans-Bold", fontSize=13.4, leading=19.5,
                        textColor=colors.HexColor("#12325c"), alignment=TA_LEFT)))
@@ -1104,7 +1104,7 @@ def cover_story(info_rows=None, kicker="WHITEPAPER", tagline=None):
     story.append(Spacer(1, 40))
     story.append(Paragraph(
         "Tài liệu trình bày tầm nhìn sản phẩm, mô hình kinh tế, phân tích thị trường và kiến trúc "
-        "của MetaPump phục vụ nghiên cứu chiến lược và thẩm định đầu tư. Không cấu thành bản cáo "
+        "của Game9K Funding Portal phục vụ nghiên cứu chiến lược và thẩm định đầu tư. Không cấu thành bản cáo "
         "bạch chào bán chứng khoán hay lời khuyên đầu tư tại bất kỳ khu vực pháp lý nào.",
         ParagraphStyle("dis", fontName="MetaSans-It", fontSize=7.4, leading=10.6,
                        textColor=colors.HexColor("#6b7480"), alignment=TA_JUSTIFY)))
@@ -1189,9 +1189,9 @@ def build(src, out, title, subject, debug=False, kicker="WHITEPAPER",
     info_rows = [r for r in info_rows if not re.match(r"^:?-{2,}:?$", (r[0] or "").strip())]
 
     def assemble(entries, shift=0):
-        doc = Doc(out, pagesize=A4, title=title, author="MetaPump (khanhlegood1/GameFun)",
+        doc = Doc(out, pagesize=A4, title=title, author="Game9K (khanhlegood1/GameFun)",
                     subject=subject,
-                    keywords="MetaPump, VGBC, Version Bond, Solana, GameFi, whitepaper")
+                    keywords="Game9K, VGBC, Version Bond, Solana, GameFi, whitepaper")
         story = cover_story(info_rows[1:], kicker=kicker,
                            tagline=tagline) + [PageBreak()]
         toc_head = ParagraphStyle("toctitle", parent=st["h2"])
@@ -1241,8 +1241,8 @@ def main(argv):
     if len(argv) < 2:
         sys.exit(__doc__)
     src = argv[0]
-    out = argv[1] if len(argv) > 1 else "MetaPump-Whitepaper.pdf"
-    build(src, out, "MetaPump Whitepaper v1.5",
+    out = argv[1] if len(argv) > 1 else "Game9K-Whitepaper.pdf"
+    build(src, out, "Game9K Whitepaper v1.5",
           "Version-Synced Game Capital Launchpad", debug=True)
 
 
