@@ -5,7 +5,7 @@
 
 | Thông tin tài liệu | Chi tiết |
 |---|---|
-| **Dự án** | **Game9K Funding Portal** — `game9k.com` (`khanhlegood1/GameFun`) |
+| **Dự án** | **Game9K Launchpad** — `game9k.com` (`khanhlegood1/GameFun`) |
 | **Phiên bản** | `v1.5 — Investor & Strategic Whitepaper (Evidence-Audited, Version-Unit Decomposed, Yellow-Paper-Traceable, Unit-Sensitivity & Epistemic Integrity)` |
 | **Ngày phát hành** | Tháng 11 / 2026 |
 | **Phân khúc kiến tạo** | **Version-Synced Game Capital Markets** *(Phiên bản Game là Đơn vị của Tài sản)* |

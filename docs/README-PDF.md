@@ -49,7 +49,7 @@ Script sẽ tự gộp font (Latin + tiếng Việt + box-drawing) vào cache `~
 - **Mục lục có số trang** + **outline điều hướng** trong trình đọc PDF.
 - **Bảng có header lặp lại** khi sang trang; bảng ≥ 7 cột tự chuyển **trang ngang (landscape)**.
 - Công thức LaTeX trong Markdown được chuyển sang Unicode (chỉ số dưới/trên giữ dạng `<sub>`/`<super>`).
-- Header/footer chạy theo trang: `GAME9K FUNDING PORTAL · <tên tài liệu>` — `github.com/khanhlegood1/GameFun` — số trang.
+- Header/footer chạy theo trang: `GAME9K LAUNCHPAD · <tên tài liệu>` — `github.com/khanhlegood1/GameFun` — số trang.
 - **Domain separator on-chain là hằng 16 B:** `b"GAME9K_POP_V1\0\0\0"` và `b"GAME9K_MILE_V1\0\0"` (zero-pad), nên mọi offset & kích thước struct trong YP §7.1 không đổi.
 
 > Script kiểm tra hồi quy: sau khi dựng, mọi mục trong mục lục được đối chiếu lại với

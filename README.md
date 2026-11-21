@@ -1,6 +1,6 @@
-# Game9K Funding Portal (`GameFun`)
+# Game9K Launchpad (`GameFun`)
 
-**Game9K Funding Portal** (`game9k.com`) là nền tảng **Instant-Play HTML5 Game Portal** kết hợp **Version-Gated Solana Launchpad**, được thiết kế và phát triển theo **AI-Agile Product Development Framework v1.0** (AI-native · HITL-governed · Contract-first · Living Documentation).
+**Game9K Launchpad** (`game9k.com`) là nền tảng **Instant-Play HTML5 Game Portal** kết hợp **Version-Gated Solana Launchpad**, được thiết kế và phát triển theo **AI-Agile Product Development Framework v1.0** (AI-native · HITL-governed · Contract-first · Living Documentation).
 
 ### Bốn trụ cột sản phẩm cốt lõi
 1. **Phân phối & Kiểm định Game chuẩn [Poki](https://developers.poki.com/guide/working-with-poki):** Chơi tức thì trên trình duyệt (desktop & mobile, không cần ví), SDK tương thích 1:1 sự kiện Poki, công cụ **Game9K Inspector**, phễu kiểm định 3 chặng (*Mystery Tile Playtest → Player Fit Test 500 lượt → Web Fit Test CTR/Time/C2P*) và chia sẻ doanh thu công bằng (100% direct traffic / 50-50 portal traffic).

@@ -66,7 +66,7 @@ EXOTIC = set("\u2190\u2191\u2192\u2193\u2194\u2248\u2265\u2264\u0394\u03a3\u03a6
              "\u2080\u2081\u2082\u2083\u2084\u2085\u2086\u2087\u2088\u2089"
              "\u25b8\u2713\u2020\u00bd")
 
-FOOTER = "GAME9K FUNDING PORTAL  ·  INVESTOR PITCH DECK v1.5  ·  CONFIDENTIAL (THÁNG 11/2026)"
+FOOTER = "GAME9K LAUNCHPAD  ·  INVESTOR PITCH DECK v1.5  ·  CONFIDENTIAL (THÁNG 11/2026)"
 TOTAL = 14
 
 # ---------------------------------------------------------------- text utils
@@ -388,7 +388,7 @@ def box(c, x, y, w, h, title, body, accent=GREEN, title_size=9.4, body_size=8.6)
 # ---------------------------------------------------------------- slides
 def s01_cover(c):
     slide(c, 1, "PITCH DECK v1.5  ·  WHITEPAPER v1.5  ·  YELLOW PAPER v1.0",
-          "GAME9K FUNDING PORTAL", accent=GREEN)
+          "GAME9K LAUNCHPAD", accent=GREEN)
 
     y = H - 155
     c.setFont(FB, 19)
