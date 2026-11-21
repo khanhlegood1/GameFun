@@ -19,7 +19,7 @@ flowchart TB
         Council["🔑 Protocol Multisig Signers<br/>Quản trị tham số & nâng cấp hợp đồng qua Squads v4"]
     end
 
-    MP["🎮 Hệ thống MetaPump<br/>(Web Game Portal + Version Arena +<br/>PoP Community Engine + Version-Gated Launchpad)"]
+    MP["🎮 Hệ thống Game9K<br/>(Web Game Portal + Version Arena +<br/>PoP Community Engine + Version-Gated Launchpad)"]
 
     subgraph External["Hệ thống Bên ngoài (External Systems)"]
         Supa["🗄️ Supabase Platform<br/>(PostgreSQL 16 + Auth + RLS + Realtime)"]
@@ -52,12 +52,12 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-    Browser["🌐 Trình duyệt Người dùng (Desktop / Mobile)<br/>Origin 1: https://metapump.gg (Portal Cookie)<br/>Origin 2: https://<vid>.play|preview.metapump-cdn.net (Sandboxed Iframe)"]
+    Browser["🌐 Trình duyệt Người dùng (Desktop / Mobile)<br/>Origin 1: https://game9k.com (Portal Cookie)<br/>Origin 2: https://<vid>.play|preview.game9k-cdn.net (Sandboxed Iframe)"]
 
-    subgraph PortalBoundary["Ranh giới Hệ thống MetaPump"]
+    subgraph PortalBoundary["Ranh giới Hệ thống Game9K"]
         Web["📦 apps/web — Next.js App Router (TypeScript)<br/>SSR Portal, Developer Studio, Inspector, Arena UI,<br/>Launchpad UI, REST API /api/v1, SSE, KMS Oracle Client"]
         Worker["⚙️ apps/worker — Isolated Build & Batch Worker (Node.js)<br/>Non-root container, CPU/RAM/tmpfs giới hạn:<br/>yauzl ZIP inspect, SHA-256, Build Diff, Fit/Arena/Merkle jobs"]
-        Indexer["📊 apps/indexer — Solana Event Indexer (TypeScript)<br/>Tiêu thụ sự kiện metapump_*, tính OHLCV candles,<br/>cập nhật holder snapshots & phát hiện cụm ví Sybil"]
+        Indexer["📊 apps/indexer — Solana Event Indexer (TypeScript)<br/>Tiêu thụ sự kiện game9k_*, tính OHLCV candles,<br/>cập nhật holder snapshots & phát hiện cụm ví Sybil"]
         EdgeW["🌍 workers/game-delivery — Cloudflare Worker<br/>Xác thực preview/play JWT, map đúng prefix version,<br/>áp CSP + Sandbox + CORP/COOP, chặn đường dẫn chéo"]
         SDK["🧩 packages/game-sdk — HTML5 SDK (<12KB)<br/>Chạy trong iframe game; postMessage chuẩn Poki + PoP telemetry"]
 
@@ -68,9 +68,9 @@ flowchart TB
         end
 
         subgraph OnChain["Solana Programs (Anchor / Rust)"]
-            ProgReg["📜 metapump_registry<br/>Game & VersionMilestone PDAs"]
-            ProgCurve["📈 metapump_curve<br/>VGBC 4 Tranches, PoP Gate, Anti-Dump, Ragequit, DEX CPI"]
-            ProgRew["🎁 metapump_rewards<br/>Community 21d Stream & Dev 90d Vesting"]
+            ProgReg["📜 game9k_registry<br/>Game & VersionMilestone PDAs"]
+            ProgCurve["📈 game9k_curve<br/>VGBC 4 Tranches, PoP Gate, Anti-Dump, Ragequit, DEX CPI"]
+            ProgRew["🎁 game9k_rewards<br/>Community 21d Stream & Dev 90d Vesting"]
         end
     end
 
@@ -145,11 +145,11 @@ flowchart LR
 ### 1.4. C4 Level 4 — Mô hình Cô lập Origin & Bảo mật Trình duyệt (Runtime Isolation Detail)
 
 - **Hai registrable domain khác nhau hoàn toàn** (không chung eTLD+1):
-  - Portal: `metapump.gg` (giữ cookie đăng nhập Supabase, CSRF/session, kết nối ví Solana).
-  - Game Content: `<version-id>.preview.metapump-cdn.net` và `<version-id>.play.metapump-cdn.net` (nằm trong danh sách cách ly site-per-process của trình duyệt; mỗi `version_id` có `localStorage`/`IndexedDB` riêng, không bao giờ đọc chéo version khác hay portal).
+  - Portal: `game9k.com` (giữ cookie đăng nhập Supabase, CSRF/session, kết nối ví Solana).
+  - Game Content: `<version-id>.preview.game9k-cdn.net` và `<version-id>.play.game9k-cdn.net` (nằm trong danh sách cách ly site-per-process của trình duyệt; mỗi `version_id` có `localStorage`/`IndexedDB` riêng, không bao giờ đọc chéo version khác hay portal).
 - **Thuộc tính iframe mặc định:** `sandbox="allow-scripts allow-same-origin allow-pointer-lock"` (cấm `allow-top-navigation`, `allow-popups`, `allow-modals`, `allow-forms` trừ khi được cấu hình rõ), `allow="autoplay; fullscreen; gamepad"` (cấm `camera`, `microphone`, `geolocation`, `payment`, `usb`, `clipboard-read`).
 - **Response headers từ `workers/game-delivery`:**
-  - `Content-Security-Policy`: `default-src 'self' blob: data:; script-src 'self' 'wasm-unsafe-eval' blob:; connect-src 'self' https://api-telemetry.metapump-cdn.net; frame-ancestors https://metapump.gg https://staging.metapump.gg; object-src 'none'; base-uri 'none'`
+  - `Content-Security-Policy`: `default-src 'self' blob: data:; script-src 'self' 'wasm-unsafe-eval' blob:; connect-src 'self' https://api-telemetry.game9k-cdn.net; frame-ancestors https://game9k.com https://staging.game9k.com; object-src 'none'; base-uri 'none'`
   - `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`, `Cross-Origin-Resource-Policy: cross-origin`
   - Cache: với `*.play.*` (bản đã duyệt bất biến): `Cache-Control: public, max-age=31536000, immutable` gắn khóa cache theo đầy đủ `<version-id>/<path>`; với `*.preview.*`: `Cache-Control: private, no-store` để thu hồi (`revoke`) có hiệu lực ngay lập tức.
 
@@ -206,7 +206,7 @@ flowchart LR
 | **ADR-001** | **Modular Monolith + Isolated Worker** trong pnpm monorepo thay vì chia nhỏ microservices sớm | Tốc độ phát triển nhanh, chia sẻ type Zod/OpenAPI 100%, chỉ tách riêng `worker` (xử lý ZIP không tin cậy) và `indexer` (luồng on-chain liên tục). | Khi lưu lượng tăng lớn, có thể tách `arena` hoặc `telemetry` theo đúng ranh giới service đã phân chia. |
 | **ADR-002** | **PostgreSQL Queue (`FOR UPDATE SKIP LOCKED`)** cho xử lý ZIP & batch jobs (`S1-04`) | Đảm bảo tính nguyên tử cùng transaction với `upload_sessions` & `game_versions`, không cần vận hành Redis/RabbitMQ ở MVP. | Không phù hợp tần suất >10k jobs/s; nếu vượt ngưỡng sẽ chuyển heartbeat sang batch buffer trước. |
 | **ADR-003** | **Registrable Domain riêng + Wildcard Subdomain theo `version_id`** qua Cloudflare Worker + R2 (`S1-08`) | Cô lập tuyệt đối cookie/storage/origin cho mã JS không tin cậy của bên thứ ba; không bao giờ để ZIP bytes đi qua Next.js. | Cần cấu hình Wildcard TLS (Cloudflare Advanced Certificate Manager) cho `*.preview.<domain>` và `*.play.<domain>`. |
-| **ADR-004** | **Pre-Graduation Custody trên `BuyerPosition` PDA** (mở rút 1:1 ra Token-2022 ATA khi Graduate M4) | Chặn triệt để lách phí Early-Exit bằng cách chuyển ví, chặn gom token từ 100 ví bot Priority Window, và chặn tạo LP lậu trước M4. | Trước M4 người dùng chỉ mua/bán trên `metapump_curve` (và `ragequit` nếu Stalled), sau M4 giao dịch tự do trên mọi DEX/Jupiter. |
+| **ADR-004** | **Pre-Graduation Custody trên `BuyerPosition` PDA** (mở rút 1:1 ra Token-2022 ATA khi Graduate M4) | Chặn triệt để lách phí Early-Exit bằng cách chuyển ví, chặn gom token từ 100 ví bot Priority Window, và chặn tạo LP lậu trước M4. | Trước M4 người dùng chỉ mua/bán trên `game9k_curve` (và `ragequit` nếu Stalled), sau M4 giao dịch tự do trên mọi DEX/Jupiter. |
 | **ADR-005** | **Hybrid Ed25519 Oracle Attestation + On-Chain Hard Caps** | Không thể chạy video playtest hay kiểm tra ZIP trên Solana; dùng chữ ký Ed25519 ngắn hạn (`120s`) kết hợp trần cứng on-chain giúp vừa chống bot hiệu quả vừa không cho Oracle quyền chạm vào tiền. | Nếu backend tạm bảo trì trong 24h Priority Window thì mua ưu tiên bị trễ; Public Phase, Sell, Trigger Stall & Ragequit vẫn chạy 100% on-chain không cần backend. |
 | **ADR-006** | **Graduation sang Meteora DAMM v2 (ưu tiên) / Raydium CPMM (dự phòng)** với công thức khớp giá 0% gap | Tránh chi phí OpenBook, hỗ trợ Token-2022, khóa vĩnh viễn thanh khoản chống rug nhưng vẫn tạo dòng phí bền vững cho cộng đồng & dev. | Cần duy trì integration test với bản binary mới nhất của DAMM v2 / CPMM trên `LiteSVM`. |
 
@@ -214,9 +214,9 @@ flowchart LR
 
 ## 4. Mô hình Đe dọa STRIDE & Đối sách Bảo mật (P05 Security Gate)
 
-| Nhóm STRIDE | Mối đe dọa cụ thể trong MetaPump | Mức độ | Biện pháp Kiểm soát Kỹ thuật |
+| Nhóm STRIDE | Mối đe dọa cụ thể trong Game9K | Mức độ | Biện pháp Kiểm soát Kỹ thuật |
 |---|---|---|---|
-| **S — Spoofing** | Giả mạo chữ ký PoP Attestation để bot mua trong 24h đầu; đánh cắp cookie portal từ game HTML5 độc hại. | Critical | Verify trực tiếp `Ed25519SigVerify` kèm domain separator, `program_id`, `curve`, `buyer`, `expiry_ts <= 120s`; cô lập game trên domain `metapump-cdn.net` tách rời `metapump.gg`. |
+| **S — Spoofing** | Giả mạo chữ ký PoP Attestation để bot mua trong 24h đầu; đánh cắp cookie portal từ game HTML5 độc hại. | Critical | Verify trực tiếp `Ed25519SigVerify` kèm domain separator, `program_id`, `curve`, `buyer`, `expiry_ts <= 120s`; cô lập game trên domain `game9k-cdn.net` tách rời `game9k.com`. |
 | **T — Tampering** | ZIP Slip (`../../`), symlink, sửa đổi file build đã kiểm định, hoặc client tự sửa `role = 'admin'` / `spark_balance`. | Critical | `yauzl` từ chối tuyệt đối path traversal/symlink/encrypt; lưu `zip_sha256` bất biến trong DB (trigger cấm UPDATE) & trên Solana; Supabase RLS + negative `pgTAP` tests cấm ghi cột đặc quyền. |
 | **R — Repudiation** | Admin/Curator duyệt mốc gian lận hoặc Developer chối bỏ thao tác thu hồi/cập nhật. | High | Bảng `audit_logs` append-only có `correlation_id`; mọi lần mở khóa mốc ghi vĩnh viễn `evidence_bundle_sha256` & `attested_by` lên Solana. |
 | **I — Information Disclosure** | Lộ R2 secret, Supabase `service_role`, presigned PUT URL trong log, hoặc lộ phiên bản thật trong Arena trước khi vote. | High | Env validator không in giá trị; audit redactor lọc URL/token; view/API Arena không trả `slot_a_version_id`/`slot_b_version_id` khi `voted_at IS NULL`; lỗi API không trả đường dẫn filesystem. |

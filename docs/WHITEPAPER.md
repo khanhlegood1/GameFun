@@ -1,19 +1,19 @@
-# METAPUMP WHITEPAPER
+# GAME9K WHITEPAPER
 
-## MetaPump là Bệ phóng Vốn đồng bộ theo phiên bản Game đầu tiên trên Thế giới (tài trợ game phát triển thật ở cấp độ phiên bản)
+## Game9K là Bệ phóng Vốn đồng bộ theo phiên bản Game đầu tiên trên Thế giới (tài trợ game phát triển thật ở cấp độ phiên bản)
 ### *(The World's First Version-Synced Game Capital Launchpad — Funding Real Game Development at the Version Level)*
 
 | Thông tin tài liệu | Chi tiết |
 |---|---|
-| **Dự án** | **MetaPump** (`khanhlegood1/GameFun`) |
+| **Dự án** | **Game9K Funding Portal** — `game9k.com` (`khanhlegood1/GameFun`) |
 | **Phiên bản** | `v1.5 — Investor & Strategic Whitepaper (Evidence-Audited, Version-Unit Decomposed, Yellow-Paper-Traceable, Unit-Sensitivity & Epistemic Integrity)` |
 | **Ngày phát hành** | Tháng 11 / 2026 |
 | **Phân khúc kiến tạo** | **Version-Synced Game Capital Markets** *(Phiên bản Game là Đơn vị của Tài sản)* |
 | **Vòng gọi vốn hiện tại** | **Pre-Seed $1.0M** *(Lộ trình kế tiếp: Seed $3.0M → Series A $12.0M → Series B $25.0M)* |
 | **Hạ tầng nền tảng** | Open Web (HTML5 / WebGL / WebGPU) · Cloudflare Edge · Solana (SPL Token-2022) |
-| **Tài liệu đi kèm** | [**`YELLOWPAPER.md`**](./YELLOWPAPER.md) *(Đặc tả toán học & mật mã)* · [`MetaPump-Pitch-Deck.pdf`](./MetaPump-Pitch-Deck.pdf) · [`PRD.md`](./PRD.md) · [`04-solana-smart-contracts.md`](./04-solana-smart-contracts.md) · [`../scripts/verify_protocol_math.py`](../scripts/verify_protocol_math.py) |
+| **Tài liệu đi kèm** | [**`YELLOWPAPER.md`**](./YELLOWPAPER.md) *(Đặc tả toán học & mật mã)* · [`Game9K-Pitch-Deck.pdf`](./Game9K-Pitch-Deck.pdf) · [`PRD.md`](./PRD.md) · [`04-solana-smart-contracts.md`](./04-solana-smart-contracts.md) · [`../scripts/verify_protocol_math.py`](../scripts/verify_protocol_math.py) |
 
-> **Tuyên bố miễn trừ trách nhiệm (Disclaimer):** Tài liệu này trình bày tầm nhìn sản phẩm, mô hình kinh tế, phân tích thị trường và kiến trúc của MetaPump phục vụ mục đích nghiên cứu chiến lược, trao đổi đối tác và thẩm định đầu tư. Tài liệu không cấu thành bản cáo bạch chào bán chứng khoán hay lời khuyên đầu tư tài chính tại bất kỳ khu vực pháp lý nào. Các chỉ tiêu tài chính và phân bổ vốn ở mục cuối là mô hình kế hoạch và có thể được hiệu chỉnh theo từng vòng gọi vốn.
+> **Tuyên bố miễn trừ trách nhiệm (Disclaimer):** Tài liệu này trình bày tầm nhìn sản phẩm, mô hình kinh tế, phân tích thị trường và kiến trúc của Game9K phục vụ mục đích nghiên cứu chiến lược, trao đổi đối tác và thẩm định đầu tư. Tài liệu không cấu thành bản cáo bạch chào bán chứng khoán hay lời khuyên đầu tư tài chính tại bất kỳ khu vực pháp lý nào. Các chỉ tiêu tài chính và phân bổ vốn ở mục cuối là mô hình kế hoạch và có thể được hiệu chỉnh theo từng vòng gọi vốn.
 
 ---
 
@@ -32,10 +32,10 @@ Một studio Việt Nam phát hành tựa game HTML5 chất lượng lên cổng
 > **Câu hỏi tỷ đô chưa một sản phẩm nào trên thị trường trả lời được:**  
 > ***"Bản cập nhật này có tốt hơn bản trước — và có xứng đáng được cộng đồng tài trợ tiếp không?"***
 
-### 1.2. Lời giải của MetaPump: Phiên bản là Đơn vị của Tài sản (*"Không Tốt hơn — Không Cho Mở Thanh khoản Mới"*)
+### 1.2. Lời giải của Game9K: Phiên bản là Đơn vị của Tài sản (*"Không Tốt hơn — Không Cho Mở Thanh khoản Mới"*)
 
 ```text
-                              MỘT TỰA GAME TRÊN METAPUMP
+                              MỘT TỰA GAME TRÊN GAME9K
   ┌──────────────────────────────────────────────────────────────────────────┐
   │   v0.2 (M1)          v0.5 (M2)          v0.7 (Tụt lùi)       v1.0 (M4)   │
   │  ┌──────────┐       ┌──────────┐        ┌──────────┐        ┌──────────┐ │
@@ -47,7 +47,7 @@ Một studio Việt Nam phát hành tựa game HTML5 chất lượng lên cổng
   └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-**MetaPump** hợp nhất **4 nguyên tử công nghệ – kinh tế** xoay quanh đơn vị duy nhất là **Phiên bản (`version`)**:
+**Game9K** hợp nhất **4 nguyên tử công nghệ – kinh tế** xoay quanh đơn vị duy nhất là **Phiên bản (`version`)**:
 
 1. **Immutable Version Registry (Sổ cái Phiên bản Bất biến):** Mỗi bản build HTML5 phải khai báo mã băm bản gốc cha (`base_sha256`), bị từ chối tự động nếu không tăng số phiên bản, được đo tỷ lệ thay đổi thực chất (*Build Diff*), đóng dấu `SHA-256` lên Solana và chạy trên miền cô lập riêng.
 2. **Verified Play Version Rating (Định giá Chất lượng theo Phiên bản — Poki × Arena):** Chỉ người đã chơi thật (ví dụ ≥10 phút/24h với điểm *PoP/PoPW*) mới được chấm điểm có trọng số; mỗi bản cập nhật phải vượt phễu *Playtest → Player Fit 500 lượt → Web Fit* kết hợp đấu mù A/B (*Blind Version Duel: `v(n)` vs `v(n-1)`*), neo mã băm Merkle lên chuỗi mỗi giờ để không ai — kể cả cổng game — sửa được điểm.
@@ -55,7 +55,7 @@ Một studio Việt Nam phát hành tựa game HTML5 chất lượng lên cổng
 4. **On-Chain Play-Gate & Anti-Snipe Flywheel:** Điều kiện mua sớm dựa trên *dấu chân chơi thật* nằm ngay trong smart contract (không thể lách qua RPC), đi kèm giới hạn theo chu kỳ (*epoch cap*), trần ví và phí thoát sớm (`4%` đến `12%`) biến mọi giao dịch mua-bán chớp nhoáng của bot thành **lỗ ròng chắc chắn** để nuôi quỹ thưởng game thủ thật.
 
 > **Luận điểm Đầu tư (Investment Thesis) trong 1 câu:**  
-> *AI đã kéo chi phí sản xuất một bản game HTML5 về gần bằng 0, biến **kiểm định chất lượng theo phiên bản (Version Curation)** và **phân bổ vốn gắn với giờ chơi thật (Gate-First Capital Formation)** thành nút thắt cổ chai đắt giá nhất thập kỷ tới — và MetaPump sở hữu trọn vẹn nút thắt đó.*
+> *AI đã kéo chi phí sản xuất một bản game HTML5 về gần bằng 0, biến **kiểm định chất lượng theo phiên bản (Version Curation)** và **phân bổ vốn gắn với giờ chơi thật (Gate-First Capital Formation)** thành nút thắt cổ chai đắt giá nhất thập kỷ tới — và Game9K sở hữu trọn vẹn nút thắt đó.*
 
 ### 1.3. Bốn Nguyên tử đã được Đặc tả Hình thức & Kiểm chứng Tái lập — *Vì sao đây không phải Lý thuyết*
 
@@ -83,7 +83,7 @@ Bốn nguyên tử ở trên chỉ đáng tin nếu mỗi nguyên tử trả l�
 
 **Tình huống giả định.** Một studio `3` người ở Đà Nẵng làm game bắn cá HTML5. Họ đã qua `M1`, két sắt mở ra `5.52 SOL` *(~`$828`)*, và `11` ngày sau gửi lên “phiên bản `v0.3`” để xin mở tiếp `M2` *(thêm `180M` token)*. Nhưng bản “`v0.3`” thật ra chỉ **đổi màu nút Play và thêm một banner quảng cáo**.
 
-| Câu hỏi của nhà đầu tư | Launchpad thông thường | MetaPump |
+| Câu hỏi của nhà đầu tư | Launchpad thông thường | Game9K |
 |---|---|---|
 | **Ai xác nhận “đây là bản mới thật”?** | Không ai. Nhãn `v0.3` do studio tự gõ vào ô mô tả. | **Máy.** Gói ZIP được giải nén, sắp xếp theo đường dẫn, **bỏ dấu thời gian ZIP** rồi băm `SHA-256` — cùng một mã nguồn luôn cho **cùng một dấu vân tay**, không thể “đóng gói lại cho khác đi”. |
 | **Khác bản cũ bao nhiêu? Có con số không?** | Không có. | `BuildDiff` đo phần **thực chất thay đổi**: bản `v0.3` chỉ đổi `2.1%` nội dung, dưới ngưỡng `8%` ⇒ bị xếp loại `HOTFIX`. |
@@ -98,7 +98,7 @@ Bốn nguyên tử ở trên chỉ đáng tin nếu mỗi nguyên tử trả l�
 - **`VPH` không thể cày bằng cách treo máy.** Nhịp tim `15 s` chỉ được tính khi tab ở tiền cảnh, có sự kiện đầu vào hợp lệ **và** entropy của chuỗi khoảng thao tác $H(\Delta t_{\text{input}}) \ge H_{\min}$ *(loại bộ gõ tự động tuần hoàn $H \approx 0$)*; mỗi phiên bị chặn trần `2 giờ`, kèm suy giảm theo ngày $\omega_{\text{day}} \in \{1.0;\ 0.5;\ 0.1\}$ — nên chiến thuật "treo `24/7`" bị **vô hiệu hóa bằng toán** *(§3.1)*.
 - **Lá phiếu phải trả bằng giờ chơi thật.** Chỉ được chấm điểm khi có **`≥ 600 s`** chơi xác minh trong `24 h` *(hoặc `≥ 90 s` trên **mỗi** bản trong một trận đấu mù)* — phiếu không mua được, không thuê được *(§3.1)*.
 - **Cầu dao gian lận tự động.** Lấy mẫu hậu kiểm `0.5%` phiên + ước lượng hiệu chỉnh sai lệch *(difference/HT estimator)*; nếu $\widehat{\mathrm{BotShare}}_E > 0.08$ thì $\mathsf{allow\_new\_launch} \leftarrow \mathsf{false}$ **ngay trên chuỗi** (`INV-11`), chỉ mở lại sau **2 chu kỳ liên tiếp** sạch *(§3.2)* — đây là *hợp đồng tự dừng*, không phải thông cáo báo chí.
-- **Ngưỡng thắng có công thức, không có "cảm nhận".** Mô hình Bradley–Terry có trọng số + tiên nghiệm Gaussian; điều kiện qua cổng là $\mathrm{LCB}_{0.95}(v_k \succ v_{\text{ref}}) > 0.50$ với $z_{0.975} = 1.959964$, kèm `RatingTrust ≥ 0.85` và co rút Bayes $\kappa = 25$ phiếu *(§4.1)*. Nghĩa là: **MetaPump không thể tự tuyên bố một bản là tốt hơn** — nếu dữ liệu không đủ mạnh, cận dưới không vượt `0.50` và trần vốn **không mở**, bất kể ai muốn.
+- **Ngưỡng thắng có công thức, không có "cảm nhận".** Mô hình Bradley–Terry có trọng số + tiên nghiệm Gaussian; điều kiện qua cổng là $\mathrm{LCB}_{0.95}(v_k \succ v_{\text{ref}}) > 0.50$ với $z_{0.975} = 1.959964$, kèm `RatingTrust ≥ 0.85` và co rút Bayes $\kappa = 25$ phiếu *(§4.1)*. Nghĩa là: **Game9K không thể tự tuyên bố một bản là tốt hơn** — nếu dữ liệu không đủ mạnh, cận dưới không vượt `0.50` và trần vốn **không mở**, bất kể ai muốn.
 - **Điểm số không ai sửa được, kể cả cổng game.** Cuối mỗi giờ, toàn bộ điểm/VPH/phiếu được băm theo **RFC 6962 với tách miền** *(`0x00` cho lá, `0x01` cho nút — kháng tấn công tiền ảnh thứ hai)*, gốc `Root_h` ghi lên Solana *(§4.3)*. Studio và nhà đầu tư tự kiểm chứng trong $\mathcal{O}(\log_2 N)$ phép băm, không cần tin ai.
 
 ##### Case study 2 — “`500` người chơi thuê giá `$175`” *(vì sao “làm giả sự tiến bộ” là bài toán lỗ)*
@@ -156,7 +156,7 @@ Chuyện gì xảy ra khi con số này đi qua cổng:
 
 **Tình huống giả định.** Ngày mở bán một tựa game mới, một nhóm sniper tạo `40` ví và cố mua `20 SOL`/ví **ngay khối đầu tiên**, mục tiêu ôm `30–40%` cung giá đáy rồi xả lên người chơi thật sau `2` giờ.
 
-Từng bước trên MetaPump:
+Từng bước trên Game9K:
 
 1. **`24` giờ đầu mỗi chặng:** lệnh `buy_public` **bị khóa cứng ở tầng hợp đồng**. Chỉ `buy_priority` chạy được — mà nó đòi chứng thực `106 B` ký `Ed25519` gắn với **giờ chơi thật** của chính ví đó. Bot chưa chơi thì **không có chữ ký**.
 2. **Trần ví & trần chu kỳ:** một ví rót `20 SOL` **không** mua được `383.7M` token như trên đường cong trơn, mà bị chặn ở **`20M` token** *(trần `2%` cung)*, và hợp đồng chỉ thu đúng **`0.6413 SOL`** — phần dư **không bị trừ** *(khớp lệnh một phần chính xác)*. Trần chu kỳ `10%` curve *(=`70M`/`600 s`)* nghĩa là `40` ví *(cần `800M`)* chỉ có **`~3.5` ví lọt mỗi `10` phút**. Gom `40` ví **không mua nhanh hơn `1` người** — chỉ nhanh hơn ở chỗ **trả nhiều phí hơn**.
@@ -177,13 +177,13 @@ Và đây là nghịch lý đẹp nhất dành cho nhà đầu tư: **bot càng 
 | *"Nếu dữ liệu chơi thật không đạt thì sao?"* | Cổng **không mở**. Cận dưới `LCB₀.₉₅` không vượt `0.50` ⇒ `m_act` không tăng ⇒ trần cung không tăng ⇒ phí phạt/`Ragequit` hoàn vốn theo tỷ lệ. Thiệt hại bị chặn ở mức **nhỏ hơn nhiều** so với gọi đủ vốn ngay từ ngày đầu. | Yellow Paper §4.2, §6.2 |
 | *"Nếu cơ chế này bị cấm ở một thị trường?"* | **Phép chiếu Fallback $\Pi_{\text{fiat}}$** giữ nguyên `100%` sổ cái phiên bản, `VPH`, `BotShare`, xếp hạng Arena và cây Merkle; chỉ dòng giải ngân được thay bằng hợp đồng chia sẻ doanh thu USD theo đúng các vị từ $\mathcal{P}_{M1}\dots\mathcal{P}_{M4}$ — **lõi kiểm định phiên bản vẫn sống** dù đường cong bị vô hiệu hóa. | Yellow Paper §12.2; NQ `05/2025/NQ-CP` |
 
-> **Ranh giới Trung thực (`Epistemic Boundaries` — YELLOWPAPER §12.3).** Chúng tôi phân định rõ ba tầng: *(1)* **chứng minh tất định `100%`** — bảo toàn cung, `0%` token nền tảng, khả năng thanh toán đóng, đơn điệu giá, lỗ ròng của bot, công bằng `Ragequit`, liên tục giá DEX, bất biến hợp đồng sau thu hồi quyền nâng cấp; *(2)* **phụ thuộc giả định mật mã & hạ tầng** — kháng va chạm `SHA-256`, không thể giả mạo `Ed25519`, toàn vẹn khóa Oracle *(HSM/KMS + kiểm toán công khai)*, độ sống của Solana; *(3)* **không được toán học bảo đảm** — giá thứ cấp sau tốt nghiệp, độ sâu thanh khoản khi nhu cầu thật thấp, và các mục tiêu `D7 ≥ 18–20%` hay tỷ lệ chết `< 50%` **trước khi có dữ liệu vận hành**. **MetaPump tự tin làm được — nhưng tự tin dựa trên phần (1) đã chứng minh và phần (3) công bố là mục tiêu, không phải trên lời hứa.**
+> **Ranh giới Trung thực (`Epistemic Boundaries` — YELLOWPAPER §12.3).** Chúng tôi phân định rõ ba tầng: *(1)* **chứng minh tất định `100%`** — bảo toàn cung, `0%` token nền tảng, khả năng thanh toán đóng, đơn điệu giá, lỗ ròng của bot, công bằng `Ragequit`, liên tục giá DEX, bất biến hợp đồng sau thu hồi quyền nâng cấp; *(2)* **phụ thuộc giả định mật mã & hạ tầng** — kháng va chạm `SHA-256`, không thể giả mạo `Ed25519`, toàn vẹn khóa Oracle *(HSM/KMS + kiểm toán công khai)*, độ sống của Solana; *(3)* **không được toán học bảo đảm** — giá thứ cấp sau tốt nghiệp, độ sâu thanh khoản khi nhu cầu thật thấp, và các mục tiêu `D7 ≥ 18–20%` hay tỷ lệ chết `< 50%` **trước khi có dữ liệu vận hành**. **Game9K tự tin làm được — nhưng tự tin dựa trên phần (1) đã chứng minh và phần (3) công bố là mục tiêu, không phải trên lời hứa.**
 
 ### 1.4. Từ điển Nhanh & Kỷ luật Đo lường Dữ liệu *(Dành cho Nhà đầu tư Ngoài ngành Game)*
 
-Nguyên tắc xuyên suốt của tài liệu này: **mọi con số thị trường phải chỉ rõ năm đo, kích thước mẫu và cách tính; mọi con số kế hoạch của MetaPump phải ghi rõ là mục tiêu/dự phóng kèm công thức kiểm tra lại** (chạy tự động bằng [`scripts/verify_protocol_math.py`](../scripts/verify_protocol_math.py)).
+Nguyên tắc xuyên suốt của tài liệu này: **mọi con số thị trường phải chỉ rõ năm đo, kích thước mẫu và cách tính; mọi con số kế hoạch của Game9K phải ghi rõ là mục tiêu/dự phóng kèm công thức kiểm tra lại** (chạy tự động bằng [`scripts/verify_protocol_math.py`](../scripts/verify_protocol_math.py)).
 
-| Thuật ngữ | Hiểu trong 1 câu | Mốc Thực chứng Công khai *(Năm & Mẫu đo)* | Khác biệt Cấu trúc của MetaPump |
+| Thuật ngữ | Hiểu trong 1 câu | Mốc Thực chứng Công khai *(Năm & Mẫu đo)* | Khác biệt Cấu trúc của Game9K |
 |---|---|---|---|
 | **`VPH`** *(Verified / View-Play-Hour)* | Số giờ chơi thật đã xác minh của người dùng thật | Phiên web game Mỹ TB **30 phút** *(CrazyGames, 05/2026, 1.74B phiên)*; mobile median **3.1–3.5 phút** *(GameAnalytics 2026, 16,262 game)* | `VPH` vừa là **thước đo mở cổng vốn**, vừa là **đơn vị hạch toán hạ tầng** (`~$2.37 / 1,000 VPH` ở mức cơ sở) & trả thưởng. |
 | **`PoP / PoPW`** *(Proof of Play Work)* | Bằng chứng mật mã – hành vi xác nhận người thật đã chơi, không phải bot | Nhóm ví tạo nhiều token nhất chỉ đạt **0.52%** tốt nghiệp *(729 / 138,885 token, Arkham 2025)* do spam & bot | Không có dấu chân chơi thì không được chấm điểm hay mua sớm; bot lướt sóng lỗ ròng **`−5.95%` đến `−12.88%`**. |
@@ -193,7 +193,7 @@ Nguyên tắc xuyên suốt của tài liệu này: **mọi con số thị trư�
 
 ### 1.5. Mỗi Phiên bản có **Bốn Thứ riêng biệt** — và cả bốn đều kiểm chứng được bằng máy
 
-Điểm khác biệt căn bản giữa MetaPump và mọi bệ phóng hiện có: chúng tôi không tài trợ "một tựa game", chúng tôi tài trợ **một phiên bản cụ thể của tựa game đó**. Vì vậy mỗi phiên bản $v_k$ phải sở hữu **bốn thứ độc lập**, không dùng chung, không vay mượn của phiên bản trước:
+Điểm khác biệt căn bản giữa Game9K và mọi bệ phóng hiện có: chúng tôi không tài trợ "một tựa game", chúng tôi tài trợ **một phiên bản cụ thể của tựa game đó**. Vì vậy mỗi phiên bản $v_k$ phải sở hữu **bốn thứ độc lập**, không dùng chung, không vay mượn của phiên bản trước:
 
 | Thành phần | Nội dung | Vì sao phải riêng | Neo on-chain *(byte-exact)* |
 |---|---|---|---|
@@ -206,7 +206,7 @@ Nguyên tắc xuyên suốt của tài liệu này: **mọi con số thị trư�
 
 ### 1.5b. Ngành game **KHÔNG** có quy ước version cố định — và đó chính là lỗ hổng
 
-Câu hỏi đáng hỏi nhất về mô hình của MetaPump là: *nếu trình duyệt và hệ điều hành đã có quy ước số phiên bản cố định, sao ngành game không có?* Trả lời trung thực: **ngành game cố ý không có**, và chính khoảng trống đó là thứ MetaPump khai thác.
+Câu hỏi đáng hỏi nhất về mô hình của Game9K là: *nếu trình duyệt và hệ điều hành đã có quy ước số phiên bản cố định, sao ngành game không có?* Trả lời trung thực: **ngành game cố ý không có**, và chính khoảng trống đó là thứ Game9K khai thác.
 
 **Bốn hệ thống có quy ước thật, để so sánh:**
 
@@ -219,21 +219,21 @@ Câu hỏi đáng hỏi nhất về mô hình của MetaPump là: *nếu trình 
 
 **Ba điểm quan trọng nhất từ bảng trên:**
 
-**① Ngay cả nơi có luật cứng nhất, luật đó cũng không nói gì về chất lượng.** Google Play là nơi duy nhất *cưỡng chế* bằng cách từ chối upload — nhưng nó chỉ kiểm `versionCode` có **tăng** hay không. Một bản cập nhật làm game tệ đi vẫn được chấp nhận, miễn số lớn hơn số cũ. Đây là điểm khác biệt cốt lõi: **luật hiện có bảo đảm "mới hơn", MetaPump bảo đảm "tốt hơn".** Hai thứ đó không liên quan.
+**① Ngay cả nơi có luật cứng nhất, luật đó cũng không nói gì về chất lượng.** Google Play là nơi duy nhất *cưỡng chế* bằng cách từ chối upload — nhưng nó chỉ kiểm `versionCode` có **tăng** hay không. Một bản cập nhật làm game tệ đi vẫn được chấp nhận, miễn số lớn hơn số cũ. Đây là điểm khác biệt cốt lõi: **luật hiện có bảo đảm "mới hơn", Game9K bảo đảm "tốt hơn".** Hai thứ đó không liên quan.
 
 **② Ngành game cố ý không chuẩn hoá, vì chuẩn hoá sẽ bất lợi cho họ.** Nếu có một chuẩn quốc tế định nghĩa `v2.0` là "thay đổi lớn về cơ chế", thì một studio phát hành bản sửa lỗi rồi dán nhãn `v2.0` để marketing sẽ bị bắt lỗi công khai. Giữ mờ nghĩa là **giữ quyền tự định nghĩa**. Với người mua, sự mờ này là bất lợi thuần tuý.
 
 **③ Poki cũng không ngoại lệ — và đây là chỗ gần nhất với mô hình của chúng tôi.** Poki có khái niệm "Version" trong bảng điều khiển nhà phát triển: studio bấm *Upload New Version* để nộp bản mới, và bản mới **phải qua lại đúng quy trình QA như lần đầu**. Đó là **cổng chất lượng thật**, không phải nhãn trang trí. Nhưng Poki dừng ở đó: các bản đã qua cổng **không có số liệu so sánh công khai** giữa bản trước và bản sau, và **không có vốn gắn vào từng bản**. Nói cách khác, Poki có *cổng* nhưng không có *thị trường* cho kết quả của cổng đó.
 
-**Vậy MetaPump thêm đúng ba thứ còn thiếu:**
+**Vậy Game9K thêm đúng ba thứ còn thiếu:**
 
-| Thiếu gì | Ai đã có | MetaPump thêm |
+| Thiếu gì | Ai đã có | Game9K thêm |
 |---|---|---|
 | Số version **bất biến, kiểm chứng được** | Google Play (`versionCode` tăng) | Băm `SHA-256` của cả gói build, ghi on-chain ⇒ không chỉ "mới hơn" mà **chứng minh được đúng bản nào đã chạy** |
 | **Ngữ nghĩa chất lượng** cho số version | Không ai | `v(n)` phải **thắng `v(n-1)`** bằng đấu mù trên người chơi thật (`LCB₀.₉₅ > 0.50`), nếu không thì không mở được chặng vốn tiếp theo |
 | **Hệ quả kinh tế** gắn với số version | Không ai | Mỗi version có bond riêng; bản tệ hơn **không huy động được** vốn mới |
 
-> **Cách nói chính xác nhất, và chúng tôi giữ đúng câu này:** MetaPump **không phát minh ra cách đánh số phiên bản** — chúng tôi dùng lại quy ước `MAJOR.MINOR.PATCH` mà ngành đã quen. Cái mới là **gắn ngữ nghĩa chất lượng và hệ quả kinh tế vào con số đó**, và **cưỡng chế nó bằng hợp đồng** thay vì bằng niềm tin.
+> **Cách nói chính xác nhất, và chúng tôi giữ đúng câu này:** Game9K **không phát minh ra cách đánh số phiên bản** — chúng tôi dùng lại quy ước `MAJOR.MINOR.PATCH` mà ngành đã quen. Cái mới là **gắn ngữ nghĩa chất lượng và hệ quả kinh tế vào con số đó**, và **cưỡng chế nó bằng hợp đồng** thay vì bằng niềm tin.
 
 **Hệ quả trực tiếp lên sản phẩm** — cổng nộp bài của portal hiện đã cưỡng chế đúng nguyên tắc này ở tầng mã: bản nộp bị **từ chối** nếu bộ ba thứ tự $\nu_k$ không tăng từ điển nghiêm ngặt so với bản đang có (`ERR_VERSION_OLDER`, `ERR_VERSION_SAME`), và mỗi bản nộp phải khai **đúng bản gốc nó phát triển từ đó** (`base_sha256` phải bằng `latest_build_sha256`, nếu không thì `ERR_ORPHAN_BASE`). Không khai được thì không nộp được.
 
@@ -264,7 +264,7 @@ Câu hỏi đáng hỏi nhất về mô hình của MetaPump là: *nếu trình 
 
 ### 1.7. Kết quả kỳ vọng — và ranh giới giữa *đo được* và *giả thuyết*
 
-| Chỉ số | Không có MetaPump | Có MetaPump | Cơ chế tạo ra | Trạng thái bằng chứng |
+| Chỉ số | Không có Game9K | Có Game9K | Cơ chế tạo ra | Trạng thái bằng chứng |
 |---|---|---|---|---|
 | Studio cải thiện được ghi nhận | Không | **Ngay, bằng điểm + `VPH`** | Rating theo version | Cơ chế đã đặc tả *(§4.1 YP)* |
 | Nhà đầu tư có mốc đánh giá | Không | **Có, bằng dữ liệu version** | `VPH` + retention công khai | Cơ chế đã đặc tả *(§3.1, §4.2 YP)* |
@@ -278,16 +278,16 @@ Câu hỏi đáng hỏi nhất về mô hình của MetaPump là: *nếu trình 
 
 ## 2. Khung Chiến lược 5W1H (Toàn cảnh Dự án cho Nhà đầu tư)
 
-| Chiều phân tích | Câu hỏi cốt lõi | Lời giải Chiến lược của MetaPump |
+| Chiều phân tích | Câu hỏi cốt lõi | Lời giải Chiến lược của Game9K |
 |---|---|---|
 | **WHY**<br>*(Tại sao dự án này phải ra đời?)* | Nỗi đau lớn nhất đang bỏ ngỏ trên thị trường là gì? | **3 thất bại thị trường cùng lúc:**<br>1. **Indie Game chết ở "Thung lũng v0.1 → v1.0":** Thiếu người test thật, thiếu dữ liệu cải tiến gameplay và thiếu 5,000–50,000 USD vốn mồi để hoàn thiện game.<br>2. **GameFi & Launchpad chết vì "Bơm trước – Bỏ sau":** Gọi hết vốn ngay lúc mới có ý tưởng/demo khiến nhà phát triển mất động lực làm tiếp, 85–98% dự án chết yểu.<br>3. **Game thủ thật bị biến thành "thanh khoản thoát":** Bot và cá voi mua sớm xả lên đầu người yêu game, phá nát cộng đồng ngay tuần đầu. |
-| **WHAT**<br>*(MetaPump chính xác là gì?)* | Sản phẩm cung cấp giá trị gì khác biệt? | Một nền tảng kép **Web2-First, Web3-Powered**:<br>• **Mặt trước là Cổng Web Game chuẩn Poki + Đấu trường Arena:** Bấm là chơi ngay trên điện thoại/máy tính trong 3 giây, không cần cài đặt, không bắt buộc có ví crypto; so sánh mù từng phiên bản game và tích điểm cộng đồng `SPARK`.<br>• **Mặt sau là Sàn Gọi vốn theo Tiến độ Phiên bản trên Solana:** Mỗi game vượt kiểm định được mở bán token theo từng chặng `M1 → M4` gắn với chất lượng sản phẩm thực, minh bạch 100% giao dịch và có bảo hiểm hoàn vốn *Ragequit*. |
+| **WHAT**<br>*(Game9K chính xác là gì?)* | Sản phẩm cung cấp giá trị gì khác biệt? | Một nền tảng kép **Web2-First, Web3-Powered**:<br>• **Mặt trước là Cổng Web Game chuẩn Poki + Đấu trường Arena:** Bấm là chơi ngay trên điện thoại/máy tính trong 3 giây, không cần cài đặt, không bắt buộc có ví crypto; so sánh mù từng phiên bản game và tích điểm cộng đồng `SPARK`.<br>• **Mặt sau là Sàn Gọi vốn theo Tiến độ Phiên bản trên Solana:** Mỗi game vượt kiểm định được mở bán token theo từng chặng `M1 → M4` gắn với chất lượng sản phẩm thực, minh bạch 100% giao dịch và có bảo hiểm hoàn vốn *Ragequit*. |
 | **WHO**<br>*(Phục vụ ai?)* | Ai là khách hàng, người dùng và người trả tiền? | **4 nhóm tác nhân cộng sinh:**<br>1. **Game thủ phổ thông & Cộng đồng khám phá (16–32t):** Chơi game giải trí miễn phí, test game bí ẩn (*Mystery Tile*), chấm điểm Arena, lập bang hội (*Squads*), tích `SPARK` và được quyền mua sớm công bằng vào tựa game mình tin tưởng.<br>2. **Indie Developers & AI-Native Game Studios:** Hàng trăm nghìn nhà làm game Godot, Unity WebGL, Phaser, GDevelop, Three.js cần lưu lượng người chơi thật, công cụ kiểm định tự động, vốn phát triển theo cột mốc và doanh thu quảng cáo công bằng (100% traffic tự mang về, 50/50 traffic từ sàn).<br>3. **Nhà giao dịch & Nhà đầu tư sớm hệ Solana:** Tìm kiếm tài sản có **sản phẩm thật, số liệu người chơi thật, chống rug-pull và có giá sàn bảo vệ**, thay vì đánh bạc mù quáng vào memecoin vô nghĩa.<br>4. **Nhãn hàng & Mạng quảng cáo Web Game:** Chi trả dòng tiền doanh thu thực (fiat/stablecoin) cho hàng triệu lượt hiển thị *rewarded ads* trên các game đạt mốc `M4+`. |
 | **WHERE**<br>*(Triển khai ở đâu?)* | Chọn mặt trận phân phối và hạ tầng nào? | • **Kênh phân phối:** **Open Web (Trình duyệt Desktop & Mobile)** — tiếp cận tức thì mọi thiết bị iOS/Android/PC toàn cầu, miễn nhiễm khoản thuế 30% và quy trình duyệt kéo dài của Apple/Google App Store, chia sẻ 1 đường link trên TikTok/X/Discord/Telegram là vào chơi ngay.<br>• **Hạ tầng thanh toán & tài sản:** **Solana** — phí giao dịch dưới $0.01, xác nhận dưới 1 giây, cộng đồng giao dịch bán lẻ sôi động nhất thế giới.<br>• **Thị trường bàn đạp — Chiến lược Tách Cầu/Cung:** **Đông Nam Á (trọng tâm Việt Nam)** cung cấp *dữ liệu giờ chơi & nguồn game* qua cổng Web2 miễn phí; **thanh khoản (cầu vốn)** đến từ nhà đầu tư bán lẻ quốc tế (Mỹ, EU, Hàn Quốc, LATAM). Hai mặt trận **tách tuyệt đối về mặt pháp lý** — xem hộp dưới và §5.4. |
 | **WHEN**<br>*(Tại sao là NGAY LÚC NÀY — 2026–2027?)* | Điều kiện lịch sử nào vừa chín muồi? | **3 làn sóng hội tụ đúng năm 2026:**<br>1. **Bùng nổ AI Game Creation:** Công cụ AI giúp 1–2 lập trình viên tạo ra bản prototype web game trong vài ngày thay vì 6 tháng — nguồn cung game tăng gấp 100 lần, làm nhu cầu *bộ lọc chất lượng theo phiên bản* trở nên cấp bách chưa từng có.<br>2. **Sự vỡ mộng của Memecoin & Agent Launchpad đời 1:** Sau khi chứng kiến 98% token Pump.fun không tốt nghiệp và 85% agent Virtuals chết, dòng vốn bán lẻ đang khát khao một cơ chế launchpad **có kỷ luật, có sản phẩm thật và chống bot xả**.<br>3. **Thời kỳ hoàng kim của Browser Gaming:** WebGPU/WebAssembly trưởng thành, băng thông Cloudflare R2 miễn phí phí tải ra (0 egress fee), đưa web game đạt quy mô ngang ngửa mạng console lớn. |
 | **HOW**<br>*(Vận hành như thế nào?)* | Cơ chế nào biến tầm nhìn thành cỗ máy tự vận hành? | **Chu trình 5 bước + Kỷ luật Thứ tự & Điều kiện Dừng (*Kill Criteria*):**<br>• *(1) Studio nộp ZIP kèm `base_sha256` & kiểm tra qua Inspector* → *(2) Đo `VPH`, Player Fit (500 lượt) & đấu mù Arena (tách riêng đường ống Telemetry xử lý 90% tải đo lường)* → *(3) Đạt chuẩn mới ký mở chặng trên Solana, tích lũy kho dữ liệu độc quyền `(rating, VPH, D1/D7, crash_rate)` về "cái gì làm game hay hơn"* → *(4) On-chain Play-Gate + phí thoát sớm bảo vệ game thủ* → *(5) Đạt `M4` tự động lên DEX khóa LP & bật quảng cáo.*<br>• **3 điều chủ đích KHÔNG làm:** Không tự làm game cạnh tranh studio · Không giữ khóa ví người dùng · Không kiếm tiền từ việc người chơi thua lỗ.<br>• **Điều kiện dừng ghi trước (không thương lượng sau):** Không mở Launchpad trước khi cổng game có tối thiểu **`500` người chơi thật/tuần**; nếu hết giai đoạn Launchpad thử nghiệm (`S6–S8`) không có tối thiểu **`3` đợt tài trợ phiên bản hoàn thành milestone đúng hạn**, công khai chuyển hướng (*pivot*) sang mô hình **chia sẻ doanh thu quảng cáo thuần off-chain**. |
 
-> **Chiến lược Tách Cầu/Cung — *Web2 cho Dữ liệu, Web3 cho Vốn* (giải đáp trực tiếp Nghị quyết `05/2025/NQ-CP`):** MetaPump vận hành **hai mặt trận tách tuyệt đối**, vì một nền tảng duy nhất không thể vừa phục vụ người chơi Việt Nam vừa huy động vốn từ họ một cách hợp pháp.
+> **Chiến lược Tách Cầu/Cung — *Web2 cho Dữ liệu, Web3 cho Vốn* (giải đáp trực tiếp Nghị quyết `05/2025/NQ-CP`):** Game9K vận hành **hai mặt trận tách tuyệt đối**, vì một nền tảng duy nhất không thể vừa phục vụ người chơi Việt Nam vừa huy động vốn từ họ một cách hợp pháp.
 
 | Mặt trận | Khu vực | Người tham gia | Dòng tiền | Ràng buộc pháp lý |
 |---|---|---|---|---|
@@ -297,14 +297,14 @@ Câu hỏi đáng hỏi nhất về mô hình của MetaPump là: *nếu trình 
 **Ba hệ quả vận hành cứng:**
 
 1. **Người chơi Việt Nam vẫn là "công dân hạng nhất" của sản phẩm** — họ tạo ra `VPH`, chấm điểm Arena, quyết định game nào sống. Họ **không** mua token, và **không cần** mua token để được thưởng: quỹ thưởng người chơi thật (`10–20%` cung) trả cho **giờ chơi đã xác minh**, không phải cho việc nắm giữ đầu cơ.
-2. **Studio Việt Nam nhận vốn bằng tiền pháp định, không bằng token** — khi tốt nghiệp `M4`, phần tài trợ được giải ngân qua pháp nhân MetaPump quốc tế dưới dạng **chia sẻ doanh thu ngoài chuỗi** (*Off-Chain Revenue-Share*, §5.4 nguyên tắc 3). Đây là lý do mô hình **không sụp** nếu cấu phần token bị tắt hoàn toàn ở một thị trường.
+2. **Studio Việt Nam nhận vốn bằng tiền pháp định, không bằng token** — khi tốt nghiệp `M4`, phần tài trợ được giải ngân qua pháp nhân Game9K quốc tế dưới dạng **chia sẻ doanh thu ngoài chuỗi** (*Off-Chain Revenue-Share*, §5.4 nguyên tắc 3). Đây là lý do mô hình **không sụp** nếu cấu phần token bị tắt hoàn toàn ở một thị trường.
 3. **Câu "Game thủ thật = Nhà tài trợ sớm" được viết lại cho đúng:** người chơi thật đóng góp **dữ liệu và sự chú ý** — hai tài sản mà nhà đầu tư không thể mua bằng tiền; còn tài trợ vốn là việc của nhà đầu tư quốc tế. Gộp hai vai này lại là **sai về pháp lý**, không phải chỉ sai về truyền thông.
 
 ---
 
 ## 3. Quy mô Thị trường & Cơ hội Doanh thu (Market Opportunity)
 
-MetaPump đứng tại giao điểm của hai thị trường tỷ đô có tốc độ luân chuyển dòng tiền nhanh nhất trên Internet:
+Game9K đứng tại giao điểm của hai thị trường tỷ đô có tốc độ luân chuyển dòng tiền nhanh nhất trên Internet:
 
 1. **Thị trường Phân phối Web Game Toàn cầu (Browser / HTML5 Instant Games):**  
    Riêng hai cổng dẫn đầu là Poki (100M+ MAU, 1 tỷ lượt chơi/tháng) và CrazyGames (60M+ MAU, ~3 tỷ lượt chơi/năm) đã phục vụ hơn 160 triệu người chơi mỗi tháng, nằm trong thị trường game trình duyệt và instant-play toàn cầu trị giá **8–10 tỷ USD/năm** (tăng trưởng nhờ quảng cáo thưởng *rewarded video*, mua vật phẩm nhẹ và sự dịch chuyển khỏi chi phí CPI đắt đỏ trên kho ứng dụng di động).
@@ -328,7 +328,7 @@ Qua khảo sát toàn bộ cả **hệ sinh thái mã nguồn mở trên GitHub*
 #### 1) FOMO (`fomo.family` — Social Trading App) → **Có Version không? KHÔNG (0%)**
 - **Họ đang làm gì:** Ứng dụng giao dịch tài chính xã hội đa chuỗi (Solana, Base, BNB, Monad...; huy động $17M Series A từ Benchmark và $75M Series B từ Index Ventures, doanh thu ~$33.7M/12 tháng). Điểm mạnh là UX cực mượt (đăng ký email, nạp Apple Pay, miễn phí gas) và hiển thị giao dịch thật kèm lãi/lỗ (PnL) của các trader ngay trên dòng thời gian.
 - **Tại sao không có Version:** FOMO là **trạm giao dịch ngọn (trading terminal)**, không phải nơi tạo ra hay kiểm định sản phẩm. Thứ FOMO đo lường là *lịch sử thắng thua của người buôn token*, hoàn toàn mù tịt về việc dự án đằng sau token đó có cập nhật dòng code nào hay không. Hạn chế cấu trúc của mô hình này là hiệu ứng *"đám đông làm thanh khoản cho người dẫn đầu"*: khi một tài khoản lớn mua vào, hàng trăm người theo dõi nhận thông báo mua đuổi đẩy giá lên, tạo điều kiện cho chính người mua đầu chốt lời.
-- **Vị thế của MetaPump:** Thừa hưởng trải nghiệm minh bạch thời gian thực, nhưng thay vì gắn *chân dung cá voi* lên biểu đồ giá để kích thích tâm lý bầy đàn, MetaPump gắn **cột mốc phiên bản đã kiểm chứng (`v0.2 M1 → v0.5 M2 → v1.0 M4`) và chỉ số giữ chân người chơi thật** lên biểu đồ. Thậm chí sau khi game của MetaPump tốt nghiệp lên DEX ở M4, FOMO trở thành *kênh phân phối thanh khoản thứ cấp miễn phí* mang thêm nhà giao dịch tới cho token game đó!
+- **Vị thế của Game9K:** Thừa hưởng trải nghiệm minh bạch thời gian thực, nhưng thay vì gắn *chân dung cá voi* lên biểu đồ giá để kích thích tâm lý bầy đàn, Game9K gắn **cột mốc phiên bản đã kiểm chứng (`v0.2 M1 → v0.5 M2 → v1.0 M4`) và chỉ số giữ chân người chơi thật** lên biểu đồ. Thậm chí sau khi game của Game9K tốt nghiệp lên DEX ở M4, FOMO trở thành *kênh phân phối thanh khoản thứ cấp miễn phí* mang thêm nhà giao dịch tới cho token game đó!
 
 #### 2) Virtuals Protocol / `fun.virtuals` (AI Agent Launchpad) → **Có Version không? CHỈ Ở LỚP PHỤ HẬU KỲ, KHÔNG KHÓA ĐƯỜNG CONG GIÁ**
 - **Họ đang làm gì:** Bệ phóng token hóa AI Agent trên Base và Solana (tốt nghiệp khi đường cong tích lũy đủ 42,000 VIRTUAL, khóa thanh khoản 10 năm, phí giao dịch 1%).
@@ -344,7 +344,7 @@ Qua khảo sát toàn bộ cả **hệ sinh thái mã nguồn mở trên GitHub*
 
 ### 4.2. Ma trận So sánh Cạnh tranh Toàn diện
 
-| Tiêu chí Cốt lõi | **MetaPump** *(Dự án này)* | **Poki / CrazyGames** *(Web2 Portal)* | **B3 / BSMNT.fun** *(Web3 Portal)* | **Virtuals Fun** *(Agent Launchpad)* | **Pump.fun** *(Meme Launchpad)* | **FOMO App** *(Social Trading)* |
+| Tiêu chí Cốt lõi | **Game9K** *(Dự án này)* | **Poki / CrazyGames** *(Web2 Portal)* | **B3 / BSMNT.fun** *(Web3 Portal)* | **Virtuals Fun** *(Agent Launchpad)* | **Pump.fun** *(Meme Launchpad)* | **FOMO App** *(Social Trading)* |
 |---|---|---|---|---|---|---|
 | **Chơi game tức thì trên Web (0 ví, 0 cài đặt)** | **Có (Chuẩn Poki)** | Có (100M+ MAU) | Có (thiên Web3) | Không (AI Agent) | Không | Không |
 | **Sổ cái Phiên bản Bất biến (SHA-256 + Build Diff)** | **Có (DB + On-chain)** | Nội bộ đóng | Không (nhãn tĩnh) | Không trên curve | Không | Không |
@@ -354,7 +354,7 @@ Qua khảo sát toàn bộ cả **hệ sinh thái mã nguồn mở trên GitHub*
 | **Bảo hiểm Hoàn vốn khi Dev Bỏ cuộc (Ragequit)** | **Có (100% On-chain)** | N/A | Không | Không | Không | Không |
 | **Dòng tiền Kép (Quảng cáo Web2 + Phí Giao dịch Web3)** | **Có (Chống chu kỳ)** | Chỉ Quảng cáo Web2 | Phí hệ sinh thái/token | Chỉ phí giao dịch Web3 | Chỉ phí giao dịch Web3 | Chỉ phí giao dịch Web3 |
 
-### 4.3. Tại sao Ngành Game Chưa từng có Chuẩn Phiên bản Cố định — Và Tiêu chuẩn 3 Lớp của MetaPump
+### 4.3. Tại sao Ngành Game Chưa từng có Chuẩn Phiên bản Cố định — Và Tiêu chuẩn 3 Lớp của Game9K
 
 Khác với **thư viện phần mềm** (tuân thủ nghiêm ngặt chuẩn *Semantic Versioning* `MAJOR.MINOR.PATCH` theo tương thích API), **trình duyệt web** (Chrome phát hành đều đặn mỗi **`~4 tuần`** tăng 1 số chính `v130 → v131 → v132` — *trước 2021 là `6 tuần`*), hay **hệ điều hành** (iOS/Android theo chu kỳ năm, Ubuntu theo lịch *CalVer* `24.04 → 26.04`), **ngành game toàn cầu hoàn toàn không có một quy ước đánh số phiên bản bắt buộc hay thống nhất**:
 
@@ -366,9 +366,9 @@ Khác với **thư viện phần mềm** (tuân thủ nghiêm ngặt chuẩn *Se
 | **Cửa hàng PC / Mobile (Steam, Apple, Google)** | Tách nhãn hiển thị khỏi mã kỹ thuật (`BuildID + ManifestID` trên Steam; `versionCode` trên App Store/Play) | Chứng minh bài học sống còn: **nền tảng phân phối không bao giờ tin vào chuỗi chữ do nhà phát triển tự gõ** — nhưng mới dừng ở quản lý tệp, chưa gắn với thẩm định người chơi hay giải ngân vốn. |
 | **Web / HTML5 Portals** | Ghi đè lặng lẽ tệp `index.html` trên CDN hoặc gõ tay nhãn tĩnh `Version 0.1.0` | Không thể kiểm chứng nhà phát triển vừa nâng cấp cả trò chơi hay chỉ đổi màu một nút bấm (*"Lạm phát phiên bản" — Version Inflation*). |
 
-**Lợi thế kiến tạo tiêu chuẩn của MetaPump — Kiến trúc Phiên bản 3 Lớp (*MetaPump 3-Layer Version Standard*):**
+**Lợi thế kiến tạo tiêu chuẩn của Game9K — Kiến trúc Phiên bản 3 Lớp (*Game9K 3-Layer Version Standard*):**
 
-Nếu một bệ phóng ngây thơ giải ngân vốn dựa trên việc studio đổi tên từ `v0.1` sang `v0.2`, kẻ trục lợi sẽ sửa một dòng chữ rồi gọi là `v1.0` để rút sạch thanh khoản. MetaPump triệt tiêu kẽ hở đó bằng cách tách khái niệm "Phiên bản Game" thành **3 lớp độc lập**:
+Nếu một bệ phóng ngây thơ giải ngân vốn dựa trên việc studio đổi tên từ `v0.1` sang `v0.2`, kẻ trục lợi sẽ sửa một dòng chữ rồi gọi là `v1.0` để rút sạch thanh khoản. Game9K triệt tiêu kẽ hở đó bằng cách tách khái niệm "Phiên bản Game" thành **3 lớp độc lập**:
 
 1. **Lớp 1 — Nhãn Sáng tạo của Studio (`Display Label` — Tự do 100%):** Studio toàn quyền đặt tên theo phong cách riêng (`v0.4.2`, `Alpha 3`, `Season 2`, `2026.11`) để giao tiếp tự nhiên với cộng đồng game thủ.
 2. **Lớp 2 — Định danh Kỹ thuật Bất biến (`Canonical Build Proof` — Chuẩn Steam Manifest neo On-Chain):** Hệ thống tự cấp số thứ tự tăng đơn điệu (`build #1, #2, #3...`), băm `SHA-256` toàn bộ gói mã nguồn/tài nguyên neo lên Solana và đo tỷ lệ thay đổi thực chất (*Build Diff*). Nhờ đó nền tảng tách bạch rõ **bản vá lỗi nhỏ (*Hotfix/Patch*)** — được cập nhật nhanh để bảo vệ trải nghiệm người chơi nhưng **không mở thêm trần vốn** — khỏi **bản nâng cấp lớn (*Milestone Candidate*)** đủ tư cách bước vào vòng kiểm định.
@@ -377,7 +377,7 @@ Nếu một bệ phóng ngây thơ giải ngân vốn dựa trên việc studio 
 > **Ý nghĩa chiến lược — Từ "Mới hơn" sang "Tốt hơn":**
 > 1. Ngay cả nơi cưỡng chế chặt nhất hiện nay (Google Play từ chối bản nộp nếu `versionCode` không tăng) cũng chỉ bảo đảm bản sau **"mới hơn"**, không bảo đảm **"tốt hơn"**; trong khi ngành game cố ý giữ mập mờ để dễ dán nhãn `v2.0` phục vụ marketing.
 > 2. Poki có nút *Upload New Version* bắt qua lại QA (có *cổng chất lượng thật*), nhưng không công bố độ chênh chất lượng giữa hai bản và không gắn *thị trường vốn* vào kết quả cổng; ngược lại Pump.fun/Virtuals có *thị trường* nhưng không có *cổng*.
-> 3. MetaPump **không phát minh lại cách đánh số** — chúng tôi cưỡng chế ở tầng mã việc từ chối `ERR_VERSION_OLDER` / `ERR_VERSION_SAME`, bắt buộc khai báo bản gốc cha (`base_sha256` phải bằng `latest_build_sha256`), và lần đầu tiên **gắn ngữ nghĩa chất lượng (`v(n)` phải thắng `v(n-1)`) cùng hệ quả kinh tế trực tiếp vào từng phiên bản bằng hợp đồng thông minh**.
+> 3. Game9K **không phát minh lại cách đánh số** — chúng tôi cưỡng chế ở tầng mã việc từ chối `ERR_VERSION_OLDER` / `ERR_VERSION_SAME`, bắt buộc khai báo bản gốc cha (`base_sha256` phải bằng `latest_build_sha256`), và lần đầu tiên **gắn ngữ nghĩa chất lượng (`v(n)` phải thắng `v(n-1)`) cùng hệ quả kinh tế trực tiếp vào từng phiên bản bằng hợp đồng thông minh**.
 >
 > *Bảng đối chiếu đầy đủ 4 hệ thống đánh số (trình duyệt, hệ điều hành, app store, ngành game) và "ba thứ còn thiếu" nằm ở **§1.5b**.*
 
@@ -391,7 +391,7 @@ Chúng tôi đứng trên vai những mô hình đã kiểm chứng và phân đ
 
 ## 5. Luận điểm Kinh doanh Cốt lõi: Tại sao "Gate-First" Thắng "Infra-First" — Và Lời Cảnh báo Đỏ về Cái bẫy Volume
 
-*Phần này giải thích bằng ngôn ngữ kinh doanh thuần túy — không dùng thuật ngữ lập trình — vì sao bài học 85% dự án chết của Virtuals là bằng chứng vàng củng cố hướng đi của MetaPump.*
+*Phần này giải thích bằng ngôn ngữ kinh doanh thuần túy — không dùng thuật ngữ lập trình — vì sao bài học 85% dự án chết của Virtuals là bằng chứng vàng củng cố hướng đi của Game9K.*
 
 ### 5.1. Bài học triệu đô từ Virtuals: "Xây thêm tầng cho Trung tâm Thương mại không cứu được việc bán hàng giả"
 
@@ -403,7 +403,7 @@ Hãy hình dung một sàn launchpad giống như một **Trung tâm Thương m�
 Trong kinh tế học, hiện tượng này gọi là **"Thị trường Chanh chua" (*Market for Lemons* — giải Nobel Kinh tế của George Akerlof)**:
 > *Khi sàn cho phép dự án tệ và dự án tốt gọi vốn dễ ngang nhau, dự án tệ luôn tràn ngập vì chi phí sản xuất bằng 0. Người mua sau vài lần mất tiền sẽ mặc định "100% hàng trên sàn này là rác" và rút ví bỏ đi vĩnh viễn. Không một hạ tầng kỹ thuật tối tân nào cứu được một cái chợ đã mất niềm tin của người mua.*
 
-### 5.2. Triết lý "Gate-First" của MetaPump: Giải ngân y hệt Chủ đầu tư Bất động sản & Quỹ VC
+### 5.2. Triết lý "Gate-First" của Game9K: Giải ngân y hệt Chủ đầu tư Bất động sản & Quỹ VC
 
 Trong kinh doanh thực, **không ai trả 100% tiền xây tòa nhà khi nhà thầu mới đưa bản vẽ phối cảnh**. Người ta luôn giải ngân theo **biên bản nghiệm thu từng giai đoạn**:
 1. **Xong móng (`M1 — Playtest`):** Có game chạy thật, 10 người chơi đầu tiên xác nhận chơi được không lỗi → mới mở **15%** trần vốn (tối đa ~5.5 SOL — đủ khích lệ cộng đồng hạt giống, quá nhỏ để kẻ lừa đảo bõ công làm giả!).
@@ -422,7 +422,7 @@ flowchart TB
         B3 --> B4["Đắp thêm hạ tầng tốn kém<br/>nhưng doanh thu thực sụt >95%"]
     end
 
-    subgraph Good["MÔ HÌNH METAPUMP: GATE-FIRST / KHÓA THEO VERSION"]
+    subgraph Good["MÔ HÌNH GAME9K: GATE-FIRST / KHÓA THEO VERSION"]
         G1["Cổng Play-Gate nghiêm ngặt<br/>Mỗi phiên bản phải thắng bằng giờ chơi thật"] --> G2["Chỉ game cuốn hút mới mở được M2 -> M4<br/>Bot bị chặn 24h đầu & phạt xả sớm"]
         G2 --> G3["Tỷ lệ sống sót cao + Bảo hiểm Ragequit<br/>Game thủ & Nhà đầu tư có niềm tin tích lũy"]
         G3 --> G4["Thanh khoản & Studio chất lượng tự tìm đến<br/>Doanh thu kép (Phí + Quảng cáo) tăng lãi kép"]
@@ -431,15 +431,15 @@ flowchart TB
 
 ### 5.3. Rủi ro Lớn nhất Đến từ Chính Chúng tôi — Và Cơ chế "Tự Khóa Tay" trên Chuỗi
 
-Rủi ro nguy hiểm nhất của MetaPump (mã định danh **`R11`** trong PRD) không đến từ đối thủ hay thị trường, mà là **rủi ro tự gây: nới lỏng điều kiện Play-Gate để chạy theo volume ngắn hạn**.
+Rủi ro nguy hiểm nhất của Game9K (mã định danh **`R11`** trong PRD) không đến từ đối thủ hay thị trường, mà là **rủi ro tự gây: nới lỏng điều kiện Play-Gate để chạy theo volume ngắn hạn**.
 
 Tại sao nó cực kỳ nguy hiểm? Bởi vì vào tháng thứ 3–6, người đề xuất *"hạ chuẩn chơi thử từ 3 phút xuống 45 giây hoặc nới cửa cho cá voi mua sớm để tăng phí gấp 5 lần"* **sẽ ĐÚNG trong ngắn hạn**: khối lượng giao dịch tăng vọt thật, biểu đồ doanh thu tháng đẹp thật. Hậu quả phá hủy thương hiệu chỉ bộc lộ sau 2–3 quý, khi người mua thua lỗ triền miên rút ví bỏ đi và không bao giờ quay lại — đúng như kịch bản **85% agent chết** của Virtuals khi họ chọn mở rộng thay vì siết cổng.
 
-Thứ MetaPump bán không phải là "chỗ tạo token giá $2", mà là **Chứng chỉ Niềm tin (*Trust Stamp*)**. Muốn tăng doanh thu bền vững, cách duy nhất đúng là **huấn luyện studio nhảy qua xà cao hơn** (báo cáo video playtest siêu tốc, công cụ chẩn đoán điểm rơi người chơi phút đầu, SDK 10 phút) và **kéo dài vòng đời kinh tế của các game đạt `M4+`** (quảng cáo toàn cầu, phí LP vĩnh viễn, giải đấu mùa).
+Thứ Game9K bán không phải là "chỗ tạo token giá $2", mà là **Chứng chỉ Niềm tin (*Trust Stamp*)**. Muốn tăng doanh thu bền vững, cách duy nhất đúng là **huấn luyện studio nhảy qua xà cao hơn** (báo cáo video playtest siêu tốc, công cụ chẩn đoán điểm rơi người chơi phút đầu, SDK 10 phút) và **kéo dài vòng đời kinh tế của các game đạt `M4+`** (quảng cáo toàn cầu, phí LP vĩnh viễn, giải đấu mùa).
 
 #### Cách Chúng tôi Làm cho Việc "Nới Cổng" Trở nên Bất khả thi (Technical & Governance Guardrails)
 
-Thay vì yêu cầu nhà đầu tư tin vào lời hứa đạo đức của ban điều hành, MetaPump khóa cứng kỷ luật Play-Gate vào kiến trúc kỹ thuật và quản trị:
+Thay vì yêu cầu nhà đầu tư tin vào lời hứa đạo đức của ban điều hành, Game9K khóa cứng kỷ luật Play-Gate vào kiến trúc kỹ thuật và quản trị:
 
 | Cơ chế Tự Khóa Tay | Tác dụng Kinh doanh & Bảo vệ Nhà đầu tư |
 |---|---|
@@ -464,11 +464,11 @@ Thay vì yêu cầu nhà đầu tư tin vào lời hứa đạo đức của ban
 
 Tại Việt Nam, **Nghị quyết số `05/2025/NQ-CP` ngày 09/09/2025** của Chính phủ về triển khai thí điểm thị trường tài sản mã hóa (có hiệu lực từ `09/09/2025`, thời gian thí điểm **5 năm**) quy định rõ: hoạt động tổ chức thị trường và cung cấp dịch vụ tài sản mã hóa trong cơ chế thí điểm chỉ được thực hiện bởi tổ chức được Bộ Tài chính cấp phép (vốn điều lệ đã góp tối thiểu **10.000 tỷ đồng VND**), và theo **Điều 6**, tài sản mã hóa theo cơ chế này **chỉ được chào bán, phát hành cho nhà đầu tư nước ngoài**.
 
-MetaPump coi đây là **đường biên thiết kế bắt buộc ngay từ ngày đầu**, với 4 nguyên tắc vận hành cứng:
+Game9K coi đây là **đường biên thiết kế bắt buộc ngay từ ngày đầu**, với 4 nguyên tắc vận hành cứng:
 
 1. **Giai đoạn 1 — Tách Cầu/Cung thay vì "Geo-Fencing" đơn thuần:** đây không phải một bức tường chặn người dùng, mà là **hai sản phẩm khác nhau cho hai nhóm khách hàng khác nhau**. *Mặt Cung* là cổng Web Game HTML5 miễn phí — mở toàn cầu, **không có ví, không có token, không có rào cản nào với Việt Nam**; người chơi Việt Nam tạo `VPH`, chấm điểm Arena, nhận thưởng theo giờ chơi. *Mặt Cầu* là phân khu Launchpad/Version Bond — **chặn đồng thời IP và KYC** với Việt Nam cùng các khu vực hạn chế, chỉ phục vụ nhà đầu tư quốc tế. Việc chặn nằm ở **tầng sản phẩm tài chính**, không nằm ở tầng trải nghiệm game.
 2. **Phạm vi vận hành hợp lệ:** Cơ chế gọi vốn theo phiên bản chỉ chạy thử nghiệm không giá trị tài chính trên mạng **Solana Devnet**, và khi lên Mainnet chỉ phục vụ người tham gia tại các khu vực pháp lý cho phép ngoài phạm vi điều chỉnh hạn chế, dưới pháp nhân quốc tế độc lập đã có ý kiến tư vấn pháp lý.
-3. **Dòng vốn về Studio Việt Nam là tiền pháp định, không phải token:** phần tài trợ `M4` được giải ngân qua pháp nhân MetaPump quốc tế dưới dạng **chia sẻ doanh thu ngoài chuỗi** (*Off-Chain Revenue-Share*) bằng USD/vốn tài trợ cột mốc — không có bước nào studio Việt Nam phải *nhận* hay *bán* token để có tiền làm game. Đây là điểm then chốt khiến chiến lược "lấy Việt Nam làm thị trường bàn đạp" **không mâu thuẫn** với việc "không chào bán token cho nhà đầu tư Việt Nam".
+3. **Dòng vốn về Studio Việt Nam là tiền pháp định, không phải token:** phần tài trợ `M4` được giải ngân qua pháp nhân Game9K quốc tế dưới dạng **chia sẻ doanh thu ngoài chuỗi** (*Off-Chain Revenue-Share*) bằng USD/vốn tài trợ cột mốc — không có bước nào studio Việt Nam phải *nhận* hay *bán* token để có tiền làm game. Đây là điểm then chốt khiến chiến lược "lấy Việt Nam làm thị trường bàn đạp" **không mâu thuẫn** với việc "không chào bán token cho nhà đầu tư Việt Nam".
 4. **Phương án Dự phòng Sống sót (*Off-Chain Fallback*) đã thiết kế sẵn:** Ngay cả tại thị trường tắt hoàn toàn cấu phần token on-chain, toàn bộ lõi *Sổ cái Phiên bản + Phễu Kiểm định Poki + Đấu trường mù Arena* vẫn hoạt động độc lập 100% và chuyển sang mô hình **chia sẻ doanh thu quảng cáo & tài trợ cột mốc bằng tiền pháp định (Off-Chain Revenue-Share)** cho studio — đảm bảo sản phẩm và doanh nghiệp luôn sống khỏe trong mọi kịch bản chính sách.
 
 ---
@@ -483,11 +483,11 @@ MetaPump coi đây là **đường biên thiết kế bắt buộc ngay từ ng�
 | **Quỹ Thưởng Người chơi Thật (Player Reward Pool)** | **10%** (`100M`) + 50% SOL phạt | **20%** (`200M`) | Phân phối theo bằng chứng giờ chơi thật đã xác minh (*PoP / PoPW — Verified Play Hours*) và đóng góp `SPARK`, trả tuyến tính 21 ngày chống xả — **Pump.fun = 0%**. |
 | **Nhà phát triển (Creator Vesting)** | **5%** (`50M`) + `10 SOL` Grant M4 | **15%** (`150M`) | **Mở khóa theo giờ chơi thật & cột mốc phiên bản đã nghiệm thu**, tuyệt đối không vest suông theo thời gian đồng hồ (`0%` ở `M0–M1`, đóng băng vĩnh viễn nếu dừng làm game) — **Pump.fun không có**. |
 | **Thanh khoản DEX Khóa (Locked LP)** | **15%** (`150M` — khóa vĩnh viễn) | **5%** (`50M` — khóa ≥12 tháng) | Tự động chuyển lên Meteora DAMM v2 / Raydium CPMM ở **đúng 100% giá cuối trên đường cong** (0% chênh lệch giá cho bot trục lợi). |
-| **Team / Đội ngũ Nền tảng MetaPump** | **`0%`** (`0 Token`) | **`0%`** (`0 Token`) | **Nền tảng chỉ nhận phí giao dịch & chia sẻ quảng cáo minh bạch, KHÔNG nhận bất kỳ token nào của game hay phiên bản.** |
+| **Team / Đội ngũ Nền tảng Game9K** | **`0%`** (`0 Token`) | **`0%`** (`0 Token`) | **Nền tảng chỉ nhận phí giao dịch & chia sẻ quảng cáo minh bạch, KHÔNG nhận bất kỳ token nào của game hay phiên bản.** |
 
 #### 6.1b. Kỷ luật Giải ngân SOL — Hai Đường Dòng tiền, Không Đường Nào Mù mờ *(Vá lỗi thẩm định: "Studio nhận 0 SOL trước v1.0")*
 
-Điểm nghẽn của mọi mô hình GameFi cũ nằm ở chỗ: hoặc nhà phát triển **nhận hết tiền trước khi làm game** (rồi bỏ đi), hoặc **không có một đồng vốn lưu động nào** trong suốt quá trình phát triển. MetaPump tách bạch hai mục tiêu bằng **hai hồ sơ hợp đồng**, để mỗi studio chọn đúng loại vốn mình cần — và để nhà đầu tư nhìn thấy chính xác từng lamport đi đâu:
+Điểm nghẽn của mọi mô hình GameFi cũ nằm ở chỗ: hoặc nhà phát triển **nhận hết tiền trước khi làm game** (rồi bỏ đi), hoặc **không có một đồng vốn lưu động nào** trong suốt quá trình phát triển. Game9K tách bạch hai mục tiêu bằng **hai hồ sơ hợp đồng**, để mỗi studio chọn đúng loại vốn mình cần — và để nhà đầu tư nhìn thấy chính xác từng lamport đi đâu:
 
 | Hạng mục Phân bổ SOL *(ở mức trần, `@ $150/SOL`)* | **Hồ sơ A — `VGBC-4T`**<br>*Tối ưu thanh khoản DEX* | **Hồ sơ B — `VBOND-LV`**<br>*Tối ưu vốn phát triển Studio* | Mục đích Kinh tế |
 |---|---|---|---|
@@ -510,7 +510,7 @@ MetaPump coi đây là **đường biên thiết kế bắt buộc ngay từ ng�
 
 > **Trả lời thẳng câu hỏi thẩm định khó nhất:** *"Nếu `VGBC-4T` chỉ rót `15.91 SOL` ở `M4`, tại sao gọi là 'tài trợ phát triển game'?"* — Vì `VGBC-4T` **không phải** hồ sơ tài trợ; nó là **hồ sơ bệ phóng thanh khoản** cho game đã có studio tự chủ vốn, nơi `78%` SOL phải nằm lại làm thanh khoản DEX. Studio cần vốn lưu động để sống qua `M1–M3` **bắt buộc chọn `VBOND-LV`** — nơi `79.1%` SOL vào thẳng escrow của họ. Whitepaper này không hứa một cơ chế làm được cả hai việc; nó cung cấp hai cơ chế và nói rõ cơ chế nào làm việc gì.
 
-> **Ranh giới Đạo đức Bất khả xâm phạm (`0% Platform Allocation`):** Dòng cuối cùng trong bảng trên là nền tảng đạo đức của toàn bộ giao thức. **MetaPump không sở hữu dù chỉ 1 token của bất kỳ phiên bản game nào.** Nếu nền tảng cầm token dự án, nền tảng sẽ nảy sinh xung đột lợi ích để bơm giá hoặc dễ dãi khi duyệt cổng — và mọi cơ chế kiểm định phía trước sẽ trở nên vô nghĩa.
+> **Ranh giới Đạo đức Bất khả xâm phạm (`0% Platform Allocation`):** Dòng cuối cùng trong bảng trên là nền tảng đạo đức của toàn bộ giao thức. **Game9K không sở hữu dù chỉ 1 token của bất kỳ phiên bản game nào.** Nếu nền tảng cầm token dự án, nền tảng sẽ nảy sinh xung đột lợi ích để bơm giá hoặc dễ dãi khi duyệt cổng — và mọi cơ chế kiểm định phía trước sẽ trở nên vô nghĩa.
 
 ### 6.2. Tham số Đường cong & Lá chắn Chống Bot (Khóa bằng Mô phỏng Toán học)
 
@@ -519,7 +519,7 @@ MetaPump coi đây là **đường biên thiết kế bắt buộc ngay từ ng�
 | **Hàm định giá & Thanh khoản ảo** | `x * y = k` · `Virtual SOL = 30 SOL` | `x * y = k` · `Virtual SOL = 60 SOL` | Đơn giản, minh bạch tuyệt đối; bể ảo `60 SOL` tạo độ sâu giúp lệnh nhỏ không gây giật giá thất thường. |
 | **Ngưỡng Tốt nghiệp (Graduation)** | `79.25 SOL` qua 4 chặng (`5.52 → 15.59 → 36.55 → 79.25`) | `76.11 SOL` thực (`~$11,416` @ `$150/SOL`) | Đủ vốn thực chất cho studio indie hoàn thiện phiên bản, nhưng đủ gọn để cộng đồng vài trăm game thủ tự cán đích. |
 | **Biên độ Giá trước Graduation** | Từng chặng dịu (`1.40× → 2.31× → 4.92× → 13.26×`) | **`5.15×`** toàn đường cong | Đủ hấp dẫn thưởng cho người tin tưởng sớm, không tạo bong bóng FOMO cực đoan rồi sập đổ. |
-| **Phí Giao dịch Cơ bản** | `1.00%` (`0.5%` sàn · `0.3%` dev · `0.2%` game thủ) | `1.00%` | Thấp hơn biểu phí curve `1.25%/lệnh` của Pump.fun *(Project Ascend 09/2025; PumpSwap `0.25%`)*; tuy nhiên phí đối thủ biến động thường xuyên — **lợi thế bền vững của MetaPump nằm ở cấu trúc phí thoát sớm dưới đây, thứ Pump.fun không có**. |
+| **Phí Giao dịch Cơ bản** | `1.00%` (`0.5%` sàn · `0.3%` dev · `0.2%` game thủ) | `1.00%` | Thấp hơn biểu phí curve `1.25%/lệnh` của Pump.fun *(Project Ascend 09/2025; PumpSwap `0.25%`)*; tuy nhiên phí đối thủ biến động thường xuyên — **lợi thế bền vững của Game9K nằm ở cấu trúc phí thoát sớm dưới đây, thứ Pump.fun không có**. |
 | **Phí Thoát sớm (Early-Exit Fee)** | **`12%` (`<1h`) → `6%` (`<24h`) → `3%` (`<7d`) → `1%`** *(**Miễn phụ phí thoát sớm — chỉ còn thu phí cơ bản `1.00%` — nếu đồng hành qua ≥ 1 version**)* | **`4.00%`** phụ phí bán sớm *(tổng phí bán `= 1.00%` cơ bản `+ 4.00%` = `5.00%`)* | **Khác biệt cấu trúc chống bot quan trọng nhất:** biến mọi giao dịch mua-xả chớp nhoáng thành lỗ ròng chắc chắn; hoàn trả 50% phạt cho game thủ & 40% đắp quỹ giá sàn. |
 | **Giới hạn Tốc độ & Trần Ví** | `24h Gamer Priority Window` (`0.25–2.0 SOL`/ví) + Trần `2%` cung/ví + Lưu ký `BuyerPosition` trước M4 | `Epoch 600s` (tối đa `10%` curve/epoch) · Trần `5%`/ví | Chặn đứng 100% bot sniper block-0, ngăn cá voi bơm vốn đột ngột làm méo giá và ngăn dùng 100 ví ảo gom token xả sập sàn. |
 
@@ -538,17 +538,17 @@ MetaPump coi đây là **đường biên thiết kế bắt buộc ngay từ ng�
 
 ## 7. Mô hình Kinh doanh Đôi & Hiệu quả Đơn vị (Dual-Engine Business Model)
 
-Khác với 99% dự án Web3 "sống nhờ thị trường tăng (bull), chết lâm sàng khi thị trường giảm (bear)", MetaPump vận hành bằng **hai động cơ doanh thu bổ trợ lẫn nhau**:
+Khác với 99% dự án Web3 "sống nhờ thị trường tăng (bull), chết lâm sàng khi thị trường giảm (bear)", Game9K vận hành bằng **hai động cơ doanh thu bổ trợ lẫn nhau**:
 
 | Nguồn doanh thu | Mức thu / Cơ chế | Đặc tính dòng tiền |
 |---|---|---|
 | **1. Phí Giao dịch trên Đường cong (VGBC)** | `0.50%` giá trị mọi lệnh Mua/Bán (trong tổng 1% phí cơ bản) + `10%` từ quỹ phí phạt xả sớm | Dòng tiền SOL tức thì, biên lợi nhuận gộp >90%, bùng nổ mạnh trong chu kỳ sôi động. |
 | **2. Phí Tốt nghiệp Cột mốc M4 (Graduation Fee)** | `1.50 SOL` cố định trên mỗi dự án hoàn tất M4 chuyển lên DEX | Thu khi dự án thành công thực sự. |
 | **3. Phí Thanh khoản Vĩnh viễn Hậu tốt nghiệp (Locked LP Fees)** | Chia sẻ tỷ lệ phí giao dịch trọn đời từ vị thế LP khóa vĩnh viễn trên Meteora DAMM v2 | Dòng tiền thụ động tích lũy (compounding) mỗi khi một tựa game trở thành hit lớn. |
-| **4. Doanh thu Quảng cáo Cổng Game (Poki Ad Model)** | **50/50** doanh thu *commercialBreak / rewardedBreak* từ lưu lượng do MetaPump mang lại (**0%** phí trên lưu lượng studio tự kéo về để thu hút studio giỏi nhất!) | **Dòng tiền pháp định (USD) ổn định quanh năm**, bất chấp biến động giá crypto; chi phí băng thông gần bằng 0 nhờ Cloudflare R2. |
+| **4. Doanh thu Quảng cáo Cổng Game (Poki Ad Model)** | **50/50** doanh thu *commercialBreak / rewardedBreak* từ lưu lượng do Game9K mang lại (**0%** phí trên lưu lượng studio tự kéo về để thu hút studio giỏi nhất!) | **Dòng tiền pháp định (USD) ổn định quanh năm**, bất chấp biến động giá crypto; chi phí băng thông gần bằng 0 nhờ Cloudflare R2. |
 | **5. Dịch vụ Studio & Giải đấu Tài trợ (B2B / Seasons)** | Gói phân tích playtest chuyên sâu cho studio lớn & tài trợ các mùa giải Arena/Squad | Doanh thu biên cao từ giai đoạn mở rộng (Năm 2+). |
 
-**Sức mạnh cộng hưởng & Ranh giới doanh thu sạch:** MetaPump **không có bất kỳ nguồn thu nào** từ việc người chơi thua lỗ, phí ẩn hay bán dữ liệu cá nhân. Doanh thu quảng cáo USD giúp công ty sống khỏe qua mùa đông crypto; bệ phóng Solana tạo biên lợi nhuận đột biến khi một phiên bản game bứt phá.
+**Sức mạnh cộng hưởng & Ranh giới doanh thu sạch:** Game9K **không có bất kỳ nguồn thu nào** từ việc người chơi thua lỗ, phí ẩn hay bán dữ liệu cá nhân. Doanh thu quảng cáo USD giúp công ty sống khỏe qua mùa đông crypto; bệ phóng Solana tạo biên lợi nhuận đột biến khi một phiên bản game bứt phá.
 
 ### 7.1. Kinh tế Đơn vị Hạ tầng trên `1,000 VPH` & Bảng Độ nhạy Quảng cáo *(Nhà đầu tư Tự chọn Giả định)*
 
@@ -580,7 +580,7 @@ Khác với 99% dự án Web3 "sống nhờ thị trường tăng (bull), chết
 |---|---|
 | • **Vị thế tiên phong độc quyền (Category Creator):** Nền tảng đầu tiên kết hợp *Sổ cái Phiên bản + Đánh giá mù Arena + Bệ phóng khóa theo mốc + Chống bot PoP*.<br>• **Căn chỉnh lợi ích hoàn hảo (Incentive Alignment):** Studio có vốn làm tiếp game, game thủ được thưởng công bằng và mua giá gốc, nhà đầu tư có dữ liệu thật và quyền hoàn vốn *Ragequit*.<br>• **Kiến trúc chi phí siêu tối ưu:** Web HTML5 không tốn phí kho ứng dụng, Cloudflare R2 miễn phí băng thông tải ra, tận dụng 80% hạ tầng mã nguồn mở sạch đã kiểm chứng, phát triển tốc độ cao theo AI-Agile Framework.<br>• **Trải nghiệm không rào cản:** Người chơi phổ thông vào chơi ngay như Poki mà không cần biết ví blockchain là gì; nhà phát triển Poki/itch.io chuyển game sang chỉ mất <10 phút nhờ SDK tương thích 1:1.<br>• **Mô hình doanh thu kép (USD Ads + SOL Fees):** Bền vững qua mọi chu kỳ thị trường. | • **Bài toán khởi động 3 bên (Cold-Start Problem):** Cần đồng thời có *game đủ hay*, *đủ 500 người chơi thật để chấm Fit/Arena nhanh*, và *nhà giao dịch thanh khoản* trong giai đoạn đầu.<br>• **Tốc độ tạo token chậm hơn có chủ đích:** Do siết chặt Play-Gate, số lượng token ra mắt hàng ngày sẽ ít hơn hàng trăm lần so với sàn memecoin tự do — đòi hỏi nhà đầu tư hiểu rõ chiến lược chất lượng thay vì đếm số lượng.<br>• **Độ phức tạp vận hành chống gian lận:** Cuộc đua mèo vờn chuột liên tục với các trại bot giả lập người chơi (farm `SPARK` hoặc thao túng kết quả Arena/Player Fit).<br>• **Phụ thuộc một phần vào lớp ký xác nhận (Oracle):** Việc đo thời gian chơi và video playtest diễn ra ngoài chuỗi trước khi ký xác nhận lên Solana, đòi hỏi quy trình bảo mật khóa và kiểm toán minh bạch cực cao. |
 | **OPPORTUNITIES (Cơ hội thị trường bên ngoài)** | **THREATS (Rủi ro & Mối đe dọa bên ngoài)** |
-| • **Đại bùng nổ AI-Generated Games (2026–2030):** Hàng triệu game web mới ra đời nhờ AI coding & asset tools — ai nắm bộ lọc đánh giá phiên bản người nắm vương miện phân phối.<br>• **Khủng hoảng niềm tin vào Launchpad cũ:** Nhà đầu tư cá nhân chán ngấy cảnh 85–98% token chết trên Virtuals/Pump.fun, sẵn sàng dịch chuyển sang mô hình có bảo vệ vốn.<br>• **Lợi thế địa lý Việt Nam & Đông Nam Á:** Tiếp cận trực tiếp một trong những cộng đồng game studio casual/HTML5 và người dùng Web3 năng động nhất thế giới với chi phí thu hút studio thấp.<br>• **Khả năng mở rộng mô hình (Horizontal Expansion):** Sau khi thành công với Web Games, bộ giao thức *Version-Gated Launchpad + Blind Arena* có thể cấp phép/mở rộng sang ứng dụng tiêu dùng AI (AI Consumer Apps) và phần mềm sáng tạo. | • **Rủi ro sao chép từ ông lớn:** Các sàn launchpad lớn (Pump.fun, Virtuals) hoặc cổng game Web3 (B3) có thể bổ sung tính năng gắn nhãn phiên bản khi thấy MetaPump thành công.<br>• **Rủi ro pháp lý về tài sản số (Regulatory Risk):** Quy định khác nhau giữa các quốc gia đối với việc phát hành và giao dịch token dự án game.<br>• **Rủi ro thông đồng của nhà phát triển (Wash-Playing):** Studio xấu thuê người thật giá rẻ (click-farms) cày đủ 3 phút chơi để lách qua mốc M2.<br>• **Biến động vĩ mô thị trường Crypto / Mạng Solana:** Sụt giảm giá SOL hoặc tắc nghẽn mạng ảnh hưởng ngắn hạn tới tâm lý giao dịch trên Launchpad. |
+| • **Đại bùng nổ AI-Generated Games (2026–2030):** Hàng triệu game web mới ra đời nhờ AI coding & asset tools — ai nắm bộ lọc đánh giá phiên bản người nắm vương miện phân phối.<br>• **Khủng hoảng niềm tin vào Launchpad cũ:** Nhà đầu tư cá nhân chán ngấy cảnh 85–98% token chết trên Virtuals/Pump.fun, sẵn sàng dịch chuyển sang mô hình có bảo vệ vốn.<br>• **Lợi thế địa lý Việt Nam & Đông Nam Á:** Tiếp cận trực tiếp một trong những cộng đồng game studio casual/HTML5 và người dùng Web3 năng động nhất thế giới với chi phí thu hút studio thấp.<br>• **Khả năng mở rộng mô hình (Horizontal Expansion):** Sau khi thành công với Web Games, bộ giao thức *Version-Gated Launchpad + Blind Arena* có thể cấp phép/mở rộng sang ứng dụng tiêu dùng AI (AI Consumer Apps) và phần mềm sáng tạo. | • **Rủi ro sao chép từ ông lớn:** Các sàn launchpad lớn (Pump.fun, Virtuals) hoặc cổng game Web3 (B3) có thể bổ sung tính năng gắn nhãn phiên bản khi thấy Game9K thành công.<br>• **Rủi ro pháp lý về tài sản số (Regulatory Risk):** Quy định khác nhau giữa các quốc gia đối với việc phát hành và giao dịch token dự án game.<br>• **Rủi ro thông đồng của nhà phát triển (Wash-Playing):** Studio xấu thuê người thật giá rẻ (click-farms) cày đủ 3 phút chơi để lách qua mốc M2.<br>• **Biến động vĩ mô thị trường Crypto / Mạng Solana:** Sụt giảm giá SOL hoặc tắc nghẽn mạng ảnh hưởng ngắn hạn tới tâm lý giao dịch trên Launchpad. |
 
 ### 8.2. Chiến lược Chuyển hóa SWOT thành Lợi thế Thực thi (TOWS Action Plan)
 
@@ -594,7 +594,7 @@ Khác với 99% dự án Web3 "sống nhờ thị trường tăng (bull), chết
 
 ## 9. Chiến lược Tăng trưởng, Lộ trình Gọi vốn Đa vòng & Dự phóng Tài chính
 
-Đúng với triết lý sản phẩm **Gate-First**, chính MetaPump cũng vận hành kế hoạch huy động vốn theo **kỷ luật cột mốc (Milestone-Gated Capital Formation)**: không gọi thừa vốn gây pha loãng sớm, mỗi vòng vốn chỉ mở khi các chỉ số giữ chân người chơi, tỷ lệ sống sót game hậu `M4` và doanh thu thực của vòng trước đã được kiểm chứng.
+Đúng với triết lý sản phẩm **Gate-First**, chính Game9K cũng vận hành kế hoạch huy động vốn theo **kỷ luật cột mốc (Milestone-Gated Capital Formation)**: không gọi thừa vốn gây pha loãng sớm, mỗi vòng vốn chỉ mở khi các chỉ số giữ chân người chơi, tỷ lệ sống sót game hậu `M4` và doanh thu thực của vòng trước đã được kiểm chứng.
 
 ### 9.1. Tổng quan Lộ trình Gọi vốn 4 Vòng (`$1M → $3M → $12M → $25M`)
 
@@ -613,13 +613,13 @@ Khác với 99% dự án Web3 "sống nhờ thị trường tăng (bull), chết
 
 ### 9.1b. Vì sao ba năm đầu chấp nhận lỗ — *J-Curve Infrastructure Play*
 
-**Không giấu nhà đầu tư một sự thật khó nghe:** mô hình cơ sở của MetaPump **không hòa vốn ở Năm 2**. Điểm hòa vốn rơi vào **Năm 4** *(doanh thu `$18.46M`, EBITDA `+$3.96M`)*, sau ba năm EBITDA âm *(bảng §9.3)*. Đây là lựa chọn có chủ đích, không phải dự phóng lạc quan bị hạ xuống cho khớp.
+**Không giấu nhà đầu tư một sự thật khó nghe:** mô hình cơ sở của Game9K **không hòa vốn ở Năm 2**. Điểm hòa vốn rơi vào **Năm 4** *(doanh thu `$18.46M`, EBITDA `+$3.96M`)*, sau ba năm EBITDA âm *(bảng §9.3)*. Đây là lựa chọn có chủ đích, không phải dự phóng lạc quan bị hạ xuống cho khớp.
 
-Nếu chỉ bán "bệ phóng token", MetaPump sẽ có lãi sớm rồi chết chậm: doanh thu phí giao dịch tỷ lệ thuận với **khối lượng đầu cơ**, mà khối lượng đầu cơ tỷ lệ nghịch với **chất lượng cổng** — đúng cái bẫy đã giết 85% agent của Virtuals. Ba năm lỗ là cái giá để mua về **hai tài sản không thể mua bằng tiền marketing**:
+Nếu chỉ bán "bệ phóng token", Game9K sẽ có lãi sớm rồi chết chậm: doanh thu phí giao dịch tỷ lệ thuận với **khối lượng đầu cơ**, mà khối lượng đầu cơ tỷ lệ nghịch với **chất lượng cổng** — đúng cái bẫy đã giết 85% agent của Virtuals. Ba năm lỗ là cái giá để mua về **hai tài sản không thể mua bằng tiền marketing**:
 
 | Trụ cột đốt tiền *(Năm 1–3)* | Mua về cái gì | Vì sao đối thủ sau này không copy được |
 |---|---|---|
-| **Trợ giá phía Cung** *(quỹ Version Jam, grant mồi, escrow `M1–M4`)* | **Nguồn game đã qua cổng** — hàng trăm studio đã biết cách vượt `M2/M3` và coi MetaPump là kênh phân phối chính | Đối thủ phải trả lại **toàn bộ** chi phí tuyển studio từ đầu, cộng rủi ro chất lượng chưa kiểm chứng |
+| **Trợ giá phía Cung** *(quỹ Version Jam, grant mồi, escrow `M1–M4`)* | **Nguồn game đã qua cổng** — hàng trăm studio đã biết cách vượt `M2/M3` và coi Game9K là kênh phân phối chính | Đối thủ phải trả lại **toàn bộ** chi phí tuyển studio từ đầu, cộng rủi ro chất lượng chưa kiểm chứng |
 | **Trợ giá phía Cầu** *(thưởng giờ chơi, giải đấu, micro-creator)* | **Hào kinh tế dữ liệu (*Data Moat*):** `VPH`, retention theo **từng phiên bản**, tỷ lệ thắng Arena — bộ dữ liệu không launchpad nào khác thu được vì không ai đo theo version | Dữ liệu này chỉ tích lũy **theo thời gian lịch**; không thể mua lại quá khứ bằng tiền |
 | **Hạ tầng & kiểm toán sớm** *(engine plugin, SDK ads, formal verification)* | **Chi phí biên giảm dần theo quy mô** — `$2.37/1,000 VPH` ở Năm 1 giảm mạnh khi `VPH` tăng `~100×` | Người đến sau trả giá hạ tầng của **Năm 1** trong khi giá thị trường là của Năm 4 |
 
@@ -646,7 +646,7 @@ Nếu chỉ bán "bệ phóng token", MetaPump sẽ có lãi sớm rồi chết 
 | **3. Bảo mật, Kiểm toán Smart Contract & Pháp lý** | **15%** | **$150,000** | 2 đợt kiểm toán độc lập cho 3 Anchor programs `registry / curve / rewards` (`$90K`), quỹ thưởng phát hiện lỗi Bug Bounty (`$25K`), thành lập pháp nhân quốc tế, điều khoản sử dụng & bộ lọc tuân thủ khu vực (`$35K`). |
 | **4. Tăng trưởng Cộng đồng Game thủ (Nguồn cầu)** | **15%** | **$150,000** | Mạng lưới micro-creator mảng indie/web game trên TikTok, YouTube Shorts, Discord, X (`$80K`); chiến dịch *Mystery Tile* & giải đấu Bang hội *Squads* Mùa 0–1 (`$45K`); đồng tiếp thị hệ sinh thái Solana (`$25K`). |
 | **5. Quỹ Dự phòng Vận hành (Reserve)** | **5%** | **$50,000** | Đệm thanh khoản an toàn bảo vệ runway trước biến động chi phí hạ tầng hoặc pháp lý phát sinh. |
-| **TỔNG CỘNG VÒNG PRE-SEED** | **100%** | **$1,000,000** | **Đưa MetaPump từ Kiến trúc Sẵn sàng → Mainnet v1.0 → `400K` MAU & `$1.2M+` ARR run-rate.** |
+| **TỔNG CỘNG VÒNG PRE-SEED** | **100%** | **$1,000,000** | **Đưa Game9K từ Kiến trúc Sẵn sàng → Mainnet v1.0 → `400K` MAU & `$1.2M+` ARR run-rate.** |
 
 > **Cam kết 3 KHÔNG khi sử dụng vốn nhà đầu tư:** Không đốt tiền mua người dùng ảo (bot/incentivized farm) · Không trả thưởng giả để làm đẹp biểu đồ retention/VPH · Không thuê tạo lập khối lượng giao dịch giả (wash-trading) trên đường cong.
 
@@ -667,7 +667,7 @@ Nếu chỉ bán "bệ phóng token", MetaPump sẽ có lãi sớm rồi chết 
 
 | Vòng vốn | Cơ cấu Phân bổ Nguồn vốn (USD & %) | Mục tiêu Chiến lược Trọng tâm |
 |---|---|---|
-| **Series A**<br>**`$12,000,000`** | • **30% (`$3.60M`)** Mạng phân phối toàn cầu & đội bán quảng cáo thương hiệu trực tiếp *(Direct Brand Ads)*<br>• **30% (`$3.60M`)** Quỹ phát hành Flagship AA-Indie & hệ thống giải đấu mùa `M5+` LiveOps<br>• **25% (`$3.00M`)** Giao thức v3, công cụ *AI Playtest Diagnostic Co-Pilot* giúp studio sửa điểm rơi người chơi tự động & hạ tầng Edge toàn cầu<br>• **10% (`$1.20M`)** Giấy phép pháp lý quốc tế, tuân thủ & an ninh cấp định chế<br>• **5% (`$0.60M`)** Dự phòng chiến lược | Đưa MetaPump trở thành **Top 5 cổng Web Game độc lập thế giới về doanh thu** (`6.5M` MAU, `$5.158M` doanh thu ròng/năm — vẫn trong J-Curve, EBITDA `−$642K`), sở hữu kho dữ liệu đánh giá phiên bản game lớn nhất hành tinh. |
+| **Series A**<br>**`$12,000,000`** | • **30% (`$3.60M`)** Mạng phân phối toàn cầu & đội bán quảng cáo thương hiệu trực tiếp *(Direct Brand Ads)*<br>• **30% (`$3.60M`)** Quỹ phát hành Flagship AA-Indie & hệ thống giải đấu mùa `M5+` LiveOps<br>• **25% (`$3.00M`)** Giao thức v3, công cụ *AI Playtest Diagnostic Co-Pilot* giúp studio sửa điểm rơi người chơi tự động & hạ tầng Edge toàn cầu<br>• **10% (`$1.20M`)** Giấy phép pháp lý quốc tế, tuân thủ & an ninh cấp định chế<br>• **5% (`$0.60M`)** Dự phòng chiến lược | Đưa Game9K trở thành **Top 5 cổng Web Game độc lập thế giới về doanh thu** (`6.5M` MAU, `$5.158M` doanh thu ròng/năm — vẫn trong J-Curve, EBITDA `−$642K`), sở hữu kho dữ liệu đánh giá phiên bản game lớn nhất hành tinh. |
 | **Series B**<br>**`$25,000,000`** | • **35% (`$8.75M`)** M&A chiến lược (mua lại cổng web game khu vực, công nghệ ad-tech & studio chủ lực)<br>• **30% (`$7.50M`)** Mở rộng ngang bộ giao thức *Version-Gated Launchpad + Blind Arena* sang **AI Consumer Apps & Interactive Media**<br>• **20% (`$5.00M`)** Thương hiệu toàn cầu chinh phục cột mốc `20M+` MAU<br>• **10% (`$2.50M`)** R&D hạ tầng thế hệ mới (Cloud/WebGPU streaming nhẹ)<br>• **5% (`$1.25M`)** Dự phòng ngân quỹ | Trở thành **tiêu chuẩn toàn cầu về Kiểm định Phiên bản & Khởi tạo Vốn cho Sản phẩm Số Tương tác**, đạt `$18.46M` doanh thu ròng/năm — **điểm hòa vốn đầu tiên** (EBITDA `+$3.96M`) — với cơ cấu nhân sự siêu tinh gọn (~65 FTE). |
 
 ---
@@ -747,11 +747,11 @@ Mục này tồn tại vì hầu hết các dự án Web3 cố tình né tránh 
 | **Không hứa thanh khoản sâu vô hạn hậu tốt nghiệp** | Đợt tài trợ nhỏ có thanh khoản mỏng vẫn có thể biến động mạnh — chúng tôi khóa LP và hiển thị cảnh báo rủi ro công khai. |
 | **Không hứa rào cản pháp lý đã biến mất** | Khung pháp lý tài sản mã hóa đang hoàn thiện; ý kiến luật sư độc lập là điều kiện cứng chặn trước GA (Mục 5.4). |
 | **Không hứa suông "chúng tôi sẽ không bao giờ nới cổng"** | Thay cho lời hứa miệng, chúng tôi khóa bằng hợp đồng on-chain, đa chữ ký `4/7 + 48h timelock` và đóng băng bất biến sau 90 ngày. |
-| **Không hứa đánh bại ngay các gã khổng lồ 10 năm tuổi** | Poki có hơn một thập kỷ tích lũy; lợi thế của MetaPump là đi trước 12–24 tháng ở đúng ngách *phiên bản làm đơn vị tài sản*. |
+| **Không hứa đánh bại ngay các gã khổng lồ 10 năm tuổi** | Poki có hơn một thập kỷ tích lũy; lợi thế của Game9K là đi trước 12–24 tháng ở đúng ngách *phiên bản làm đơn vị tài sản*. |
 
 **Bốn điều chúng tôi DÁM cam kết và chịu trách nhiệm kiểm chứng:**
 1. **Mọi con số đều kiểm tra lại được:** Có nguồn, có năm đo, có mẫu đo, và mọi phép tính nội bộ đều có script chạy kiểm chứng tự động ([`scripts/verify_protocol_math.py`](../scripts/verify_protocol_math.py)).
-2. **Mọi tham số kinh tế đều khóa bằng mô phỏng toán học:** Đặc tả hình thức đầy đủ trong [**MetaPump Yellow Paper (`docs/YELLOWPAPER.md`)**](./YELLOWPAPER.md), vượt qua 9 kịch bản căng thẳng `S1–S9` và `10,000` phép thử ngẫu nhiên không vi phạm bất biến.
+2. **Mọi tham số kinh tế đều khóa bằng mô phỏng toán học:** Đặc tả hình thức đầy đủ trong [**Game9K Yellow Paper (`docs/YELLOWPAPER.md`)**](./YELLOWPAPER.md), vượt qua 9 kịch bản căng thẳng `S1–S9` và `10,000` phép thử ngẫu nhiên không vi phạm bất biến.
 3. **Mọi quyết định kiến trúc đều có hồ sơ ADR & cổng HITL con người ký duyệt:** Không đánh đổi bảo mật hay kiểm toán để chạy theo ngày ra mắt.
 4. **Nếu giả thuyết sai, chuyển hướng (*pivot*) công khai theo Kill Criteria đã viết trước:** Bảo vệ tối đa vốn của nhà đầu tư, uy tín của studio và quyền lợi của người chơi.
 
@@ -761,7 +761,7 @@ Mục này tồn tại vì hầu hết các dự án Web3 cố tình né tránh 
 
 Suốt một thập kỷ qua, ngành game bị chia cắt thành hai thái cực cực đoan: hoặc là **những cổng game tuyệt vời nhưng không ghi nhận và không mở vốn cho từng bản cập nhật** (Poki, App Store), hoặc là **những sòng bạc tài chính mở toang nhưng thiếu vắng cổng kiểm định sản phẩm thực thụ** (GameFi đời đầu, Memecoin & Agent Launchpads).
 
-**MetaPump** khép lại khoảng cách đó bằng một nguyên lý giản dị nhưng không thể đảo ngược: **Biến phiên bản game thành đơn vị của tài sản, và đặt giờ chơi của con người thật làm chìa khóa duy nhất mở két sắt thanh khoản.** Khi nhà phát triển chỉ được giải ngân nhờ làm ra bản cập nhật hay hơn bản trước, khi game thủ sớm được bảo vệ ở tầng hợp đồng thông minh, khi nền tảng giữ `0%` token dự án, và khi nhà đầu tư luôn nhìn thấy dữ liệu thật cùng lối thoát công bằng — mọi đồng vốn cộng đồng sẽ được chuyển hóa thành những trò chơi sống mãi với thời gian.
+**Game9K** khép lại khoảng cách đó bằng một nguyên lý giản dị nhưng không thể đảo ngược: **Biến phiên bản game thành đơn vị của tài sản, và đặt giờ chơi của con người thật làm chìa khóa duy nhất mở két sắt thanh khoản.** Khi nhà phát triển chỉ được giải ngân nhờ làm ra bản cập nhật hay hơn bản trước, khi game thủ sớm được bảo vệ ở tầng hợp đồng thông minh, khi nền tảng giữ `0%` token dự án, và khi nhà đầu tư luôn nhìn thấy dữ liệu thật cùng lối thoát công bằng — mọi đồng vốn cộng đồng sẽ được chuyển hóa thành những trò chơi sống mãi với thời gian.
 
 ---
 

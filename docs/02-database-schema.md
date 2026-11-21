@@ -386,7 +386,7 @@ CREATE TABLE public.playtest_recordings (
 
 ---
 
-### 2.4. Context 4 — MetaPump Version Arena (`S3`)
+### 2.4. Context 4 — Game9K Version Arena (`S3`)
 
 ```sql
 CREATE TYPE arena_mode AS ENUM ('version_duel', 'category_duel');

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-fast verifier for docs/MetaPump-Pitch-Deck.pdf.
+"""Fail-fast verifier for docs/Game9K-Pitch-Deck.pdf.
 
 "Người phản biện không cần tin — chỉ cần chạy một lệnh":
 
@@ -24,7 +24,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DECK = ROOT / "docs" / "MetaPump-Pitch-Deck.pdf"
+DECK = ROOT / "docs" / "Game9K-Pitch-Deck.pdf"
 
 # --------------------------------------------------------------- ground truth
 # Spec SSOT: docs/YELLOWPAPER.md §6.1 (flat graduation fee), §264 (b_exit ladder).

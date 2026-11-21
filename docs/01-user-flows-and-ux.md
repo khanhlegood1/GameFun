@@ -10,7 +10,7 @@
 
 ```mermaid
 flowchart TB
-    Root["MetaPump Web App (metapump.gg)"]
+    Root["Game9K Web App (game9k.com)"]
 
     Root --> P1["1. Play Portal (Poki UX)"]
     Root --> P2["2. Version Arena (Arena UX)"]
@@ -67,18 +67,18 @@ flowchart TB
 ```mermaid
 sequenceDiagram
     actor Player as Game thủ (Guest / Player)
-    participant Portal as MetaPump Web (metapump.gg)
+    participant Portal as Game9K Web (game9k.com)
     participant API as Portal API (/api/v1)
-    participant Edge as CF Worker (*.play.metapump-cdn.net)
+    participant Edge as CF Worker (*.play.game9k-cdn.net)
     participant R2 as Cloudflare R2 (builds)
-    participant SDK as @metapump/game-sdk (trong iframe)
+    participant SDK as @game9k/game-sdk (trong iframe)
 
     Player->>Portal: Truy cập / hoặc link trực tiếp /g/sky-drift?ref=dev
     Portal->>API: GET /api/v1/games/sky-drift (ghi nhận traffic_source: direct | portal)
     API-->>Portal: Metadata game + live_version (id, play_origin, orientation, csp_profile)
     Portal->>API: POST /api/v1/play-sessions (game_id, version_id, altcha_token nếu cần)
     API-->>Portal: session_id + play_token (JWT ngắn hạn) + heartbeat_nonce
-    Portal->>Edge: Render sandboxed iframe https://<vId>.play.metapump-cdn.net/?pt=<play_token>
+    Portal->>Edge: Render sandboxed iframe https://<vId>.play.game9k-cdn.net/?pt=<play_token>
     Edge->>Edge: Verify play_token + gắn CSP, Sandbox, CORP/COOP headers (0 portal cookie)
     Edge->>R2: Đọc index.html & assets từ prefix builds/<gameId>/<vId>/
     R2-->>Edge: Static HTML5/WebGL/Wasm assets (Edge cached, immutable)
@@ -108,7 +108,7 @@ sequenceDiagram
     participant DB as Supabase PostgreSQL
     participant Worker as Isolated Build Worker
     participant R2B as R2 Bucket (builds - private)
-    participant Prev as CF Worker (*.preview.metapump-cdn.net)
+    participant Prev as CF Worker (*.preview.game9k-cdn.net)
 
     Dev->>Studio: Chọn file build.zip (≤50MB) + nhập Changelog
     Studio->>API: POST /api/v1/developer/games/{gameId}/upload-sessions
@@ -133,7 +133,7 @@ sequenceDiagram
         Worker->>DB: Lưu validation_reports + build_diff + status=preview_ready (KHÔNG đổi live_version_id)
         Studio-->>Dev: Bật nút "Open Preview" & "Open Inspector"
         Dev->>API: POST /api/v1/developer/versions/{versionId}/preview-token
-        API-->>Dev: Short-lived signed URL trên <versionId>.preview.metapump-cdn.net
+        API-->>Dev: Short-lived signed URL trên <versionId>.preview.game9k-cdn.net
         Dev->>Prev: Kiểm tra game, SDK events & quét QR test mobile trên Inspector
     end
 ```
@@ -173,7 +173,7 @@ flowchart TD
 
 ---
 
-### Luồng 4 — Đấu giá trị Phiên bản Mù trên MetaPump Arena (Arena Flow)
+### Luồng 4 — Đấu giá trị Phiên bản Mù trên Game9K Arena (Arena Flow)
 
 ```mermaid
 sequenceDiagram
@@ -249,10 +249,10 @@ sequenceDiagram
     actor Dev as Developer
     actor Gamer as Game thủ (PoP Verified)
     actor Trader as Public Trader
-    participant API as MetaPump API + Oracle Signer
-    participant Reg as Program: metapump-registry
-    participant Curve as Program: metapump-curve
-    participant Rew as Program: metapump-rewards
+    participant API as Game9K API + Oracle Signer
+    participant Reg as Program: game9k-registry
+    participant Curve as Program: game9k-curve
+    participant Rew as Program: game9k-rewards
     participant Idx as Solana Indexer -> Web UI
 
     Note over Dev,Rew: BƯỚC 1: Nâng cấp từ M1 (cap 150M) lên M2 (cap 330M) sau khi v2 pass Player Fit + Arena
@@ -304,5 +304,5 @@ flowchart TD
 ### Luồng 8 — Curator / Admin kiểm định HITL & Xử lý vi phạm
 
 1. **Duyệt Developer (`S0-05`):** Người dùng nộp hồ sơ studio/portfolio tại `/developers/apply` → Admin xem xét tại `/admin/reviews/developers` → duyệt `approved` (hoặc `rejected` kèm lý do) → ghi `audit_logs`.
-2. **Duyệt Cột mốc M3 / M4 & Curated Release:** Hệ thống tự động tổng hợp bảng điểm *(Validation JSON + Build Diff + Player Fit Histogram + Web Fit CTR/Time/C2P + Arena Win-Rate & 95% CI + Báo cáo tỷ lệ phiên sạch Anti-Bot)*. Curator mở **MetaPump Inspector** test thực tế trên desktop & mobile → bấm `Approve Milestone` → ghi `audit_logs` và mở quyền xin chữ ký Oracle nâng mốc on-chain.
+2. **Duyệt Cột mốc M3 / M4 & Curated Release:** Hệ thống tự động tổng hợp bảng điểm *(Validation JSON + Build Diff + Player Fit Histogram + Web Fit CTR/Time/C2P + Arena Win-Rate & 95% CI + Báo cáo tỷ lệ phiên sạch Anti-Bot)*. Curator mở **Game9K Inspector** test thực tế trên desktop & mobile → bấm `Approve Milestone` → ghi `audit_logs` và mở quyền xin chữ ký Oracle nâng mốc on-chain.
 3. **Phản ứng sự cố khẩn cấp (Kill-Switch):** Nếu phát hiện bản build vi phạm bản quyền, chứa mã độc lọt lưới hoặc dev gian lận wash-play: Admin gọi `suspend_version` / `revoke_preview` → Cloudflare Worker chặn phân phối trong `< 10 giây`, ngừng cấp chữ ký nâng mốc và ghi đầy đủ vào `audit_logs`.

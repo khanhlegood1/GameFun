@@ -2,20 +2,20 @@
 
 > **Tài liệu sống (Living Documentation):** `docs/03-api-specification.md`  
 > **Giai đoạn AI-Agile:** `P03 — API Contract First` (sinh tự động TypeScript client qua `@hey-api/openapi-ts` và mock server qua `Prism`/`MSW` trong `packages/api-contract`)  
-> **Base URL:** `https://metapump.gg/api/v1` (Staging: `https://staging.metapump.gg/api/v1`)  
+> **Base URL:** `https://game9k.com/api/v1` (Staging: `https://staging.game9k.com/api/v1`)  
 > **Game Delivery Domains (Cô lập hoàn toàn khỏi cookie portal):**  
-> - Preview (chưa phát hành): `https://<version-id>.preview.metapump-cdn.net`  
-> - Live / Fit / Arena: `https://<version-id>.play.metapump-cdn.net`
+> - Preview (chưa phát hành): `https://<version-id>.preview.game9k-cdn.net`  
+> - Live / Fit / Arena: `https://<version-id>.play.game9k-cdn.net`
 
 ---
 
 ## 1. Quy ước Chung (Cross-Cutting API Conventions)
 
 ### 1.1. Xác thực & Phân quyền
-- **Portal Session:** Supabase Auth SSR cookie (`HttpOnly`, `Secure`, `SameSite=Lax`, gắn chặt domain `metapump.gg`, **không bao giờ** chia sẻ sang `metapump-cdn.net`).
+- **Portal Session:** Supabase Auth SSR cookie (`HttpOnly`, `Secure`, `SameSite=Lax`, gắn chặt domain `game9k.com`, **không bao giờ** chia sẻ sang `game9k-cdn.net`).
 - **Developer CLI Token:** `Authorization: Bearer mp_pat_<random>` (SHA-256 hash lưu DB, chỉ có scope `upload:write`, `version:read` trên các game sở hữu).
 - **Preview / Play Edge Token:** JWT ký bằng EdDSA (`Ed25519`), thời hạn ngắn (`15 phút` cho preview, `2 giờ` cho play), nhúng `vid` (`version_id`), `ptv` (`preview_token_version` để thu hồi tức thì), `aud` (subdomain đích).
-- **Internal Webhook (Solana Indexer / Helius):** HMAC-SHA256 header `X-MetaPump-Signature` + allowlist IP/secret.
+- **Internal Webhook (Solana Indexer / Helius):** HMAC-SHA256 header `X-Game9K-Signature` + allowlist IP/secret.
 
 ### 1.2. Định dạng Phản hồi, Idempotency & Correlation ID
 - Mọi request ghi nhạy cảm (`upload-complete`, `arena/vote`, `pop-attestation`, `milestone/attestation`) hỗ trợ header `Idempotency-Key: <uuid-v4>`.
@@ -72,9 +72,9 @@
 | `POST` | `/api/v1/developer/upload-sessions/{sessionId}/abort` | Owner | 20/h | Hủy phiên upload dở dang và lên lịch dọn object rác trên R2 quarantine. |
 | `GET` | `/api/v1/developer/versions/{versionId}` | Owner/Curator | 60/m | Lấy trạng thái version, SHA-256, `validationReport`, `versionDiff` và trạng thái xử lý job. |
 | `GET` | `/api/v1/developer/versions/{versionId}/events` | Owner | 10/m | **SSE Stream** đẩy cập nhật thời gian thực: `uploaded → processing → preview_ready / validation_failed`. |
-| `POST` | `/api/v1/developer/versions/{versionId}/preview-token` | Owner/Curator | 30/m | Cấp URL preview ngắn hạn trên `https://<versionId>.preview.metapump-cdn.net` + mã QR cho mobile Inspector. |
+| `POST` | `/api/v1/developer/versions/{versionId}/preview-token` | Owner/Curator | 30/m | Cấp URL preview ngắn hạn trên `https://<versionId>.preview.game9k-cdn.net` + mã QR cho mobile Inspector. |
 | `POST` | `/api/v1/developer/versions/{versionId}/revoke-preview` | Owner/Admin | 20/m | Tăng `preview_token_version + 1` để vô hiệu hóa ngay mọi link preview đang mở. |
-| `PATCH` | `/api/v1/developer/versions/{versionId}/inspector-qa` | Owner/Curator | 30/m | Lưu kết quả đánh dấu QA checklist trong MetaPump Inspector. |
+| `PATCH` | `/api/v1/developer/versions/{versionId}/inspector-qa` | Owner/Curator | 30/m | Lưu kết quả đánh dấu QA checklist trong Game9K Inspector. |
 
 #### Mẫu Payload tiêu biểu: Khởi tạo & Hoàn tất Upload ZIP
 
@@ -96,7 +96,7 @@
     "maxBytes": 52428800,
     "upload": {
       "method": "PUT",
-      "url": "https://<account>.r2.cloudflarestorage.com/metapump-quarantine/q/9f8a...c12?X-Amz-Expires=900&...",
+      "url": "https://<account>.r2.cloudflarestorage.com/game9k-quarantine/q/9f8a...c12?X-Amz-Expires=900&...",
       "requiredHeaders": {
         "Content-Type": "application/zip",
         "Content-Length": "18452910"
@@ -126,7 +126,7 @@
 
 ---
 
-### 2.4. MetaPump Version Arena (`M06` — Arena.io Style)
+### 2.4. Game9K Version Arena (`M06` — Arena.io Style)
 
 | Method | Endpoint | Auth | Rate Limit | Mô tả chức năng |
 |---|---|---|---|---|
@@ -187,7 +187,7 @@
 | `GET` | `/api/v1/launchpad/{slug}/sell-quote` | Public | 60/m | Ước tính minh bạch số SOL nhận về, `weightedHoldAge`, tỷ lệ `earlyExitFeeBps` (12%/6%/3%/1%) và phân bổ phí trước khi ký ví. |
 | `POST` | `/api/v1/launchpad/{slug}/pop-attestation` | User (SIWS) | 10/m | Kiểm tra PoP Tier + thời lượng chơi game ≥ 5 phút + `sybil_risk_score < 0.5`, trả về chữ ký Ed25519 ngắn hạn (`120s`) để ví người chơi gọi `buy_priority` trên Solana. |
 | `POST` | `/api/v1/developer/games/{gameId}/milestones/{level}/attestation` | Owner | 5/h | Kiểm tra toàn bộ điều kiện mốc `M1..M5+` (Fit Test + Arena + Build Diff + Curator HITL), đóng gói bằng chứng lên R2/Arweave, trả chữ ký Ed25519 của Oracle để mở khóa tranche on-chain. |
-| `GET` | `/api/v1/rewards/claims` | User (SIWS) | 60/m | Lấy danh sách phân bổ token (stream 21 ngày) & SOL từ phí phạt Early-Exit kèm `merkleProof` để người chơi claim trực tiếp từ `metapump-rewards`. |
+| `GET` | `/api/v1/rewards/claims` | User (SIWS) | 60/m | Lấy danh sách phân bổ token (stream 21 ngày) & SOL từ phí phạt Early-Exit kèm `merkleProof` để người chơi claim trực tiếp từ `game9k-rewards`. |
 | `POST` | `/api/v1/internal/solana/webhook` | HMAC | 1000/m | Nhận sự kiện giao dịch từ Helius/Indexer để cập nhật read-projection theo slot. |
 
 ---
@@ -204,13 +204,13 @@
 
 ---
 
-## 3. Hợp đồng `@metapump/game-sdk` (Tương thích 1:1 với Poki SDK)
+## 3. Hợp đồng `@game9k/game-sdk` (Tương thích 1:1 với Poki SDK)
 
-Để mọi developer từng làm game cho Poki (Godot, Unity WebGL, Phaser, Construct, GDevelop, Three.js) có thể port game sang MetaPump trong **dưới 10 phút**, SDK giữ nguyên tên hàm chuẩn của Poki và giao tiếp an toàn từ iframe cô lập lên Portal qua `window.parent.postMessage`:
+Để mọi developer từng làm game cho Poki (Godot, Unity WebGL, Phaser, Construct, GDevelop, Three.js) có thể port game sang Game9K trong **dưới 10 phút**, SDK giữ nguyên tên hàm chuẩn của Poki và giao tiếp an toàn từ iframe cô lập lên Portal qua `window.parent.postMessage`:
 
 ```ts
-// Interface công khai trong iframe game: window.MetaPumpSDK (có sẵn adapter tương thích PokiSDK)
-export interface MetaPumpGameSDK {
+// Interface công khai trong iframe game: window.Game9KSDK (có sẵn adapter tương thích PokiSDK)
+export interface Game9KSDK {
   init(): Promise<{ environment: 'inspector' | 'preview' | 'play' | 'arena'; versionLabel?: string }>;
 
   // 5 sự kiện vòng đời chuẩn Poki (developers.poki.com/guide/sdk-overview)
@@ -220,7 +220,7 @@ export interface MetaPumpGameSDK {
   commercialBreak(onStart?: () => void): Promise<void>;
   rewardedBreak(options?: { size?: 'small' | 'medium' | 'large'; onStart?: () => void }): Promise<boolean>;
 
-  // Tiện ích mở rộng cho MetaPump (Cloud Save AUDS & Version Quest milestones)
+  // Tiện ích mở rộng cho Game9K (Cloud Save AUDS & Version Quest milestones)
   cloudSave: {
     get<T = unknown>(slot?: string): Promise<T | null>;
     set<T = unknown>(value: T, slot?: string): Promise<void>;
@@ -230,7 +230,7 @@ export interface MetaPumpGameSDK {
 ```
 
 **Quy tắc bảo mật `postMessage` bắt buộc:**
-1. Portal chỉ chấp nhận bản tin khi `event.source === gameIframe.contentWindow` **VÀ** `event.origin === expectedVersionOrigin` (khớp chính xác `https://<versionId>.play.metapump-cdn.net`).
+1. Portal chỉ chấp nhận bản tin khi `event.source === gameIframe.contentWindow` **VÀ** `event.origin === expectedVersionOrigin` (khớp chính xác `https://<versionId>.play.game9k-cdn.net`).
 2. SDK bên trong iframe tự động đo tổng hợp *chỉ số thống kê ẩn danh* (`input_event_count`, khoảng cách thời gian giữa các lần nhấn để tính Shannon entropy, `requestAnimationFrame` FPS, `window.onerror`) — **tuyệt đối không đọc hay gửi nội dung phím gõ văn bản, clipboard, cookie hay storage ngoài phạm vi game**.
 3. Trong chế độ **Arena Blind Duel**, hàm `init()` **không trả về `versionLabel`** để game không thể tự tiết lộ mình là bản cũ hay bản mới nhằm thao túng người chấm.
 

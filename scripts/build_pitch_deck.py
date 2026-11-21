@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""MetaPump investor pitch deck -> PDF (14 slides, 16:9, reproducible).
+"""Game9K investor pitch deck -> PDF (14 slides, 16:9, reproducible).
 
 Why this file exists
 --------------------
-The previous deck (`docs/MetaPump-Pitch-Deck.pdf`) was exported from Google
+The previous deck (`docs/Game9K-Pitch-Deck.pdf`) was exported from Google
 Slides: it had no source in the repo, so every numeric fix had to be retyped by
 hand, and it drifted three whitepaper revisions behind (it still sold
 "$0.75M -> $72.0M, breakeven Q4 Y1"). This generator makes the deck an
@@ -20,7 +20,7 @@ Design constraints honoured here
 * No claim is made about code that does not exist in this repository.
 
 Usage:
-    python3 scripts/build_pitch_deck.py docs/MetaPump-Pitch-Deck.pdf
+    python3 scripts/build_pitch_deck.py docs/Game9K-Pitch-Deck.pdf
 """
 
 from __future__ import annotations
@@ -66,7 +66,7 @@ EXOTIC = set("\u2190\u2191\u2192\u2193\u2194\u2248\u2265\u2264\u0394\u03a3\u03a6
              "\u2080\u2081\u2082\u2083\u2084\u2085\u2086\u2087\u2088\u2089"
              "\u25b8\u2713\u2020\u00bd")
 
-FOOTER = "METAPUMP  ·  INVESTOR PITCH DECK v1.5  ·  CONFIDENTIAL (THÁNG 11/2026)"
+FOOTER = "GAME9K FUNDING PORTAL  ·  INVESTOR PITCH DECK v1.5  ·  CONFIDENTIAL (THÁNG 11/2026)"
 TOTAL = 14
 
 # ---------------------------------------------------------------- text utils
@@ -388,7 +388,7 @@ def box(c, x, y, w, h, title, body, accent=GREEN, title_size=9.4, body_size=8.6)
 # ---------------------------------------------------------------- slides
 def s01_cover(c):
     slide(c, 1, "PITCH DECK v1.5  ·  WHITEPAPER v1.5  ·  YELLOW PAPER v1.0",
-          "METAPUMP", accent=GREEN)
+          "GAME9K FUNDING PORTAL", accent=GREEN)
 
     y = H - 155
     c.setFont(FB, 19)
@@ -491,14 +491,14 @@ def s02_problem(c):
     box(c, M, 58, W - 2 * M, 84,
         "LUẬN ĐIỂM ĐẦU TƯ: Ai đã kéo chi phí tạo game HTML5 về gần bằng 0, biến Kiểm định Chất lượng "
         "theo Phiên bản (Version Curation) và Phân bổ Vốn gắn với Giờ chơi Thật (Gate-First Capital "
-        "Formation) thành một thứ có thể đạt giá nhất thấp kỷ — và MetaPump sở hữu trọn vẹn nút thắt đó.",
+        "Formation) thành một thứ có thể đạt giá nhất thấp kỷ — và Game9K sở hữu trọn vẹn nút thắt đó.",
         "Trả lời ngắn: không launchpad nào hiện có khoá được vốn theo phả hệ phiên bản đã kiểm định, "
         "vì khoá như vậy đòi hỏi đồng thời Sổ cái phiên bản, Phễu Fit và Đấu trường mù.",
         accent=GREEN, title_size=9.0, body_size=8.4)
 
 
 def s03_solution(c):
-    slide(c, 3, "02 · GIẢI PHÁP ĐỘT PHÁ (THE METAPUMP SOLUTION)",
+    slide(c, 3, "02 · GIẢI PHÁP ĐỘT PHÁ (THE GAME9K SOLUTION)",
           "4 Nguyên tử Công nghệ – Kinh tế Lần đầu tiên Hợp nhất trên Một Nền tảng",
           "Mặt trước là cổng game tức thì chuẩn Poki (0 ví, 0 cài đặt, vào chơi <3s); mặt sau là "
           "sàn gọi vốn mở khóa theo từng phiên bản trên Solana.")
@@ -569,7 +569,7 @@ def s04_why_regulatory(c):
     y2 = 276
     c.setFont(FB, 7.6)
     c.setFillColor(GREEN)
-    drawstr(c, M, y2 + 8, "TOÀN CẢNH CHIẾN LƯỢC 5W1H CỦA METAPUMP")
+    drawstr(c, M, y2 + 8, "TOÀN CẢNH CHIẾN LƯỢC 5W1H CỦA GAME9K")
     items = [
         ("WHAT", "Cổng web game chơi tức thì + Đấu trường mù Arena + Sàn gọi vốn khóa 4 chặng M1–M4 có Ragequit."),
         ("WHO", "Game thủ 16–32t · Studio Indie & AI · Nhà giao dịch Solana tìm sản phẩm thật · Nhãn quảng cáo."),
@@ -610,7 +610,7 @@ def s05_dual_curve(c):
         ("Quỹ Thưởng Người chơi (PoPW)", "10%  (100M) + 50% SOL phạt", "20%  (200M) + 50% SOL phạt", "Trả theo VPH, tuyến tính 21 ngày"),
         ("Nhà phát triển (Vesting)", "5%  (50M) + 10 SOL Grant M4", "15%  (150M)", "0% ở M0–M1; đóng băng nếu bỏ game"),
         ("Thanh khoản DEX Khóa (LP)", "15%  (150M) · khóa vĩnh viễn", "5%  (50M) · khóa ≥ 12 tháng", "Lên DEX ở đúng 100% giá cuối curve"),
-        ("Đội ngũ Nền tảng MetaPump", "0%  (0 token)", "0%  (0 token)", "Chỉ nhận phí giao dịch & ads"),
+        ("Đội ngũ Nền tảng Game9K", "0%  (0 token)", "0%  (0 token)", "Chỉ nhận phí giao dịch & ads"),
     ]
     y = 402
     table(c, M, y, W - 2 * M, cols, rows,
@@ -770,7 +770,7 @@ def s08_competition(c):
           "Khảo sát Web2 Portals, Web3 Gaming, Agent/Meme Launchpads và Social Trading Apps "
           "(số liệu thực chứng 2025–2026).")
 
-    cols = ["Tiêu chí Cốt lõi", "MetaPump", "Poki / Crazy", "B3 / BSMNT", "Virtuals", "Pump.fun", "FOMO App"]
+    cols = ["Tiêu chí Cốt lõi", "Game9K", "Poki / Crazy", "B3 / BSMNT", "Virtuals", "Pump.fun", "FOMO App"]
     rows = [
         ("Chơi Web tức thì (0 ví, 0 cài)", "CÓ (chuẩn Poki)", "Có (100M+ MAU)", "Có (thiên Web3)", "Không (Agent)", "Không", "Không"),
         ("Sổ cái Version SHA-256 + Diff", "CÓ (On-chain)", "Nội bộ đóng", "Không (nhãn chữ)", "Không trên curve", "Không", "Không"),
@@ -784,7 +784,7 @@ def s08_competition(c):
               cell_colors={(i, 1): GREEN for i in range(6)})
 
     notes = [
-        ("FOMO (fomo.family) → 0% Version", "$33,7M rev/12 tháng, Series B $75M. Chấm PnL trader, rủi ro mua đuổi cá voi. Là kênh phân phối thanh khoản miễn phí cho token MetaPump hậu M4.", PURPLE),
+        ("FOMO (fomo.family) → 0% Version", "$33,7M rev/12 tháng, Series B $75M. Chấm PnL trader, rủi ro mua đuổi cá voi. Là kênh phân phối thanh khoản miễn phí cho token Game9K hậu M4.", PURPLE),
         ("Virtuals (fun.virtuals) → 0% Curve Gate", "Curve 42K VIRTUAL mở phẳng ngay từ v0.1, không bắt buộc thắng bản cũ hay Ragequit → 85% agent tốt nghiệp chết.", BLUE),
         ("B3 / BSMNT.fun → Chỉ Nhãn Trang trí", "Nhúng URL ngoài qua JWT (6M+ ví); dòng “Version 0.1.0” chỉ là chữ tĩnh, sao đánh giá cộng gộp cả đời.", ORANGE),
     ]
@@ -820,7 +820,7 @@ def s09_governance(c):
     rx = M + left_w + 16
     rw = W - M - rx
     card(c, rx, 74, rw, 298, accent=GREEN, fill=CARD)
-    card_head(c, rx + 14, 354, rw - 28, "METAPUMP: 6 CƠ CHẾ TỰ KHÓA TAY", color=GREEN, size=8.0)
+    card_head(c, rx + 14, 354, rw - 28, "GAME9K: 6 CƠ CHẾ TỰ KHÓA TAY", color=GREEN, size=8.0)
     mech = [
         ("1. Tách Kinh doanh khỏi Kiểm định:", "đội Growth/BD không có quyền sửa ngưỡng Player Fit, điểm Arena hay danh sách PoP."),
         ("2. Ghi bằng chứng lên Solana:", "mỗi lần mở mốc công khai VPH, retention, thắng Arena & hash báo cáo on-chain."),
@@ -892,7 +892,7 @@ def s10_business(c):
 def s11_roadmap(c):
     slide(c, 11, "10 · KIẾN TRÚC GỌI VỐN ĐA VÒNG",
           "Lộ trình 4 Vòng: Pre-Seed $1M → Seed $3M → Series A $12M → Series B $25M",
-          "MetaPump thực thi kỷ luật Gate-First với chính nguồn vốn của mình: mỗi vòng chỉ mở khi cột mốc "
+          "Game9K thực thi kỷ luật Gate-First với chính nguồn vốn của mình: mỗi vòng chỉ mở khi cột mốc "
           "người chơi & doanh thu thực đã đạt. Chấp nhận lỗ 3 năm để xây Data Moat — xem J-Curve.")
 
     rounds = [
@@ -1150,8 +1150,8 @@ def build(out_path: str, deterministic: bool = True) -> int:
     os.makedirs(os.path.dirname(os.path.abspath(out_path)) or ".", exist_ok=True)
     # invariant=1 pins the timestamp and the /ID array -> byte-identical rebuilds
     c = canvas.Canvas(out_path, pagesize=(W, H), invariant=1 if deterministic else 0)
-    c.setTitle("MetaPump — Investor Pitch Deck v1.5 (Pre-Seed $1M)")
-    c.setAuthor("MetaPump")
+    c.setTitle("Game9K — Investor Pitch Deck v1.5 (Pre-Seed $1M)")
+    c.setAuthor("Game9K")
     c.setSubject("Version-Synced Game Capital Launchpad — Pre-Seed $1,000,000")
     c.setKeywords("Solana, GameFi, Launchpad, Version Gate, Proof of Play")
     for fn in SLIDES:
@@ -1162,7 +1162,7 @@ def build(out_path: str, deterministic: bool = True) -> int:
 
 
 def main(argv: list[str]) -> int:
-    out = argv[1] if len(argv) > 1 else "docs/MetaPump-Pitch-Deck.pdf"
+    out = argv[1] if len(argv) > 1 else "docs/Game9K-Pitch-Deck.pdf"
     n = build(out)
     print(f"built {out} ({os.path.getsize(out):,} bytes, {n} slides)")
     return 0
