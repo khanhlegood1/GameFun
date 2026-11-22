@@ -35,6 +35,7 @@ câu mô tả, để tác nhân AI đọc đúng file thay vì đoán. Nội dun
 - [docs/14-growth-tools-and-measurement.md](docs/14-growth-tools-and-measurement.md): StreamMix (plugin, bán theo giờ) và Similarweb (ước lượng panel) — sổ số liệu thị trường 6 cột; ghi nhận 3 con số dòng 310 chưa có nguồn
 - [docs/15-livestream-tools-and-token-question.md](docs/15-livestream-tools-and-token-question.md): coin = credit trả trước (không phải token); TikFinity simulate mode; StreamToEarn trần chi trả theo USD; panel Similarweb không thấy traffic trong iframe
 - [docs/16-anchor-game-for-kol.md](docs/16-anchor-game-for-kol.md): game neo cho KOL — không dùng đua vịt, chọn thể loại "một nút", và sửa ngưỡng referral khỏi Tier Bronze
+- [docs/17-second-screen-race.md](docs/17-second-screen-race.md): đua tương tác second-screen — xếp lệnh trước (giới hạn mobile), đua tất định thay netcode, G4 chưa có căn cứ, tránh vừa làm game vừa xếp hạng
 - [docs/07-docs-as-code-model.md](docs/07-docs-as-code-model.md): mô hình tài liệu & kiểm chứng (AGENTS.md, llms.txt, link check, cổng PDF tái lập)
 - [docs/08-legal-brief-vn-licensing.md](docs/08-legal-brief-vn-licensing.md): nguồn Markdown của legal brief — mô hình Game9K + 4 câu hỏi cho luật sư
 
