@@ -27,6 +27,10 @@
 | 5 | [`docs/04-solana-smart-contracts.md`](./docs/04-solana-smart-contracts.md) | P03-C | Thiết kế 3 Anchor Programs (`game9k_registry`, `game9k_curve`, `game9k_rewards`), PDA Map, toán học `u128` VGBC, Ed25519 PoP Attestation, Ragequit, DEX CPI & 8 Bất biến Fuzzing |
 | 6 | [`docs/05-c4-architecture-and-nfr.md`](./docs/05-c4-architecture-and-nfr.md) | P05 / P06 | Kiến trúc C4 (Level 1–4 + Deployment), 6 ADRs, Mô hình đe dọa STRIDE & Well-Architected Review |
 | 7 | [`docs/06-implementation-roadmap.md`](./docs/06-implementation-roadmap.md) | P04 / P06 | Kế hoạch triển khai 9 Module (`M01`–`M09`) & Lộ trình Sprint 0 → Sprint 7 (nối tiếp 17 GitHub Issues `[S0-01]..[S1-09]`) |
+| 8 | [`docs/README-PDF.md`](./docs/README-PDF.md) | Docs | Quy trình dựng lại & kiểm chứng ba bản PDF in |
+| 9 | [`docs/07-docs-as-code-model.md`](./docs/07-docs-as-code-model.md) | Docs | Mô hình tài liệu & kiểm chứng lấy từ Chainstack dev-portal: AGENTS.md, llms.txt, link check, CI cổng tái lập PDF |
+
+**Tài liệu cho tác nhân & chỉ mục máy đọc:** [`AGENTS.md`](./AGENTS.md) là quy ước bắt buộc cho mọi người/AI sửa repo (ba luật, thứ bậc nguồn sự thật, cách kiểm chứng tất định). [`llms.txt`](./llms.txt) là chỉ mục máy đọc của toàn bộ tài liệu — để tác nhân AI đọc đúng file thay vì đoán.
 
 ---
 
