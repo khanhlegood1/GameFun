@@ -70,6 +70,12 @@ jobs:
       - name: Bản ghi niềm tin P01 (16 giá trị · 4 bất biến)
         run: python3 scripts/check_specs.py --tick && python3 scripts/check_specs.py --self-test
 
+      # Cổng thứ tám: hợp đồng @game9k/game-sdk (docs/27). Kiểm 5 hàm Poki còn đủ
+      # trong docs/03 §3, SDK không gọi mạng / không chạm thanh toán, và ngân sách
+      # 12 KB gzip của FR-SDK-01 được ĐO chứ không chỉ hứa. Không gọi mạng.
+      - name: Hợp đồng SDK game-sdk (5 bất biến · ngân sách 12 KB)
+        run: python3 scripts/check_sdk.py --selftest
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04
