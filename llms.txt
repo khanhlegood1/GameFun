@@ -34,6 +34,7 @@ câu mô tả, để tác nhân AI đọc đúng file thay vì đoán. Nội dun
 - [docs/Game9K-Pitch-Deck.pdf](docs/Game9K-Pitch-Deck.pdf): deck gọi vốn 14 slide, 16:9
 - [docs/Game9K-Whitepaper-v1.5.pdf](docs/Game9K-Whitepaper-v1.5.pdf): whitepaper bản in A4, 35 trang
 - [docs/Game9K-Yellow-Paper-v1.0.pdf](docs/Game9K-Yellow-Paper-v1.0.pdf): yellow paper bản in A4, 17 trang
+- [docs/Game9K-Legal-Brief-VN.pdf](docs/Game9K-Legal-Brief-VN.pdf): legal brief 1 tờ A4 gửi luật sư — mô hình Game9K + 4 câu hỏi về cấp phép game và dữ liệu cá nhân tại VN
 
 ## Kiểm chứng (chạy được, không cần tin)
 
@@ -41,6 +42,7 @@ câu mô tả, để tác nhân AI đọc đúng file thay vì đoán. Nội dun
 - [scripts/check_pitch_deck.py](scripts/check_pitch_deck.py): 48 kiểm tra chéo deck ↔ yellow paper; `--with-verifier` để nối cả hai
 - [scripts/build_pitch_deck.py](scripts/build_pitch_deck.py): sinh deck 14 slide, tất định byte-for-byte
 - [scripts/build_whitepaper_pdf.py](scripts/build_whitepaper_pdf.py): sinh whitepaper + yellow paper từ markdown
+- [scripts/build_legal_brief.py](scripts/build_legal_brief.py): sinh legal brief 1 tờ A4, fail nếu tràn trang
 
 ## Phạm vi
 

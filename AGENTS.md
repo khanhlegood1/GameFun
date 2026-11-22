@@ -63,7 +63,7 @@ và deck phải sửa.
 # 1. Sửa nguồn (WHITEPAPER.md hoặc YELLOWPAPER.md)
 # 2. Nếu con số xuất hiện trên deck, sửa cả scripts/build_pitch_deck.py
 # 3. Nếu con số được kiểm tra tự động, cập nhật scripts/check_pitch_deck.py
-# 4. Dựng lại cả ba PDF (xem docs/README-PDF.md)
+# 4. Dựng lại cả bốn PDF (xem docs/README-PDF.md)
 # 5. Chạy kiểm chứng
 python scripts/check_pitch_deck.py --with-verifier
 ```

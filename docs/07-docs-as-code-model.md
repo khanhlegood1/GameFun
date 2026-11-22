@@ -92,7 +92,7 @@ Game9K trước đây **không có CI nào**. Mọi kiểm chứng đều chạy
 | Job | Cổng |
 |---|---|
 | `verify` | link nội bộ + `verify_protocol_math.py` + `check_pitch_deck.py --with-verifier` |
-| `reproducible-pdf` | dựng lại ba PDF → **md5 phải trùng bản đã commit**; quét macro LaTeX thô trong text layer |
+| `reproducible-pdf` | dựng lại bốn PDF (3 bản dài + legal brief 1 tờ) → **md5 phải trùng bản đã commit**; quét macro LaTeX thô trong text layer |
 
 Cổng thứ hai là cổng quan trọng nhất và là cổng duy nhất repo này từng **tưởng** là đã có.
 Nó biến câu "PDF tái lập được" từ một lời khẳng định thành một điều kiện merge.

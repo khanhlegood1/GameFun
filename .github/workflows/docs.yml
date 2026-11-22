@@ -78,13 +78,14 @@ jobs:
             @fontsource/noto-sans-mono@5.3.0 \
             dejavu-fonts-ttf@2.37.3
 
-      - name: Dựng lại ba PDF vào thư mục tạm
+      - name: Dựng lại bốn PDF vào thư mục tạm
         run: |
           set -euo pipefail
           mkdir -p /tmp/rebuild
           export XDG_CACHE_HOME=/tmp/fontcache
           python scripts/build_pitch_deck.py /tmp/rebuild/deck.pdf
           python scripts/build_whitepaper_pdf.py docs/WHITEPAPER.md /tmp/rebuild/wp.pdf
+          python scripts/build_legal_brief.py /tmp/rebuild/legal.pdf
           python - <<'PY'
           import sys
           sys.path.insert(0, "scripts")
@@ -113,6 +114,8 @@ jobs:
               python scripts/build_pitch_deck.py "$d/deck.pdf"
             GAME9K_FONT_REBUILD=1 XDG_CACHE_HOME="$d" \
               python scripts/build_whitepaper_pdf.py docs/WHITEPAPER.md "$d/wp.pdf"
+            GAME9K_FONT_REBUILD=1 XDG_CACHE_HOME="$d" \
+              python scripts/build_legal_brief.py "$d/legal.pdf"
             GAME9K_FONT_REBUILD=1 XDG_CACHE_HOME="$d" python - <<'PY'
           import os, sys
           sys.path.insert(0, "scripts")
@@ -125,7 +128,7 @@ jobs:
           PY
           done
           fail=0
-          for k in deck wp yp; do
+          for k in deck wp yp legal; do
             a=$(md5sum "/tmp/cacheA/$k.pdf" | cut -d' ' -f1)
             b=$(md5sum "/tmp/cacheB/$k.pdf" | cut -d' ' -f1)
             if [ "$a" != "$b" ]; then
@@ -137,13 +140,14 @@ jobs:
           done
           exit $fail
 
-      - name: So md5 với bản đã commit
+      - name: So md5 với bản đã commit (4 tệp)
         run: |
           set -euo pipefail
           fail=0
           for pair in "deck:docs/Game9K-Pitch-Deck.pdf" \
                       "wp:docs/Game9K-Whitepaper-v1.5.pdf" \
-                      "yp:docs/Game9K-Yellow-Paper-v1.0.pdf"; do
+                      "yp:docs/Game9K-Yellow-Paper-v1.0.pdf" \
+                      "legal:docs/Game9K-Legal-Brief-VN.pdf"; do
             k="${pair%%:*}"; f="${pair#*:}"
             a=$(md5sum "$f" | cut -d' ' -f1)
             b=$(md5sum "/tmp/rebuild/$k.pdf" | cut -d' ' -f1)
@@ -166,7 +170,8 @@ jobs:
           bad = 0
           for f in ("docs/Game9K-Yellow-Paper-v1.0.pdf",
                     "docs/Game9K-Whitepaper-v1.5.pdf",
-                    "docs/Game9K-Pitch-Deck.pdf"):
+                    "docs/Game9K-Pitch-Deck.pdf",
+                    "docs/Game9K-Legal-Brief-VN.pdf"):
               r = PdfReader(f)
               text = " ".join((p.extract_text() or "") for p in r.pages)
               hits = [b for b in BAD if b in text]
