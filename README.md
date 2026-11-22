@@ -37,6 +37,7 @@
 | 15 | [`docs/13-affiliate-growth-loop.md`](./docs/13-affiliate-growth-loop.md) | Growth | GoStream + StreamAgain: lấy **trả theo doanh thu định kỳ** và **phễu duyệt**; từ chối mô hình thuê bao, câu "thu nhập thụ động", và trả thưởng bằng token |
 | 16 | [`docs/14-growth-tools-and-measurement.md`](./docs/14-growth-tools-and-measurement.md) | Growth | StreamMix + Similarweb: bán theo **đơn vị đo được**, làm **plugin trong công cụ sẵn có**, và **sổ số liệu 6 cột** (nguồn · ngày · loại · sai lệch) |
 | 17 | [`docs/15-livestream-tools-and-token-question.md`](./docs/15-livestream-tools-and-token-question.md) | Growth | "Coin" của StreamMix là **credit trả trước**, không phải token; TikFinity (simulate mode) + StreamToEarn (**trần theo USD**) + Similarweb (**panel không thấy iframe**) |
+| 18 | [`docs/16-anchor-game-for-kol.md`](./docs/16-anchor-game-for-kol.md) | Growth | Game neo cho KOL: **không** dùng đua vịt (không tạo `work`, PoP lọc oan người thật); chấm 5 ứng viên, chọn **"một nút, một biến số"** `9/10`; lộ ra lỗi ngưỡng Bronze `90` phút |
 
 **Tài liệu cho tác nhân & chỉ mục máy đọc:** [`AGENTS.md`](./AGENTS.md) là quy ước bắt buộc cho mọi người/AI sửa repo (ba luật, thứ bậc nguồn sự thật, cách kiểm chứng tất định). [`llms.txt`](./llms.txt) là chỉ mục máy đọc của toàn bộ tài liệu — để tác nhân AI đọc đúng file thay vì đoán.
 
