@@ -30,6 +30,7 @@
 | 8 | [`docs/README-PDF.md`](./docs/README-PDF.md) | Docs | Quy trình dựng lại & kiểm chứng bốn bản PDF in (3 bản dài + legal brief 1 tờ A4) |
 | 9 | [`docs/07-docs-as-code-model.md`](./docs/07-docs-as-code-model.md) | Docs | Mô hình tài liệu & kiểm chứng lấy từ Chainstack dev-portal: AGENTS.md, llms.txt, link check, CI cổng tái lập PDF |
 | 10 | [`docs/08-legal-brief-vn-licensing.md`](./docs/08-legal-brief-vn-licensing.md) · [`PDF`](./docs/Game9K-Legal-Brief-VN.pdf) | Legal | Bản tóm tắt 1 trang gửi luật sư: mô hình Game9K + 4 câu hỏi về cấp phép game và dữ liệu cá nhân tại Việt Nam (`Game9K-Legal-Brief-VN.pdf`, **đúng 1 tờ A4** in một mặt) |
+| 11 | [`docs/09-xwg-portal-teardown.md`](./docs/09-xwg-portal-teardown.md) | Research | Teardown cổng `xwg.games`: cái gì dùng được cho catalog Game9K (chip mốc/trạng thái, facet thiết bị, bảng thông số kiểm chứng) và 6 thứ từ chối — kèm bằng chứng quan sát có mã F1–F12 |
 
 **Tài liệu cho tác nhân & chỉ mục máy đọc:** [`AGENTS.md`](./AGENTS.md) là quy ước bắt buộc cho mọi người/AI sửa repo (ba luật, thứ bậc nguồn sự thật, cách kiểm chứng tất định). [`llms.txt`](./llms.txt) là chỉ mục máy đọc của toàn bộ tài liệu — để tác nhân AI đọc đúng file thay vì đoán.
 

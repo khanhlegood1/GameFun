@@ -27,6 +27,9 @@ câu mô tả, để tác nhân AI đọc đúng file thay vì đoán. Nội dun
 - [docs/04-solana-smart-contracts.md](docs/04-solana-smart-contracts.md): thiết kế 3 Anchor program (`game9k_registry`, `game9k_curve`, `game9k_launchpad`)
 - [docs/05-c4-architecture-and-nfr.md](docs/05-c4-architecture-and-nfr.md): kiến trúc C4 level 1–4, 6 ADR, NFR và STRIDE
 - [docs/06-implementation-roadmap.md](docs/06-implementation-roadmap.md): lộ trình 9 module `M01`–`M09` và backlog sprint
+- [docs/09-xwg-portal-teardown.md](docs/09-xwg-portal-teardown.md): teardown cổng `xwg.games` — cái gì áp dụng được cho catalog Game9K, cái gì từ chối, kèm bằng chứng quan sát F1–F12
+- [docs/07-docs-as-code-model.md](docs/07-docs-as-code-model.md): mô hình tài liệu & kiểm chứng (AGENTS.md, llms.txt, link check, cổng PDF tái lập)
+- [docs/08-legal-brief-vn-licensing.md](docs/08-legal-brief-vn-licensing.md): nguồn Markdown của legal brief — mô hình Game9K + 4 câu hỏi cho luật sư
 
 ## Bản in
 
