@@ -1,7 +1,7 @@
 # Khảo sát & Lựa chọn Open Source cho Game9K (`khanhlegood1/GameFun`)
 
 > **Tài liệu sống (Living Documentation):** `docs/00-open-source-landscape.md`  
-> **Dự án:** **Game9K Launchpad** (`game9k.com`) — Web Game Portal & Version-Gated Solana Launchpad (kế thừa nền tảng `GAME.FUN v2` tại `khanhlegood1/GameFun`)  
+> **Dự án:** **Game9K Launchpad** (`game9k.com`) — Web Game Portal & bệ phóng vốn Solana khóa theo phiên bản (kế thừa nền tảng `GAME.FUN v2` tại `khanhlegood1/GameFun`)  
 > **Cập nhật:** 2026-11-18  
 > **Mục tiêu:** Xác định các mã nguồn mở đã được kiểm chứng để **Dùng trực tiếp (Adopt)**, **Mở rộng/CPI (Integrate)** hoặc **Tham khảo kiến trúc (Reference)** cho từng module, tránh viết lại từ đầu và kiểm soát chặt rủi ro bản quyền (License) cũng như bảo mật.
 

@@ -1,6 +1,6 @@
 # Product Requirements Document (PRD) — Game9K Launchpad
 
-## Game Portal & Version-Gated Solana Launchpad (theo AI-Agile Framework v1.0)
+## Game Portal & Bệ phóng Vốn Solana Khóa theo Phiên bản (theo AI-Agile Framework v1.0)
 
 | Thuộc tính | Chi tiết |
 |---|---|
@@ -60,7 +60,7 @@
 
 ### 1.2. Tuyên bố Tầm nhìn (Product Vision)
 
-> **Game9K** là cổng phân phối web game tức thì (Instant-Play HTML5 Game Portal) kết hợp bệ phóng tài sản theo cột mốc phiên bản (Version-Gated Solana Launchpad), nơi **mỗi bước tăng trưởng kinh tế và mở khóa thanh khoản của dự án game bắt buộc phải được chứng minh bằng một phiên bản game mới tốt hơn — được kiểm định tự động như Poki, chấm điểm đối kháng mù bởi người chơi thật như Arena, giao dịch minh bạch 100% on-chain như Pump.fun, và phân phối công bằng chống bot đầu cơ theo vòng lặp cộng đồng như Notcoin.**
+> **Game9K** là cổng phân phối web game tức thì (Instant-Play HTML5 Game Portal) kết hợp bệ phóng tài sản khóa theo cột mốc phiên bản (Version-Gated), nơi **mỗi bước tăng trưởng kinh tế và mở khóa thanh khoản của dự án game bắt buộc phải được chứng minh bằng một phiên bản game mới tốt hơn — được kiểm định tự động như Poki, chấm điểm đối kháng mù bởi người chơi thật như Arena, giao dịch minh bạch 100% on-chain như Pump.fun, và phân phối công bằng chống bot đầu cơ theo vòng lặp cộng đồng như Notcoin.**
 
 ### 1.3. Tổng hợp 4 Trụ cột Tham chiếu thành Kiến trúc Sản phẩm Game9K
 
