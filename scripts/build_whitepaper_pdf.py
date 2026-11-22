@@ -65,10 +65,45 @@ def _find(names, dirs):
     return None
 
 
-def ensure_fonts():
+def _set(table, key, value):
+    """Set a field on a fontTools table, tolerating absent/oddly-typed fields."""
+    try:
+        setattr(table, key, value)
+    except (AttributeError, TypeError):
+        pass
+
+
+def pin_font_metadata(font):
+    """Make a built font byte-reproducible.
+
+    fontTools stamps the build time into `head.modified` and into the font
+    revision string, so the same inputs produced different bytes on every
+    machine -- and therefore different PDFs. Every derived font is pinned to
+    the epoch and to revision 1.0 so the whole chain stays hash-stable.
+    """
+    _set(font["head"], "modified", 0)          # 1904-01-01, the OpenType zero
+    _set(font["head"], "created", 0)
+    for rec in font.get("name").names:
+        if rec.nameID == 5:                     # version string
+            rec.string = "Version 1.000"
+    return font
+
+
+def save_font(font, path):
+    """Save a font with timestamps pinned.
+
+    fontTools' default `recalcTimestamp=True` rewrites `head.modified` to
+    `time.time()` during save, which defeats pin_font_metadata and makes every
+    build differ. Saving with the flag off keeps the bytes stable.
+    """
+    font.recalcTimestamp = False      # instance flag, not a save() argument
+    font.save(path, reorderTables=False)
+
+
+def build_fonts(force=False):
     """Build the derived font set this renderer needs; return its directory."""
     marker = os.path.join(FONT_CACHE, "f_sans.ttf")
-    if os.path.exists(marker):
+    if os.path.exists(marker) and not force:
         return FONT_CACHE
     os.makedirs(FONT_CACHE, exist_ok=True)
     from fontTools.merge import Merger
@@ -99,7 +134,8 @@ def ensure_fonts():
             continue
         f = TTFont(p)
         f.flavor = None
-        f.save(os.path.join(FONT_CACHE, dst))
+        pin_font_metadata(f)
+        save_font(f, os.path.join(FONT_CACHE, dst))
     if missing:
         sys.exit("Missing font sources (%s).\nInstall with: npm i @fontsource/noto-sans "
                  "@fontsource/noto-sans-mono" % ", ".join(missing))
@@ -115,28 +151,32 @@ def ensure_fonts():
         for g in f.getGlyphOrder():
             w, lsb = f["hmtx"][g]
             f["hmtx"][g] = (adv, min(lsb, adv - 1) if lsb > adv else lsb)
-        f.save(dst)
+        pin_font_metadata(f)
+        save_font(f, dst)
 
     monoify(os.path.join(dv_dir, "DejaVuSansMono.ttf"), os.path.join(FONT_CACHE, "DVMs.ttf"))
     for a, b, out in [("NotoL.ttf", "NotoV.ttf", "f_sans.ttf"),
                       ("NotoLB.ttf", "NotoVB.ttf", "f_sansb.ttf"),
                       ("NotoLI.ttf", "NotoVI.ttf", "f_sansi.ttf"),
                       ("NotoLBI.ttf", "NotoVBI.ttf", "f_sansbi.ttf")]:
-        Merger().merge([os.path.join(FONT_CACHE, a), os.path.join(FONT_CACHE, b)]) \
-                .save(os.path.join(FONT_CACHE, out))
+        m = Merger().merge([os.path.join(FONT_CACHE, a), os.path.join(FONT_CACHE, b)])
+        pin_font_metadata(m)
+        save_font(m, os.path.join(FONT_CACHE, out))
     for a, b, out in [("ML.ttf", "MV.ttf", "MNB.ttf"), ("MLB.ttf", "MVB.ttf", "MNBb.ttf")]:
-        Merger().merge([os.path.join(FONT_CACHE, a), os.path.join(FONT_CACHE, b)]) \
-                .save(os.path.join(FONT_CACHE, out))
+        m = Merger().merge([os.path.join(FONT_CACHE, a), os.path.join(FONT_CACHE, b)])
+        pin_font_metadata(m)
+        save_font(m, os.path.join(FONT_CACHE, out))
     for a, out in [("MNB.ttf", "Mono.ttf"), ("MNBb.ttf", "MonoB.ttf")]:
-        Merger().merge([os.path.join(FONT_CACHE, a), os.path.join(FONT_CACHE, "DVMs.ttf")]) \
-                .save(os.path.join(FONT_CACHE, out))
+        m = Merger().merge([os.path.join(FONT_CACHE, a), os.path.join(FONT_CACHE, "DVMs.ttf")])
+        pin_font_metadata(m)
+        save_font(m, os.path.join(FONT_CACHE, out))
     import shutil
     for n in ("DejaVuSans.ttf",):
         shutil.copy(os.path.join(dv_dir, n), os.path.join(FONT_CACHE, n))
     return FONT_CACHE
 
 
-FONTDIR = ensure_fonts()
+FONTDIR = build_fonts(force=bool(os.environ.get("GAME9K_FONT_REBUILD")))
 
 # Running header text; overwritten per document by build().
 BRAND = {"paper": "Whitepaper v1.5",
@@ -207,10 +247,15 @@ SYMBOLS = {
     "lfloor":"⌊","rfloor":"⌋","lceil":"⌈","rceil":"⌉","langle":"⟨","rangle":"⟩",
     "mid":"|","vert":"|","Vert":"‖","%":"%","#":"#","&":"&","_":"_","{":"{","}":"}",
     "prime":"′","degree":"°","surd":"√","checkmark":"✓","dagger":"†","S":"§",
+    # arrows / relations / delimiters used by the Yellow Paper (§6.2 etc.)
+    "leftarrow":"←","longleftarrow":"←","leftrightarrow":"↔","rightleftharpoons":"⇌",
+    "triangleq":"≜", "blacksquare":"■","square":"□","bot":"⊥","perp":"⊥","top":"⊤",
+    "lvert":"|","rvert":"|","lVert":"‖","rVert":"‖","ni":"∋","not\in":"∉",
+    "gets":"←","overset":"","underset":"","stackrel":"",
 }
 BBOARD = {"R":"ℝ","N":"ℕ","Z":"ℤ","Q":"ℚ","C":"ℂ","E":"𝔼","P":"ℙ","1":"𝟙"}
-TEXTCMD = {"text","mathrm","mathbf","mathit","mathsf","mathtt","operatorname",
-           "textrm","textbf","mbox","textnormal"}
+TEXTCMD = {"text","mathrm","mathbf","mathit","mathsf","mathtt","texttt","mathcal",
+           "operatorname","textrm","textbf","mbox","textnormal"}
 SKIPCMD = {"left","right","big","Big","bigl","bigr","Bigl","Bigr","displaystyle",
            "limits","nolimits","quad","qquad","!",";"," ",",",":","\\"}
 
@@ -254,6 +299,7 @@ def latex_to_text(src):
     s = s.replace("\\{", "\x05").replace("\\}", "\x06")
     out = []
     i = 0
+    in_cases = 0          # depth of \begin{cases} ... \end{cases}
     while i < len(s):
         c = s[i]
         if c == "\\":
@@ -278,7 +324,7 @@ def latex_to_text(src):
                 elif name == "mathbb":
                     arg, i = _text_arg(s, i)
                     out.append("".join(BBOARD.get(ch, ch) for ch in arg))
-                elif name == "frac":
+                elif name in ("frac", "dfrac", "tfrac"):
                     num, i = _text_arg(s, i)
                     den, i = _text_arg(s, i)
                     out.append("(%s)/(%s)" % (latex_to_text(num), latex_to_text(den)))
@@ -287,6 +333,35 @@ def latex_to_text(src):
                     out.append("√(%s)" % latex_to_text(arg))
                 elif name in ("ell",):
                     out.append("ℓ")
+                elif name in ("max", "min", "sup", "inf", "lim", "det", "arg"):
+                    # \max / \min are operators, not glyphs: emitting the bare
+                    # name ("max") is correct; emitting "max" is what we want,
+                    # but they must never be truncated to "ma"/"mi".
+                    out.append({"sup": "sup", "inf": "inf", "arg": "arg"}.get(name, name))
+                elif name == "Pr":
+                    out.append("Pr")
+                elif name in ("ln", "log", "exp", "lg"):
+                    out.append(name)
+                elif name in ("lvert", "rvert", "vert", "mid"):
+                    out.append("|")
+                elif name in ("lVert", "rVert", "Vert"):
+                    out.append("‖")
+                elif name in ("begin", "end"):
+                    # case environments (`\begin{cases} a & x \\\\ b & y \end{cases}`)
+                    # become a braced, semicolon-separated list. Consume the arg
+                    # for BOTH begin and end, otherwise the environment name
+                    # leaks into the text as "begincases"/"endcases".
+                    arg, i = _text_arg(s, i)
+                    if name == "begin" and arg.strip().startswith("cases"):
+                        out.append("{ ")
+                        in_cases += 1
+                    elif name == "end" and in_cases:
+                        out.append(" }")
+                        in_cases -= 1
+                elif name in ("C", "e"):
+                    # stray single-letter macros (\C = complex plane shorthand,
+                    # \e = Euler number) that appear outside math mode
+                    out.append(name)
                 elif name in GREEK:
                     out.append(GREEK[name])
                 elif name in SYMBOLS:
@@ -333,6 +408,8 @@ def latex_to_text(src):
             i += 1
             if i < len(s) and s[i] == "&":
                 i += 1
+            elif in_cases:
+                out.append(";")
         else:
             out.append(c)
             i += 1
@@ -453,6 +530,10 @@ def inline(md, color_links=True):
         return "\x0b%d\x0c" % (len(store) - 1)
 
     md = re.sub(r"`([^`]+)`", lambda m: keep("code", m.group(1)), md)
+    # A literal `\$` (currency inside math, e.g. `= \$2.40$`) must never act as a
+    # math delimiter — otherwise the span is cut at the escaped dollar and the
+    # rest of the formula leaks as raw LaTeX. Park it, restore it at the end.
+    md = md.replace("\\$", CHR_DOLLAR)
     md = re.sub(r"\$\$(.+?)\$\$", lambda m: keep("math", m.group(1)), md, flags=re.S)
 
     # Inline math vs. currency: this document is full of "$1.0M" and
@@ -460,7 +541,11 @@ def inline(md, color_links=True):
     # carries LaTeX (a macro, a sub/superscript or a brace group).
     def _math_or_cash(m):
         inner = m.group(1)
-        if re.search(r"[\\_^{}]", inner) and not re.match(r"^[\d\s.,\u2192\u2013\u2014\-/+%xX]+$", inner):
+        # `$...$` is math when it carries a LaTeX *macro*. A bare `$1.00` is
+        # currency — but an escaped dollar inside a math span (`\$1.00`) is a
+        # literal sign, so count only backslashes that start a macro.
+        macros = len(re.findall(r"\\(?!\$)[A-Za-z]", inner))
+        if macros and not re.fullmatch(r"[\d\s.,\u2192\u2013\u2014\-/+%xX]+", inner):
             return keep("math", inner)
         return CHR_DOLLAR + inner + CHR_DOLLAR
 
