@@ -40,6 +40,7 @@
 | 18 | [`docs/16-anchor-game-for-kol.md`](./docs/16-anchor-game-for-kol.md) | Growth | Game neo cho KOL: **không** dùng đua vịt (không tạo `work`, PoP lọc oan người thật); chấm 5 ứng viên, chọn **"một nút, một biến số"** `9/10`; lộ ra lỗi ngưỡng Bronze `90` phút |
 | 19 | [`docs/17-second-screen-race.md`](./docs/17-second-screen-race.md) | Growth | Đua second-screen: 3 cơ chế dùng được; **xếp lệnh trước** thay vì bấm đồng thời (mobile không làm được); **đua tất định** thay netcode; G4 **chưa** có căn cứ; đừng để Game9K vừa làm game vừa xếp hạng |
 | 20 | [`docs/18-flagship-template-review.md`](./docs/18-flagship-template-review.md) | Growth | Flagship template: Starter Kit + JSON tách logic ✅; **"9K Labs"** không tạo ra độc lập (phép thử: *cổng có từ chối được game của mình?*); **reskin 48h** làm Arena vô dụng; bảng doanh thu Ads ở Pre-Seed = `$60–180`/tháng |
+| 21 | [`docs/19-gitcoin-patterns.md`](./docs/19-gitcoin-patterns.md) | Growth | Gitcoin 2026 = **thư viện**, không phải quỹ. Lấy: hồ sơ theo chiến dịch (`M2/4`), "đang diễn ra", duyệt có tiêu chuẩn, số liệu tính lại được. **Từ chối quadratic funding** — trả theo *số người* phá mọi lớp chống bot |
 
 **Tài liệu cho tác nhân & chỉ mục máy đọc:** [`AGENTS.md`](./AGENTS.md) là quy ước bắt buộc cho mọi người/AI sửa repo (ba luật, thứ bậc nguồn sự thật, cách kiểm chứng tất định). [`llms.txt`](./llms.txt) là chỉ mục máy đọc của toàn bộ tài liệu — để tác nhân AI đọc đúng file thay vì đoán.
 
