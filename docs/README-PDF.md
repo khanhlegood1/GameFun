@@ -5,6 +5,7 @@
 | [`Game9K-Whitepaper-v1.5.pdf`](./Game9K-Whitepaper-v1.5.pdf) | Whitepaper `v1.5` — bản in/chia sẻ cho nhà đầu tư | 35 |
 | [`Game9K-Yellow-Paper-v1.0.pdf`](./Game9K-Yellow-Paper-v1.0.pdf) | Yellow Paper `v1.0` — đặc tả hình thức (audit) | 17 |
 | [`Game9K-Pitch-Deck.pdf`](./Game9K-Pitch-Deck.pdf) | Pitch deck 14 slides, 16:9, dựng bằng script (không còn nguồn Google Slides) | 14 |
+| [`Game9K-Legal-Brief-VN.pdf`](./Game9K-Legal-Brief-VN.pdf) | Legal brief gửi luật sư — mô hình Game9K + 4 câu hỏi, in 1 tờ A4 (**chưa phải ý kiến pháp lý**) | 1 |
 
 ## Dựng lại
 
@@ -23,6 +24,9 @@ npm i @fontsource/noto-sans @fontsource/noto-sans-mono \
 # Pitch Deck (14 slides, 16:9) — kiểm tra sau khi dựng
 .venv/bin/python scripts/build_pitch_deck.py docs/Game9K-Pitch-Deck.pdf
 .venv/bin/python scripts/check_pitch_deck.py --with-verifier
+
+# Legal Brief — ĐÚNG 1 tờ A4 (script tự fail nếu tràn sang trang 2)
+.venv/bin/python scripts/build_legal_brief.py docs/Game9K-Legal-Brief-VN.pdf
 
 # Yellow Paper
 .venv/bin/python - <<'PY'
