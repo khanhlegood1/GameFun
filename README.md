@@ -22,7 +22,7 @@
 | 0 | [`docs/00-open-source-landscape.md`](./docs/00-open-source-landscape.md) | P01 / P04 | Danh mục mã nguồn mở đã xác minh cho từng module, ma trận Build/Adopt/CPI, kiểm soát License & cấu trúc Monorepo |
 | 1 | [**`docs/PRD.md`**](./docs/PRD.md) | **P01 → P06** | **PRD Tổng thể:** Tầm nhìn, OKRs, Personas, Cơ chế Version-Gated Growth & 6 lớp chống bot, FRs, User Stories, BDD, MoSCoW, HITL Gates, NFR & DORA |
 | 2 | [`docs/01-user-flows-and-ux.md`](./docs/01-user-flows-and-ux.md) | P02 | Sitemap, danh mục màn hình (Screen Specs) & 8 sơ đồ Luồng người dùng End-to-End |
-| 3 | [`docs/02-database-schema.md`](./docs/02-database-schema.md) | P03-A | Sơ đồ ERD, thiết kế chi tiết 31 bảng PostgreSQL/Supabase, State Machine, Indexes & ma trận RLS |
+| 3 | [`docs/02-database-schema.md`](./docs/02-database-schema.md) | P03-A | Sơ đồ ERD, thiết kế chi tiết 34 bảng PostgreSQL/Supabase, State Machine, Indexes & ma trận RLS |
 | 4 | [`docs/03-api-specification.md`](./docs/03-api-specification.md) | P03-B | Đặc tả REST API `/api/v1`, SSE streams, `@game9k/game-sdk` (`postMessage`), Rate Limit & Error Catalog |
 | 5 | [`docs/04-solana-smart-contracts.md`](./docs/04-solana-smart-contracts.md) | P03-C | Thiết kế 3 Anchor Programs (`game9k_registry`, `game9k_curve`, `game9k_rewards`), PDA Map, toán học `u128` VGBC, Ed25519 PoP Attestation, Ragequit, DEX CPI & 8 Bất biến Fuzzing |
 | 6 | [`docs/05-c4-architecture-and-nfr.md`](./docs/05-c4-architecture-and-nfr.md) | P05 / P06 | Kiến trúc C4 (Level 1–4 + Deployment), 6 ADRs, Mô hình đe dọa STRIDE & Well-Architected Review |
@@ -32,6 +32,7 @@
 | 10 | [`docs/08-legal-brief-vn-licensing.md`](./docs/08-legal-brief-vn-licensing.md) · [`PDF`](./docs/Game9K-Legal-Brief-VN.pdf) | Legal | Bản tóm tắt 1 trang gửi luật sư: mô hình Game9K + 4 câu hỏi về cấp phép game và dữ liệu cá nhân tại Việt Nam (`Game9K-Legal-Brief-VN.pdf`, **đúng 1 tờ A4** in một mặt) |
 | 11 | [`docs/09-xwg-portal-teardown.md`](./docs/09-xwg-portal-teardown.md) | Research | Teardown cổng `xwg.games`: cái gì dùng được cho catalog Game9K (chip mốc/trạng thái, facet thiết bị, bảng thông số kiểm chứng) và 6 thứ từ chối — kèm bằng chứng quan sát có mã F1–F12 |
 | 12 | [`docs/10-zorochain-xwg-teardown.md`](./docs/10-zorochain-xwg-teardown.md) | Research | Teardown ZoroChain + XWG whitepaper: Proof-of-workload và luật **suy giảm PoP score** (`W=0,60`, epoch 7 ngày) đã vá vào schema — chốt bằng `scripts/verify_pop_decay.py` |
+| 13 | [`docs/11-auth-wallet-ux.md`](./docs/11-auth-wallet-ux.md) | ADR-007 | Đăng nhập email/Google + **ví Web3 ẩn dưới nền** bằng passkey smart wallet (SIMD-0075): so sánh 3 phương án (MPC vendor / passkey PDA / server giữ khoá), paymaster có trần, khôi phục 72h |
 
 **Tài liệu cho tác nhân & chỉ mục máy đọc:** [`AGENTS.md`](./AGENTS.md) là quy ước bắt buộc cho mọi người/AI sửa repo (ba luật, thứ bậc nguồn sự thật, cách kiểm chứng tất định). [`llms.txt`](./llms.txt) là chỉ mục máy đọc của toàn bộ tài liệu — để tác nhân AI đọc đúng file thay vì đoán.
 

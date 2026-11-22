@@ -18,7 +18,7 @@
 | **DOC-00** | [`docs/00-open-source-landscape.md`](./00-open-source-landscape.md) | P01 / P04 | Khảo sát mã nguồn mở thực tế, ma trận Build vs. Adopt vs. CPI, kiểm soát License, cấu trúc Monorepo |
 | **DOC-01 (Master)** | [`docs/PRD.md`](./PRD.md) | P01 → P06 | Tầm nhìn, OKRs, Personas, Cơ chế kinh tế lõi, Functional Requirements, User Stories, BDD, MoSCoW, HITL Gates, DORA |
 | **DOC-02** | [`docs/01-user-flows-and-ux.md`](./01-user-flows-and-ux.md) | P02 | Kiến trúc thông tin (IA), Danh mục màn hình (Screen Specs) & 8 Luồng người dùng End-to-End (Mermaid) |
-| **DOC-03** | [`docs/02-database-schema.md`](./02-database-schema.md) | P03-A | Sơ đồ ERD, thiết kế chi tiết 31 bảng PostgreSQL/Supabase, State Machines, RLS Policies, Indexes & đồng bộ On-chain |
+| **DOC-03** | [`docs/02-database-schema.md`](./02-database-schema.md) | P03-A | Sơ đồ ERD, thiết kế chi tiết 34 bảng PostgreSQL/Supabase, State Machines, RLS Policies, Indexes & đồng bộ On-chain |
 | **DOC-04** | [`docs/03-api-specification.md`](./03-api-specification.md) | P03-B | Đặc tả API Contract (OpenAPI 3.1 REST, SSE, HTML5 Game SDK `postMessage`, Indexer Webhooks, RBAC, Rate Limit, Errors) |
 | **DOC-05** | [`docs/04-solana-smart-contracts.md`](./04-solana-smart-contracts.md) | P03-C | Thiết kế 3 Solana Anchor Programs, PDA Map, Account Layouts, Toán học Version-Gated Bonding Curve, Anti-Bot/Anti-Dump, Ragequit & DEX Graduation |
 | **DOC-06** | [`docs/05-c4-architecture-and-nfr.md`](./05-c4-architecture-and-nfr.md) | P05 / P06 | Kiến trúc C4 (Level 1–4 + Deployment), ADRs, NFR SLAs, Mô hình đe dọa STRIDE, Well-Architected Review & CI/CD Ops |
@@ -139,7 +139,7 @@ flowchart LR
 
 | Mã FR | Nhóm Module | Mô tả yêu cầu chức năng | MoSCoW | Value / Effort | Sprint mục tiêu |
 |---|---|---|---|---|---|
-| **FR-FND-01** | Foundation & Auth | Xác thực Supabase (Email/OAuth) + liên kết ví **Sign-In With Solana (SIWS)** 1-1 có chống replay; phân quyền `player`/`developer`/`curator`/`admin` kiểm soát 100% ở server + RLS; ghi `audit_logs` bất biến. | **Must** | 10 / 4 | S0, S4 |
+| **FR-FND-01** | Foundation & Auth | Xác thực Supabase (Email/Google OAuth) + **passkey smart wallet** (WebAuthn P-256, precompile `secp256r1` của Solana) cho người chơi mới, **không seed phrase**, paymaster có trần cứng, khôi phục 72h (`ADR-007`) + liên kết ví **Sign-In With Solana (SIWS)** 1-1 có chống replay cho ví ngoài; phân quyền `player`/`developer`/`curator`/`admin` kiểm soát 100% ở server + RLS; ghi `audit_logs` bất biến. | **Must** | 10 / 4 | S0, S4 |
 | **FR-DEV-01** | Developer Studio | CRUD game metadata, upload trực tiếp file `.zip` (≤ 50 MB nén, ≤ 200 MB giải nén, ≤ 5,000 files) lên Cloudflare R2 quarantine bằng presigned PUT 15 phút; xử lý qua hàng đợi `processing_jobs` và worker cô lập non-root; lưu `game_versions` bất biến kèm SHA-256, changelog và báo cáo validation JSON. | **Must** | 10 / 6 | S1 |
 | **FR-DEV-02** | Isolated Runtime & Preview | Phân phối mọi phiên bản game từ domain tách biệt hoàn toàn với portal (`<version-id>.preview.<game-domain>` và `<version-id>.play.<game-domain>`) qua Cloudflare Worker + R2 binding, iframe sandbox chặt, CSP chặn rò rỉ dữ liệu, token preview ngắn hạn có thể thu hồi. | **Must** | 10 / 5 | S1 |
 | **FR-DEV-03** | Build Diff Analyzer | Tự động so sánh file manifest & AST/asset hash giữa `v(n)` và `v(n-1)` để tính `change_ratio` và phát hiện bản upload "bình mới rượu cũ" (chặn mở khóa mốc token nếu thay đổi thực chất dưới ngưỡng cấu hình). | **Must** | 9 / 3 | S2 |
@@ -243,7 +243,7 @@ Scenario: Kích hoạt Stall permissionless và hoàn SOL công bằng (Ragequit
 
 | # | Câu hỏi / Điểm cần chốt | Quyết định mặc định trong PRD v1.0 | Có thể cấu hình lại? |
 |---|---|---|---|
-| **A1** | Người chơi bắt buộc phải có ví Solana mới chơi được game không? | **Không.** 100% trải nghiệm chơi game, Playtest, Arena và tích `SPARK` hoạt động với tài khoản Web2 (guest chơi tự do; đăng nhập để lưu tiến trình, vote Arena & tích `SPARK`). Chỉ bắt buộc liên kết ví khi giao dịch trên Launchpad hoặc rút thưởng on-chain. | Cố định (nguyên tắc Poki UX) |
+| **A1** | Người chơi bắt buộc phải có ví Solana mới chơi được game không? | **Không.** 100% trải nghiệm chơi game, Playtest, Arena và tích `SPARK` hoạt động với tài khoản Web2 (guest chơi tự do; đăng nhập để lưu tiến trình, vote Arena & tích `SPARK`). Khi cần giao dịch trên Launchpad, người chơi **không phải cài ví hay ghi 12 từ**: đăng nhập vẫn bằng email/Google, và một **passkey smart wallet** (Face ID/Touch ID) được tạo ngầm — khoá ký **không** dẫn xuất từ email và **không** ai giữ hộ (`ADR-007`, `docs/11-auth-wallet-ux.md`). Người đã có ví ngoài vẫn dùng SIWS như cũ. | Cố định (nguyên tắc Poki UX) |
 | **A2** | Có bắt buộc mọi game trên Game9K phải phát hành token không? | **Không.** Studio có thể chỉ phát hành game nhận doanh thu quảng cáo kiểu Poki (`portal_only`), hoặc bật **Version Launchpad** (`launchpad_enabled`) khi đạt tối thiểu mốc M1. | Có |
 | **A3** | Tiền tệ định giá trên Bonding Curve là gì? | **Native SOL (wSOL)** chuẩn như Pump.fun để tối ưu thanh khoản và UX trên Solana. | Có thể mở rộng USDC ở v2 |
 | **A4** | Đích DEX khi Graduate ở M4 là gì? | Hỗ trợ adapter CPI cho **Meteora DAMM v2** (mặc định — khóa LP vĩnh viễn nhưng vẫn claim phí giao dịch nuôi Player Pool & Dev) và **Raydium CPMM** (tùy chọn dự phòng Apache-2.0). | Có (chọn theo `dex_target` trong config) |
@@ -261,7 +261,7 @@ Scenario: Kích hoạt Stall permissionless và hoàn SOL công bằng (Ragequit
   - Luôn tách bạch rạch ròi giữa **trải nghiệm chơi game thuần túy** (sạch sẽ, nhanh, thân thiện như Poki) và **bảng giao dịch Launchpad** (tab/trang riêng có cảnh báo minh bạch, không chèn popup ép mua token đè lên màn hình chơi game).
 
 - **P03 — API Contract, Database & Solana Smart Contracts First** (chi tiết tại [`docs/02-database-schema.md`](./02-database-schema.md), [`docs/03-api-specification.md`](./03-api-specification.md), [`docs/04-solana-smart-contracts.md`](./04-solana-smart-contracts.md)):
-  - **31 bảng PostgreSQL** chia làm 6 bounded contexts: *Identity & RBAC*, *Game Catalog & Builds*, *Playtest & Telemetry*, *Version Arena*, *PoP & Notcoin Economy*, *Solana Launchpad Projection & Audit*.
+  - **34 bảng PostgreSQL** chia làm 6 bounded contexts: *Identity & RBAC*, *Game Catalog & Builds*, *Playtest & Telemetry*, *Version Arena*, *PoP & Notcoin Economy*, *Solana Launchpad Projection & Audit*.
   - **Nhóm REST API `/api/v1/*` + SSE + PostMessage SDK v1** thiết kế theo chuẩn OpenAPI 3.1, phân tách rõ endpoint đọc công khai (cacheable), endpoint người chơi/dev (RLS + session), endpoint cấp chữ ký PoP Attestation (rate-limited + anti-bot) và endpoint nội bộ worker/indexer.
   - **3 Anchor Programs trên Solana** (`game9k_registry`, `game9k_curve`, `game9k_rewards`) với kiến trúc PDA tất định, toán học `u128` chống tràn số, kiểm tra chữ ký Ed25519 nguyên bản của Solana (`Ed25519SigVerify111111111111111111111111111`), không lưu trữ dữ liệu nặng on-chain (chỉ lưu hash SHA-256 & chỉ số cốt lõi để tối ưu rent).
 
