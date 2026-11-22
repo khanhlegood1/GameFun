@@ -40,6 +40,7 @@ câu mô tả, để tác nhân AI đọc đúng file thay vì đoán. Nội dun
 - [docs/19-gitcoin-patterns.md](docs/19-gitcoin-patterns.md): Gitcoin — hồ sơ theo chiến dịch (M2/4), "đang diễn ra", duyệt có tiêu chuẩn; từ chối quadratic funding vì trả theo số người
 - [docs/20-proximax-teardown-storage.md](docs/20-proximax-teardown-storage.md): ProximaX — kết luận đúng nhưng ba lý do sai (chain vẫn có commit 2026; "buộc token native" loại luôn Solana); Greenfield/Arweave không dùng được cho state game vì không xoá được và lộ input_entropy
 - [docs/21-starter-kit-spec-verification.md](docs/21-starter-kit-spec-verification.md): kiểm chứng đặc tả Starter Kit — Presence 5/30s, KV trễ 60 giây, số gói engine đo lại (255/352 KB gz), Realtime đẩy game vào G1
+- [docs/22-agent-sdk-workflow-patterns.md](docs/22-agent-sdk-workflow-patterns.md): agent-sdk (nccasia) — 5 mẫu quy trình (bất biến do test canh, bench sống ≠ test, trace, config bất biến + state một JSON); không dùng làm engine quyết định
 - [docs/07-docs-as-code-model.md](docs/07-docs-as-code-model.md): mô hình tài liệu & kiểm chứng (AGENTS.md, llms.txt, link check, cổng PDF tái lập)
 - [docs/08-legal-brief-vn-licensing.md](docs/08-legal-brief-vn-licensing.md): nguồn Markdown của legal brief — mô hình Game9K + 4 câu hỏi cho luật sư
 

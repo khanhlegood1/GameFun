@@ -43,6 +43,7 @@
 | 21 | [`docs/19-gitcoin-patterns.md`](./docs/19-gitcoin-patterns.md) | Growth | Gitcoin 2026 = **thư viện**, không phải quỹ. Lấy: hồ sơ theo chiến dịch (`M2/4`), "đang diễn ra", duyệt có tiêu chuẩn, số liệu tính lại được. **Từ chối quadratic funding** — trả theo *số người* phá mọi lớp chống bot |
 | 22 | [`docs/20-proximax-teardown-storage.md`](./docs/20-proximax-teardown-storage.md) | Tech | ProximaX: **kết luận đúng, ba lý do sai** — GitHub `cpp-xpx-chain` có commit `18/03/2026` (chỉ **ví** mới đóng băng); "buộc token native" loại luôn Solana; **Greenfield cho state game làm hỏng `verified_play`** |
 | 23 | [`docs/21-starter-kit-spec-verification.md`](./docs/21-starter-kit-spec-verification.md) | Tech | Kiểm chứng đặc tả Starter Kit: **`Presence` 5/30s** + **KV trễ `60` giây** là hai phát hiện đổi thiết kế; số gói engine **đo lại sai** (`255`/`352` KB gz, không phải `126`/`274`); Realtime đẩy game vào nhóm **G1** |
+| 24 | [`docs/22-agent-sdk-workflow-patterns.md`](./docs/22-agent-sdk-workflow-patterns.md) | Process | `nccasia/agent-sdk` (Apache-2.0, **beta**, `3` sao): lấy **5 mẫu quy trình** — bất biến do test canh, registry thay nhánh, bench sống ≠ test, trace đọc được, **config bất biến + state một JSON**; **không** dùng làm engine quyết định |
 
 **Tài liệu cho tác nhân & chỉ mục máy đọc:** [`AGENTS.md`](./AGENTS.md) là quy ước bắt buộc cho mọi người/AI sửa repo (ba luật, thứ bậc nguồn sự thật, cách kiểm chứng tất định). [`llms.txt`](./llms.txt) là chỉ mục máy đọc của toàn bộ tài liệu — để tác nhân AI đọc đúng file thay vì đoán.
 
