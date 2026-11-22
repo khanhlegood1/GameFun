@@ -105,19 +105,78 @@ CREATE TABLE public.developer_profiles (
     updated_at        TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- 3. user_wallets: liên kết ví Solana qua Sign-In With Solana (SIWS) chống đa tài khoản dùng chung 1 ví
+-- 3. user_wallets: ví gắn với tài khoản. Ba loại, cùng một bảng (xem docs/11-auth-wallet-ux.md):
+--    'external' = ví ngoài, xác minh bằng Sign-In With Solana (SIWS)
+--    'passkey'  = smart wallet PDA, uỷ quyền bằng passkey secp256r1 (SIMD-0075) — mặc định Phase 1
+--    'custodial'= ví tạm do server giữ khoá — CHỈ số dư nhỏ, KHÔNG dùng cho Launchpad
+CREATE TYPE wallet_kind AS ENUM ('external', 'passkey', 'custodial');
+
 CREATE TABLE public.user_wallets (
     id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id           UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
     wallet_address    TEXT NOT NULL UNIQUE CHECK (char_length(wallet_address) BETWEEN 32 AND 44),
+    kind              wallet_kind NOT NULL DEFAULT 'external',
     is_primary        BOOLEAN NOT NULL DEFAULT true,
-    siws_nonce        TEXT NOT NULL,
+    siws_nonce        TEXT,                      -- chỉ dùng cho kind='external'
     verified_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
     cooldown_until    TIMESTAMPTZ NOT NULL DEFAULT (now() + INTERVAL '7 days'), -- Chống gỡ ví xoay vòng farm Priority Window
     sybil_cluster_id  TEXT, -- Gắn bởi indexer nếu phát hiện chung nguồn nạp SOL với cụm bot
     created_at        TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE UNIQUE INDEX idx_user_wallets_one_primary ON public.user_wallets(user_id) WHERE is_primary = true;
+
+-- 3a. wallet_passkeys: passkey (P-256) uỷ quyền cho smart wallet PDA (không seed phrase)
+-- Khoá riêng nằm trong secure enclave của THIẾT BỊ; ở đây chỉ lưu khoá CÔNG KHAI.
+CREATE TABLE public.wallet_passkeys (
+    id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    wallet_id         UUID NOT NULL REFERENCES public.user_wallets(id) ON DELETE CASCADE,
+    credential_id     BYTEA NOT NULL UNIQUE,     -- WebAuthn credential id
+    pubkey_p256       BYTEA NOT NULL CHECK (octet_length(pubkey_p256) = 33), -- compressed point
+    device_label      TEXT,
+    status            TEXT NOT NULL DEFAULT 'active'
+                      CHECK (status IN ('active', 'pending_removal', 'revoked')),
+    -- Thêm passkey mới phải chờ 72h mới ký được: nếu kẻ tấn công chiếm được email,
+    -- họ vẫn không rút được tiền trong 3 ngày, và chủ ví nhận được cảnh báo.
+    activates_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    revoked_at        TIMESTAMPTZ,
+    last_used_at      TIMESTAMPTZ,
+    created_at        TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX idx_wallet_passkeys_wallet ON public.wallet_passkeys(wallet_id, status);
+-- Bất biến: tối đa 5 passkey 'active|pending_removal' trên một ví (enforce ở RPC/trigger).
+
+-- 3b. wallet_recovery_requests: luồng khôi phục khi mất thiết bị
+CREATE TABLE public.wallet_recovery_requests (
+    id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    wallet_id         UUID NOT NULL REFERENCES public.user_wallets(id) ON DELETE CASCADE,
+    requested_by      UUID NOT NULL REFERENCES public.profiles(id),
+    method            TEXT NOT NULL CHECK (method IN ('email_magic_link', 'remaining_passkey')),
+    new_passkey_id    UUID REFERENCES public.wallet_passkeys(id),
+    status            TEXT NOT NULL DEFAULT 'cooling_down'
+                      CHECK (status IN ('cooling_down', 'approved', 'cancelled', 'expired', 'blocked')),
+    cooling_until     TIMESTAMPTZ NOT NULL DEFAULT (now() + INTERVAL '72 hours'), -- KHÔNG rút ngắn được
+    cancelled_at      TIMESTAMPTZ,               -- chủ ví bấm chặn trong 72h
+    created_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT recovery_cooling_window_check CHECK (cooling_until >= created_at + INTERVAL '72 hours')
+);
+CREATE INDEX idx_wallet_recovery_open ON public.wallet_recovery_requests(wallet_id, status)
+    WHERE status = 'cooling_down';
+
+-- 3c. gas_sponsorships: sổ cái paymaster — Game9K trả phí giao dịch cho người chơi mới
+CREATE TABLE public.gas_sponsorships (
+    id                BIGSERIAL PRIMARY KEY,
+    wallet_id         UUID NOT NULL REFERENCES public.user_wallets(id) ON DELETE CASCADE,
+    instruction       TEXT NOT NULL CHECK (instruction IN
+                      ('buy_priority', 'claim_stream', 'ragequit', 'register_passkey')),
+    signature         TEXT NOT NULL UNIQUE CHECK (char_length(signature) BETWEEN 64 AND 88),
+    lamports          BIGINT NOT NULL CHECK (lamports > 0),
+    day_bucket        DATE NOT NULL DEFAULT CURRENT_DATE,   -- để cộng trần ngày/tháng bằng GROUP BY
+    created_at        TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX idx_gas_sponsorships_wallet_day ON public.gas_sponsorships(wallet_id, day_bucket);
+-- Trần cứng (enforce ở server + chốt lại on-chain ở paymaster):
+--   <= 20_000_000 lamports/wallet/ngày  và  <= 200_000_000 lamports/wallet/tháng
+--   instruction ngoài danh sách trên -> KHÔNG tài trợ (xem docs/11-auth-wallet-ux.md §4)
 
 -- 4. audit_logs: nhật ký bất biến (append-only) cho mọi hành động nhạy cảm (S0-07)
 CREATE TABLE public.audit_logs (

@@ -55,6 +55,12 @@
 | `POST` | `/api/v1/developers/apply` | `player` | 3/d | Nộp đơn đăng ký trở thành Developer (`studioName`, `studioSlug`, `portfolioLinks`). |
 | `POST` | `/api/v1/wallets/siws/challenge` | User | 10/m | Tạo thông điệp **Sign-In With Solana (SIWS)** kèm `nonce` 5 phút + `domain` chống phishing. |
 | `POST` | `/api/v1/wallets/siws/verify` | User | 10/m | Xác minh chữ ký Ed25519 của ví Solana, liên kết vào `user_wallets`, áp cooldown 7 ngày chống xoay vòng ví. |
+| `POST` | `/api/v1/auth/oauth/google` | Public | 10/m | Đăng nhập/đăng ký bằng Google qua Supabase OAuth; trả session. **Không** tạo ví on-chain (xem `A1`, `ADR-007`). |
+| `POST` | `/api/v1/wallets/passkey/register` | User | 5/m | Đăng ký passkey (WebAuthn, P-256) cho smart wallet PDA của user; lưu `pubkey_p256` vào `wallet_passkeys` với `activates_at = now() + 72h` nếu không phải passkey đầu tiên. |
+| `POST` | `/api/v1/wallets/passkey/verify` | User | 20/m | Nhận `credential_id` + signature + `clientDataJSON`, xác minh phong bì WebAuthn, trả về intent đã ký để client ghép giao dịch. |
+| `POST` | `/api/v1/wallets/recovery` | User | 3/d | Mở yêu cầu khôi phục (magic link email hoặc passkey còn lại). Luôn tạo `cooling_until = now() + 72h`. |
+| `POST` | `/api/v1/wallets/recovery/{id}/cancel` | User | 10/d | Chủ ví chặn một yêu cầu khôi phục khả nghi trong cửa sổ 72h. |
+| `POST` | `/api/v1/wallets/sponsor` | User | 30/m | Paymaster: kiểm `instruction` ∈ danh sách cho phép, trần ngày/tháng theo `gas_sponsorships`, `sybil_risk_score < 0.5`; trả chữ ký fee payer cho phong bì **đã có** chữ ký passkey. |
 
 ---
 

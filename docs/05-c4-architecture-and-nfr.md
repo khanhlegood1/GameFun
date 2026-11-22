@@ -62,7 +62,7 @@ flowchart TB
         SDK["🧩 packages/game-sdk — HTML5 SDK (<12KB)<br/>Chạy trong iframe game; postMessage chuẩn Poki + PoP telemetry"]
 
         subgraph DataLayer["Lưu trữ Dữ liệu & Trạng thái"]
-            PG[("🐘 Supabase PostgreSQL<br/>31 bảng có RLS, processing_jobs (SKIP LOCKED),<br/>append-only audit_logs, spark_ledger")]
+            PG[("🐘 Supabase PostgreSQL<br/>34 bảng có RLS, processing_jobs (SKIP LOCKED),<br/>append-only audit_logs, spark_ledger")]
             R2Q[("🔒 Cloudflare R2: quarantine<br/>Private 100%, nhận ZIP thô qua Presigned PUT 15p")]
             R2B[("📦 Cloudflare R2: builds & recordings<br/>Private 100%, chỉ đọc qua Worker R2 Binding")]
         end
@@ -209,6 +209,7 @@ flowchart LR
 | **ADR-004** | **Pre-Graduation Custody trên `BuyerPosition` PDA** (mở rút 1:1 ra Token-2022 ATA khi Graduate M4) | Chặn triệt để lách phí Early-Exit bằng cách chuyển ví, chặn gom token từ 100 ví bot Priority Window, và chặn tạo LP lậu trước M4. | Trước M4 người dùng chỉ mua/bán trên `game9k_curve` (và `ragequit` nếu Stalled), sau M4 giao dịch tự do trên mọi DEX/Jupiter. |
 | **ADR-005** | **Hybrid Ed25519 Oracle Attestation + On-Chain Hard Caps** | Không thể chạy video playtest hay kiểm tra ZIP trên Solana; dùng chữ ký Ed25519 ngắn hạn (`120s`) kết hợp trần cứng on-chain giúp vừa chống bot hiệu quả vừa không cho Oracle quyền chạm vào tiền. | Nếu backend tạm bảo trì trong 24h Priority Window thì mua ưu tiên bị trễ; Public Phase, Sell, Trigger Stall & Ragequit vẫn chạy 100% on-chain không cần backend. |
 | **ADR-006** | **Graduation sang Meteora DAMM v2 (ưu tiên) / Raydium CPMM (dự phòng)** với công thức khớp giá 0% gap | Tránh chi phí OpenBook, hỗ trợ Token-2022, khóa vĩnh viễn thanh khoản chống rug nhưng vẫn tạo dòng phí bền vững cho cộng đồng & dev. | Cần duy trì integration test với bản binary mới nhất của DAMM v2 / CPMM trên `LiteSVM`. |
+| **ADR-007** | **Đăng nhập bằng email/Google, ví Web3 ẩn dưới nền bằng passkey smart wallet** (precompile `secp256r1` / SIMD-0075), không seed phrase. Email là **danh tính**, khoá ký **không** dẫn xuất từ email. Game9K trả phí giao dịch qua paymaster có trần cứng. | Người chơi Web2 không phải nhớ 12 từ hay private key, nhưng **không ai giữ khoá hộ** — kể cả Game9K. Passkey gắn `origin` nên chống phishing bằng toán học. Khớp stack Solana sẵn có, không thêm vendor lõi. | Phải vận hành paymaster (rủi ro rút cạn SOL → 6 chốt trần trong `docs/11-auth-wallet-ux.md` §4); ví gắn thiết bị → **bắt buộc** luồng khôi phục 72h; phải dùng chương trình smart-wallet đã audit, không tự viết. Phương án dự phòng nếu trượt tiến độ: MPC của vendor (chấp nhận khoá nằm ở họ). |
 
 ---
 
