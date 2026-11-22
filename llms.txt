@@ -42,6 +42,7 @@ câu mô tả, để tác nhân AI đọc đúng file thay vì đoán. Nội dun
 - [docs/21-starter-kit-spec-verification.md](docs/21-starter-kit-spec-verification.md): kiểm chứng đặc tả Starter Kit — Presence 5/30s, KV trễ 60 giây, số gói engine đo lại (255/352 KB gz), Realtime đẩy game vào G1
 - [docs/22-agent-sdk-workflow-patterns.md](docs/22-agent-sdk-workflow-patterns.md): agent-sdk (nccasia) — 5 mẫu quy trình (bất biến do test canh, bench sống ≠ test, trace, config bất biến + state một JSON); không dùng làm engine quyết định
 - [docs/23-dino-race-starter-kit.md](docs/23-dino-race-starter-kit.md): Starter Kit mẫu đầu tiên — đua khủng long cho KOL TikTok/YouTube Live; quà không đổi thứ hạng (R6), kết quả tất định kiểm chứng chéo Node↔Python, không dùng engine, không copy repo thiếu giấy phép
+- [docs/24-agent-loop-lessons.md](docs/24-agent-loop-lessons.md): vòng lặp tác nhân — FastChat là hạ tầng Battle Mode chứ không phải Agent Mode; bốn bài học từ SWE-agent/mini-swe-agent/smolagents/openai-agents; scripts/check_agent_rules.py canh 6 nhóm quy ước AGENTS.md
 - [docs/07-docs-as-code-model.md](docs/07-docs-as-code-model.md): mô hình tài liệu & kiểm chứng (AGENTS.md, llms.txt, link check, cổng PDF tái lập)
 - [docs/08-legal-brief-vn-licensing.md](docs/08-legal-brief-vn-licensing.md): nguồn Markdown của legal brief — mô hình Game9K + 4 câu hỏi cho luật sư
 

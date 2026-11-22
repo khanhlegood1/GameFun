@@ -10,6 +10,8 @@
 | **Trụ sở dự kiến** | `9K Holdings, Inc.` (Delaware, Hoa Kỳ) — **chưa thành lập** |
 | **Hoạt động tại VN** | Đội ngũ sáng lập tại TP.HCM. **Chưa có pháp nhân Việt Nam nào** |
 
+> **Tài liệu sống:** `docs/08-legal-brief-vn-licensing.md` · **Bản in:** `docs/Game9K-Legal-Brief-VN.pdf` (1 tờ A4)
+
 ---
 
 ## 1. Mô hình hoạt động (chỉ 4 ý)
