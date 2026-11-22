@@ -1,0 +1,47 @@
+{
+  "$comment": "Khoá hợp đồng của @game9k/game-sdk. Bề mặt ở đây là một phần của giao kèo với studio: check_sdk_drift.py bắt buộc nó khớp docs/03 §3, khớp mã, và khớp SDK_VERSION. Sửa tệp này là sửa công khai — phải qua PR + ADR.",
+  "package": "@game9k/game-sdk",
+  "major": 0,
+  "minor": 1,
+  "patch_note": "0.1.0 = bản tham chiếu trong repo; chưa phát hành lên npm (docs/06 M03).",
+  "functions": [
+    "init",
+    "gameLoadingFinished",
+    "gameplayStart",
+    "gameplayStop",
+    "commercialBreak",
+    "rewardedBreak",
+    "cloudSave",
+    "reportProgress"
+  ],
+  "signatures": {
+    "init": "(): Promise<{ environment, versionLabel? }>",
+    "gameLoadingFinished": "(): void",
+    "gameplayStart": "(): void",
+    "gameplayStop": "(): void",
+    "commercialBreak": "(onStart?: () => void): Promise<void>",
+    "rewardedBreak": "(options?: { size?, onStart? }): Promise<boolean>",
+    "cloudSave": "{ get(slot?): Promise<unknown|null>; set(value, slot?): Promise<void> }",
+    "reportProgress": "(milestoneKey: string, numericValue?: number): void"
+  },
+  "adapter": "window.PokiSDK = window.Game9KSDK (nếu PokiSDK chưa tồn tại)",
+  "order_is_contract": true,
+  "released_majors": [
+    0
+  ],
+  "compat": {
+    "0": {
+      "rule": "0.x chưa có người dùng thật: được đổi bề mặt ở bất kỳ MINOR nào, nhưng mỗi lần đổi phải sửa docs/03 §3 trong CÙNG pull request và ghi một dòng trong CHANGELOG.",
+      "removal": "next_major",
+      "guarantee": "Không có bảo đảm tương thích ở 0.x. Bảo đảm chỉ bắt đầu từ 1.0.0."
+    }
+  },
+  "forbidden_in_sdk": [
+    "fetch / XMLHttpRequest",
+    "eval / new Function",
+    "import / require",
+    "localStorage / sessionStorage / document.cookie",
+    "hàm thanh toán (openCheckout, payStation, xsolla)",
+    "hàm ký/gửi giao dịch (signTransaction, sendTransaction, window.solana)"
+  ]
+}

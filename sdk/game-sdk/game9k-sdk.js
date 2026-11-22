@@ -92,7 +92,13 @@
   W.setInterval(beat, 30000);
 
   // ---- API công khai -----------------------------------------------------
+  // Bản khai SDK. `docs/03` §3 và `check_sdk.py` là nguồn sự thật; số này chỉ để
+  // Inspector in ra và để game tự kiểm "portal đang phục vụ bản nào" (docs/28 §5).
+  var SDK_VERSION = '0.1.0';
+
   var SDK = {
+    version: SDK_VERSION,
+
     init: function () {
       return send('init', { ua_webgl: !!W.WebGLRenderingContext }).then(function (r) {
         env = (r && r.environment) || 'direct';
