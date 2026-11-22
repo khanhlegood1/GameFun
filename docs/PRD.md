@@ -1,10 +1,10 @@
-# Product Requirements Document (PRD) — Game9K Funding Portal
+# Product Requirements Document (PRD) — Game9K Launchpad
 
 ## Game Portal & Version-Gated Solana Launchpad (theo AI-Agile Framework v1.0)
 
 | Thuộc tính | Chi tiết |
 |---|---|
-| **Tên sản phẩm** | **Game9K Funding Portal** — tên miền chính thức `game9k.com` (mã kho lưu trữ: `khanhlegood1/GameFun`, kế thừa nền tảng `GAME.FUN v2`) |
+| **Tên sản phẩm** | **Game9K Launchpad** — tên miền chính thức `game9k.com` (mã kho lưu trữ: `khanhlegood1/GameFun`, kế thừa nền tảng `GAME.FUN v2`) |
 | **Phiên bản tài liệu** | `v1.0.0` (Living Documentation) |
 | **Ngày lập** | `2026-11-18` |
 | **Khung quy trình** | **AI-Agile Product Development Framework v1.0** (AI-native · HITL-governed · Cloud-native · Frontend & Contract-first) |
