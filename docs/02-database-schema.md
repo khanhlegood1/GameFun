@@ -473,12 +473,23 @@ CREATE TABLE public.player_pop_states (
     arena_votes_valid     INT NOT NULL DEFAULT 0,
     arena_consensus_rate  NUMERIC(4,3) NOT NULL DEFAULT 0.500,
     sybil_risk_score      NUMERIC(4,3) NOT NULL DEFAULT 0.000, -- 0=sạch, >0.7=khóa Priority Window & gắn cờ review
-    pop_score             NUMERIC(5,2) NOT NULL DEFAULT 0.00 CHECK (pop_score BETWEEN 0 AND 100),
+    -- pop_score chỉ tính từ CÔNG LAO ĐÃ KIỂM CHỨNG (phút chơi hợp lệ), không mua được:
+    --   work_new = max(phút_chơi_epoch_này, W * work_old);  score = 100 * work / (work + 180)
+    --   W = 0.60, epoch = 7 ngày. Chốt & kiểm chứng: scripts/verify_pop_decay.py
+    pop_work              NUMERIC(12,3) NOT NULL DEFAULT 0.000 CHECK (pop_work >= 0),  -- công lao đã suy giảm
+    pop_work_updated_at   TIMESTAMPTZ NOT NULL DEFAULT now(),                            -- mốc epoch gần nhất
+    pop_score             NUMERIC(5,2) NOT NULL DEFAULT 0.00 CHECK (pop_score BETWEEN 0 AND 100), -- = 100*work/(work+180)
     tier                  pop_tier NOT NULL DEFAULT 'unverified',
     spark_balance         BIGINT NOT NULL DEFAULT 0 CHECK (spark_balance >= 0),
     spark_lifetime        BIGINT NOT NULL DEFAULT 0,
     updated_at            TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+-- §pop_score: `pop_work` là trạng thái THẬT, `pop_score` chỉ là hàm của nó.
+-- Không bao giờ ghi thẳng pop_score; luôn ghi pop_work rồi suy ra score + tier.
+-- Người chơi đều giữ nguyên điểm; người bỏ thì tụt (mất gold sau ~2 epoch im lặng,
+-- về bronze sau ~6 epoch). Bảng số đầy đủ: `python3 scripts/verify_pop_decay.py`.
+-- Vì sao không dùng đúng 0,9 như ZoroChain: nhân 0,9 mỗi epoch khiến cả người chơi
+-- đều cũng tụt vô hạn (0,9^n -> 0); `max(chơi_mới, W x cũ)` mới công bằng.
 
 -- 20. spark_ledger: sổ cái điểm SPARK bất biến (phân tách được đóng góp theo từng game để chia Community Pool)
 CREATE TABLE public.spark_ledger (
