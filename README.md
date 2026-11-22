@@ -6,7 +6,7 @@
 1. **Phân phối & Kiểm định Game chuẩn [Poki](https://developers.poki.com/guide/working-with-poki):** Chơi tức thì trên trình duyệt (desktop & mobile, không cần ví), SDK tương thích 1:1 sự kiện Poki, công cụ **Game9K Inspector**, phễu kiểm định 3 chặng (*Mystery Tile Playtest → Player Fit Test 500 lượt → Web Fit Test CTR/Time/C2P*) và chia sẻ doanh thu công bằng (100% direct traffic / 50-50 portal traffic).
 2. **Đánh giá Đối kháng theo Phiên bản chuẩn Arena:** Chế độ **Blind Version Duel** (`v(n)` vs `v(n-1)`) và **Category Duel** xếp hạng bằng thuật toán **OpenSkill / Bradley-Terry (95% CI)** chỉ tính phiếu từ phiên chơi thật đã xác minh.
 3. **Bệ phóng Vốn Khóa theo Cột mốc Phiên bản (Pump.fun nâng cấp):** Token SPL Token-2022 (`1,000,000,000` cung, `0%` token nền tảng) mở dần theo tỷ lệ lũy kế trên tổng cung (`M1: 15% → M2: 33% → M3: 53% → M4: 70%` — tức hoàn tất `100%` phần đường cong; `30%` tổng cung còn lại khóa cố định cho `15%` thanh khoản DEX, `10%` thưởng game thủ, `5%` nhà phát triển và `0%` nền tảng) gắn chặt với `SHA-256` bản build và kết quả kiểm định; tự động Graduate sang **Meteora DAMM v2 / Raydium CPMM** với `0%` chênh lệch giá và khóa vĩnh viễn LP; hỗ trợ **Ragequit hoàn SOL** nếu dự án ngừng phát triển.
-4. **Vòng lặp Cộng đồng & Chống Bot Đầu cơ Xả sớm chuẩn Notcoin:** Hệ thống **Energy**, điểm không chuyển nhượng **`SPARK`**, **Squads**, **Proof-of-Play (PoP) Tier** cấp quyền mua sớm **24h Gamer Priority Window** (có trần mỗi ví chặn sniper bot block-0), **Early-Exit Anti-Dump Fee (12% → 6% → 3% → 1%)** chuyển ngược 50% về quỹ thưởng game thủ + 40% nâng giá sàn, và trả thưởng **streaming 21 ngày**.
+4. **Vòng lặp Cộng đồng & Chống Bot Đầu cơ Xả sớm chuẩn Notcoin:** Hệ thống **Energy**, điểm không chuyển nhượng **`SPARK`**, **Squads**, **Proof-of-Play (PoP) Tier** cấp quyền mua sớm **24h Gamer Priority Window** (có trần mỗi ví chặn sniper bot block-0), **Early-Exit Anti-Dump Fee** — phụ phí bán sớm giảm dần theo thời gian nắm giữ, cộng với phí cơ bản `1%` (xem thang đầy đủ ở Whitepaper §6.1): **chế độ mặc định `VBOND-LV`** `1% → 5% → 1%` (bot lướt sóng lỗ ròng **`−5,95%`**); **cấu hình đầu-cuối `VGBC-4T`** `1% → 12% → 6% → 3% → 1%` (lỗ ròng tới **`−12,88%`** ở cửa sổ `< 1 giờ`). Phụ phí thu được chuyển ngược 50% về quỹ thưởng game thủ + 40% nâng giá sàn, và trả thưởng **streaming 21 ngày**.
 
 ---
 
@@ -27,6 +27,10 @@
 | 5 | [`docs/04-solana-smart-contracts.md`](./docs/04-solana-smart-contracts.md) | P03-C | Thiết kế 3 Anchor Programs (`game9k_registry`, `game9k_curve`, `game9k_rewards`), PDA Map, toán học `u128` VGBC, Ed25519 PoP Attestation, Ragequit, DEX CPI & 8 Bất biến Fuzzing |
 | 6 | [`docs/05-c4-architecture-and-nfr.md`](./docs/05-c4-architecture-and-nfr.md) | P05 / P06 | Kiến trúc C4 (Level 1–4 + Deployment), 6 ADRs, Mô hình đe dọa STRIDE & Well-Architected Review |
 | 7 | [`docs/06-implementation-roadmap.md`](./docs/06-implementation-roadmap.md) | P04 / P06 | Kế hoạch triển khai 9 Module (`M01`–`M09`) & Lộ trình Sprint 0 → Sprint 7 (nối tiếp 17 GitHub Issues `[S0-01]..[S1-09]`) |
+| 8 | [`docs/README-PDF.md`](./docs/README-PDF.md) | Docs | Quy trình dựng lại & kiểm chứng ba bản PDF in |
+| 9 | [`docs/07-docs-as-code-model.md`](./docs/07-docs-as-code-model.md) | Docs | Mô hình tài liệu & kiểm chứng lấy từ Chainstack dev-portal: AGENTS.md, llms.txt, link check, CI cổng tái lập PDF |
+
+**Tài liệu cho tác nhân & chỉ mục máy đọc:** [`AGENTS.md`](./AGENTS.md) là quy ước bắt buộc cho mọi người/AI sửa repo (ba luật, thứ bậc nguồn sự thật, cách kiểm chứng tất định). [`llms.txt`](./llms.txt) là chỉ mục máy đọc của toàn bộ tài liệu — để tác nhân AI đọc đúng file thay vì đoán.
 
 ---
 

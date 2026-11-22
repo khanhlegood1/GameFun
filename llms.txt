@@ -1,0 +1,50 @@
+# llms.txt — Game9K Launchpad
+
+> Bộ tài liệu kỹ thuật và tài chính của **Game9K Launchpad** (`game9k.com`): một cổng game
+> HTML5 instant-play kết hợp bệ phóng vốn Solana khóa theo cột mốc phiên bản. Toàn bộ số liệu
+> kinh tế trong bộ tài liệu này tái lập được bằng các script trong `scripts/`.
+
+Đây là chỉ mục theo chuẩn [llms.txt](https://llmstxt.org/): mỗi dòng là một tài liệu kèm một
+câu mô tả, để tác nhân AI đọc đúng file thay vì đoán. Nội dung đầy đủ nằm ở chính các file đó.
+
+## Bắt đầu tại đây
+
+- [AGENTS.md](AGENTS.md): quy ước cho mọi tác nhân sửa repo — đọc trước khi sửa bất kỳ con số nào
+- [README.md](README.md): điểm vào dự án, bốn trụ cột sản phẩm, bảng chỉ mục toàn bộ tài liệu
+
+## Số liệu & đặc tả (nguồn sự thật)
+
+- [docs/WHITEPAPER.md](docs/WHITEPAPER.md): whitepaper gọi vốn v1.5 — SSOT cho kinh tế, phí, lộ trình 4 vòng, P&L
+- [docs/YELLOWPAPER.md](docs/YELLOWPAPER.md): yellow paper v1.0 — SSOT cho đặc tả hình thức, 12 bất biến, định lý, byte layout on-chain
+
+## Sản phẩm & kỹ thuật
+
+- [docs/PRD.md](docs/PRD.md): yêu cầu sản phẩm, OKR, persona, cơ chế Version-Gated Growth, 31 bảng dữ liệu
+- [docs/00-open-source-landscape.md](docs/00-open-source-landscape.md): khảo sát mã nguồn mở và quyết định adopt/integrate/reference
+- [docs/01-user-flows-and-ux.md](docs/01-user-flows-and-ux.md): sitemap, đặc tả màn hình, 8 sơ đồ luồng người dùng
+- [docs/02-database-schema.md](docs/02-database-schema.md): ERD và thiết kế chi tiết 31 bảng PostgreSQL
+- [docs/03-api-specification.md](docs/03-api-specification.md): đặc tả REST `/api/v1`, SSE streams và `@game9k/game-sdk`
+- [docs/04-solana-smart-contracts.md](docs/04-solana-smart-contracts.md): thiết kế 3 Anchor program (`game9k_registry`, `game9k_curve`, `game9k_launchpad`)
+- [docs/05-c4-architecture-and-nfr.md](docs/05-c4-architecture-and-nfr.md): kiến trúc C4 level 1–4, 6 ADR, NFR và STRIDE
+- [docs/06-implementation-roadmap.md](docs/06-implementation-roadmap.md): lộ trình 9 module `M01`–`M09` và backlog sprint
+
+## Bản in
+
+- [docs/README-PDF.md](docs/README-PDF.md): cách dựng lại và kiểm chứng ba file PDF
+- [docs/Game9K-Pitch-Deck.pdf](docs/Game9K-Pitch-Deck.pdf): deck gọi vốn 14 slide, 16:9
+- [docs/Game9K-Whitepaper-v1.5.pdf](docs/Game9K-Whitepaper-v1.5.pdf): whitepaper bản in A4, 35 trang
+- [docs/Game9K-Yellow-Paper-v1.0.pdf](docs/Game9K-Yellow-Paper-v1.0.pdf): yellow paper bản in A4, 17 trang
+
+## Kiểm chứng (chạy được, không cần tin)
+
+- [scripts/verify_protocol_math.py](scripts/verify_protocol_math.py): 9 kịch bản căng thẳng `S1`–`S9` + 10.000 phép thử ngẫu nhiên, in dòng PASS 100%
+- [scripts/check_pitch_deck.py](scripts/check_pitch_deck.py): 48 kiểm tra chéo deck ↔ yellow paper; `--with-verifier` để nối cả hai
+- [scripts/build_pitch_deck.py](scripts/build_pitch_deck.py): sinh deck 14 slide, tất định byte-for-byte
+- [scripts/build_whitepaper_pdf.py](scripts/build_whitepaper_pdf.py): sinh whitepaper + yellow paper từ markdown
+
+## Phạm vi
+
+Tài liệu này mô tả **thiết kế và kế hoạch**, không mô tả sản phẩm đang vận hành: chưa có mã
+nguồn Solana được triển khai on-chain, chưa có người dùng thật. Mọi số MAU, doanh thu và
+EBITDA là **dự phóng**. Các khoảng trống đã biết được ghi rõ trong từng tài liệu thay vì lấp
+bằng lời hứa.

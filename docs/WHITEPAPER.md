@@ -135,7 +135,7 @@ Chuyện gì xảy ra khi con số này đi qua cổng:
 
 | Câu hỏi then chốt | Trả lời đã được chứng minh | Đo thực tế |
 |---|---|---|
-| **Vì sao cá voi phải chia `20` ví mới gom được `28%` cung?** | Trần `2%` cung/ví *(=`20M`)* cưỡng chế ngay trong lệnh mua, cộng trần `70M`/`600 s` cho cả đường cong — **không có lệnh nào mua vượt trần**, và ví đã chạm trần trong chu kỳ bị trả `ERR_CAP_REACHED`. | `S5`: ví nạp `50 SOL` vẫn bị chặn đúng ở trần *(hồ sơ B: `30M` token, `5%` curve)*; ví thứ `3` trong cùng `600 s` bị chặn ở `0`, chỉ mở lại tại `t = 1,201 s` |
+| **Vì sao cá voi phải chia `20` ví mới gom được `28%` cung?** | Trần `2%` cung/ví *(=`20M`)* cưỡng chế ngay trong lệnh mua, cộng trần `70M`/`600 s` cho cả đường cong — **không có lệnh nào mua vượt trần**, và ví đã chạm trần trong chu kỳ bị trả `ERR_CAP_REACHED`. | `S5`: ví nạp `50 SOL` vẫn bị chặn đúng ở trần *(hồ sơ Ổn định: `30M` token, `5%` curve)*; ví thứ `3` trong cùng `600 s` bị chặn ở `0`, chỉ mở lại tại `t = 1,201 s` |
 | **Két có đủ tiền cho `100%` người bán không?** | **Có** — dù họ bán theo **bất kỳ thứ tự nào**, số dư cuối `R_final ≥ 0`. Két **tự tài trợ**, không cần ai “bơm giá cứu”. | `S6`: `25` người bán sạch `100%` đường cong ⇒ thiếu hụt **`0`** lamport |
 | **Người bấm sau có bị thiệt hơn người bấm trước?** | **Không.** Tỷ giá hoàn vốn không bao giờ giảm; chênh lệch do làm tròn số nguyên tối đa **`1` lamport** (`~$0.00000015`). | Định lý 5 · `S7` |
 | **Khi game lên sàn DEX, bot có ăn được chênh lệch giá?** | **Không.** Thanh khoản DEX `61.836953 SOL` được rót **từ chính két sắt**, giá mở cửa lệch `4.27 × 10⁻¹²` — nhỏ hơn cả sai số đo. | Định lý 6 · `S3` |
@@ -489,7 +489,9 @@ Game9K coi đây là **đường biên thiết kế bắt buộc ngay từ ngày
 
 Điểm nghẽn của mọi mô hình GameFi cũ nằm ở chỗ: hoặc nhà phát triển **nhận hết tiền trước khi làm game** (rồi bỏ đi), hoặc **không có một đồng vốn lưu động nào** trong suốt quá trình phát triển. Game9K tách bạch hai mục tiêu bằng **hai hồ sơ hợp đồng**, để mỗi studio chọn đúng loại vốn mình cần — và để nhà đầu tư nhìn thấy chính xác từng lamport đi đâu:
 
-| Hạng mục Phân bổ SOL *(ở mức trần, `@ $150/SOL`)* | **Hồ sơ A — `VGBC-4T`**<br>*Tối ưu thanh khoản DEX* | **Hồ sơ B — `VBOND-LV`**<br>*Tối ưu vốn phát triển Studio* | Mục đích Kinh tế |
+> **Hai hồ sơ này là hai chế độ vận hành của cùng một giao thức, không phải hai phiên bản sản phẩm.** **Hồ sơ Ổn định (`VBOND-LV`) là mặc định** cho mọi game mới. **Hồ sơ Tăng trưởng (`VGBC-4T`)** là lựa chọn do studio bật khi cần bùng nổ ở một phiên bản duy nhất, với rủi ro cao hơn — và chính nó áp mức bảo vệ chống bot mạnh nhất về phía những người bán sớm.
+
+| Hạng mục Phân bổ SOL *(ở mức trần, `@ $150/SOL`)* | **Hồ sơ Tăng trưởng — `VGBC-4T`**<br>*Tối ưu thanh khoản DEX* | **Hồ sơ Ổn định — `VBOND-LV`**<br>*Tối ưu vốn phát triển Studio* | Mục đích Kinh tế |
 |---|---|---|---|
 | **Tổng SOL thực tích lũy khi tốt nghiệp** ($R_{\text{end}}$) | `79.245283 SOL` | `76.109937 SOL` | Trần huy động của một đường cong — **không phải doanh thu**, là tiền của người mua |
 | **Khóa Thanh khoản DEX (Locked LP)** | **`61.836953 SOL`** *(`78.0%`)* | **`14.387943 SOL`** *(`18.9%`)* | Độ sâu thanh khoản mở sàn; A dồn tiền vào đây để chịu được lệnh lớn |
@@ -529,7 +531,7 @@ Game9K coi đây là **đường biên thiết kế bắt buộc ngay từ ngày
 
 | Kịch bản Kiểm chứng | Kết quả Định lượng | Ý nghĩa Kinh tế đối với Hệ sinh thái |
 |---|---|---|
-| **Bot mua rồi bán ngay (Round-Trip)** | **`−5.95%`** *(hồ sơ B: `1%` + `4%`)* · **`−3.97%`** *(giữ `1–7d`)* · **`−6.94%`** *(giữ `1–24h`)* · **`−12.88%`** *(hồ sơ A, `<1h`)* | **Bot lỗ chắc chắn ngay từ lệnh đầu tiên** (`0.99 × 0.95 − 1 = −5.95%`; `0.99 × 0.88 − 1 = −12.88%`) — biến kẻ lướt sóng thành nhà tài trợ cho quỹ thưởng game thủ. |
+| **Bot mua rồi bán ngay (Round-Trip)** | **`−5.95%`** *(hồ sơ Ổn định: `1%` + `4%`)* · **`−3.97%`** *(giữ `1–7d`)* · **`−6.94%`** *(giữ `1–24h`)* · **`−12.88%`** *(hồ sơ Tăng trưởng, `<1h`)* | **Bot lỗ chắc chắn ngay từ lệnh đầu tiên** (`0.99 × 0.95 − 1 = −5.95%`; `0.99 × 0.88 − 1 = −12.88%`) — biến kẻ lướt sóng thành nhà tài trợ cho quỹ thưởng game thủ. |
 | **Người chơi mua sớm & giữ tới Graduation** | **`+380.6%`** *(cấu hình đầm `5.15×`, đã trừ `1%` phí bán)* đến **`+801.9%`** *(mua ở `M2`)* / **`+1,158.2%`** *(mua ở `M1`)* — giữ trọn tới `M4` | Người chơi có niềm tin và đồng hành cùng sự tiến bộ thật của phiên bản game được thưởng xứng đáng (miễn phí phạt thoát sớm). |
 | **Người chơi đóng góp giờ chơi thật** | Đóng góp `20%` thời gian hợp lệ nhận **`5.00%` pool** *(hàm lõm mũ `γ = 0.65` + trần `5%` + stream 21 ngày)* | Thưởng công bằng theo công sức kiểm thử (*PoPW*), ngăn một tài khoản cày thâu tóm toàn bộ quỹ; kèm giữ chậm 7 ngày, hậu kiểm người thật `0.5%` và quyền thu hồi (*clawback*) nếu gian lận. |
 | **Bán toàn bộ Curve / Ragequit 100%** | **`0` thiếu hụt tài sản đảm bảo** · Chênh giá DEX `< 5 × 10⁻¹¹` · Lệch thứ tự Ragequit `≤ 1 lamport` | Kiểm chứng bằng toán học số nguyên `u128` qua 9 kịch bản `S1–S9` và **10,000 phép toán ngẫu nhiên** (xem chứng minh hình thức tại [`YELLOWPAPER.md`](./YELLOWPAPER.md)): 0 arbitrage, giá đơn điệu nghiêm ngặt, 0 bào mòn bụi. |
@@ -604,6 +606,13 @@ Khác với 99% dự án Web3 "sống nhờ thị trường tăng (bull), chết
 | **Seed** | **$3,000,000** | **$22.0M / $25.0M**<br>*(Cap / Priced)* | **12.0%** | Priced Seed / SAFE + Token Warrant 1:1 | **M12–M15** *(Q1/2028)*<br>Runway **18–21 tháng**<br>*(Chưa hòa vốn — xem J-Curve §9.1b)* | **16 FTE**<br>*(Eng + Studio BD)* | `2.0M` MAU · `180M` lượt chơi/năm · `450` game `M1+` · `95` game tốt nghiệp `M4`/năm · D7 Retention `≥18%` · Doanh thu ròng Y2 **`$1.126M`** (EBITDA **`−$974K`**) |
 | **Series A** | **$12,000,000** | **$68.0M / $80.0M**<br>*(Priced Round)* | **15.0%** | Preferred Equity *(tùy chọn Protocol TGE khi đã có lãi thực)* | **M24–M27** *(Q1/2029)*<br>Runway **24+ tháng**<br>*(EBITDA vẫn âm `−$642K`)* | **36 FTE**<br>*(Global Ops & AdTech)* | `6.5M` MAU · `750M` lượt chơi/năm · `1,200` game `M1+` · `260` game tốt nghiệp `M4`/năm · Ad-Stack trực tiếp toàn cầu · Doanh thu ròng Y3 **`$5.158M`** |
 | **Series B**<br>*(Expansion)* | **$25,000,000** | **$225.0M / $250.0M**<br>*(Priced Round)* | **10.0%** | Growth Equity | **M36–M42** *(2030)*<br>Tăng tốc M&A & mở rộng ngang | **65 FTE**<br>*(Ngang quy mô Poki)* | `20.0M+` MAU (= 20% Poki nhưng ARPU cao gấp 4–6 lần) · Mở rộng giao thức sang AI Interactive Apps · Doanh thu ròng Y4 **`$18.46M`**, EBITDA **`+$3.96M`** *(hòa vốn Năm 4)* |
+
+> **Ai thực sự phát hành Token Warrant — (*Obligor Disclosure*):** Mọi vòng có Token Warrant đều ghi rõ **nghĩa vụ thuộc về ai**, vì một warrant do pháp nhân không sở hữu token phát hành là một cam kết không tự thực hiện được:
+> - **Bên phát hành (obligor):** pháp nhân **phi Hoa Kỳ** nắm giữ và phát hành token giao thức *(Cayman foundation hoặc Marshall Islands DAO LLC — chốt trước khi ký SAFE đầu tiên)*.
+> - **Bên bảo lãnh thực thi:** **`9K Holdings, Inc.`** (Delaware C-Corp — pháp nhân gọi vốn) ký **Token Rights Agreement** với bên phát hành. Thoả thuận này trao cho `9K Holdings, Inc.` quyền **yêu cầu thực hiện cụ thể** (*specific performance*) buộc phân bổ token, kèm **uỷ quyền không huỷ ngang** (*irrevocable proxy*) để tự chuyển token nếu bên phát hành từ chối.
+> - **Định nghĩa "token" bao gồm hậu duệ:** mọi lần đổi tên, migrate, fork hay thay thế mint (bao gồm nâng cấp `Token-2022`), warrant theo đúng tỷ lệ — **không** gắn cứng vào một địa chỉ mint duy nhất.
+> - **Chống pha loãng chéo:** nếu phát hành thêm token ở vòng sau, tỷ lệ `1:1` của nhà đầu tư sớm được bảo toàn.
+> - **Trạng thái hiện tại — Known Gap:** pháp nhân phát hành **chưa được thành lập**. Đây là điều kiện tiên quyết phải đóng **trước khi** ký SAFE Pre-Seed; hồ sơ này công bố thẳng khoảng trống đó thay vì mô tả warrant như một tài sản đã tồn tại.
 
 > **Kỷ luật Cấu trúc Sở hữu (Cap Table Discipline — tổng vốn lũy kế `$41.0M`):** Khởi điểm với `85.0%` Sáng lập & `15.0%` quỹ ESOP thu hút nhân tài, tỷ lệ sở hữu của từng nhóm qua 4 vòng lần lượt là:
 > - **Sau Pre-Seed (`$1M @ $10M`):** Founders `76.50%` · ESOP `13.50%` · Pre-Seed `10.00%`.

@@ -1,0 +1,179 @@
+name: docs
+
+# Mọi thay đổi chạm vào tài liệu, script dựng, hoặc PDF đều phải qua ba cổng:
+#   1. liên kết nội bộ không chết        (check_docs_links.py)
+#   2. số liệu tái lập được              (verify_protocol_math.py)
+#   3. deck khớp với yellow paper        (check_pitch_deck.py --with-verifier)
+# và một cổng thứ tư chỉ chạy khi PDF bị sửa: dựng lại phải ra đúng byte đã commit.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - "docs/**"
+      - "scripts/**"
+      - "README.md"
+      - "AGENTS.md"
+      - "llms.txt"
+      - ".github/workflows/docs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Kiểm chứng số liệu & liên kết
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Cài phụ thuộc kiểm chứng
+        run: |
+          python -m pip install --upgrade pip
+          # check_pitch_deck.py đọc text layer của deck để đối chiếu chuỗi bắt buộc
+          pip install pypdf
+
+      - name: Liên kết nội bộ & chỉ mục
+        run: python3 scripts/check_docs_links.py
+
+      - name: Số liệu giao thức (S1–S9 + fuzz)
+        run: python3 scripts/verify_protocol_math.py
+
+      - name: Deck ↔ Yellow Paper
+        run: python3 scripts/check_pitch_deck.py --with-verifier
+
+  reproducible-pdf:
+    name: PDF dựng lại phải trùng byte đã commit
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Cài phụ thuộc dựng PDF (ghim phiên bản)
+        run: |
+          python -m pip install --upgrade pip
+          # Phiên bản phải ghim: reportlab quyết định cách nén & sắp object
+          # trong PDF, fontTools quyết định byte của bộ font dẫn xuất. Đổi
+          # phiên bản minor là md5 đổi — đó là điều job này canh.
+          pip install \
+            reportlab==5.1.0 \
+            fonttools==4.68.0 \
+            pypdf==7.1.1 \
+            pypdfium2==5.15.2
+
+      - name: Cài font nguồn (ghim phiên bản)
+        run: |
+          # Phiên bản phải ghim: PDF chỉ tất định khi bộ font là tất định.
+          npm install --no-audit --no-fund \
+            @fontsource/noto-sans@5.3.0 \
+            @fontsource/noto-sans-mono@5.3.0 \
+            dejavu-fonts-ttf@2.37.3
+
+      - name: Dựng lại ba PDF vào thư mục tạm
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rebuild
+          export XDG_CACHE_HOME=/tmp/fontcache
+          python scripts/build_pitch_deck.py /tmp/rebuild/deck.pdf
+          python scripts/build_whitepaper_pdf.py docs/WHITEPAPER.md /tmp/rebuild/wp.pdf
+          python - <<'PY'
+          import sys
+          sys.path.insert(0, "scripts")
+          import build_whitepaper_pdf as B
+          B.build(
+              "docs/YELLOWPAPER.md",
+              "/tmp/rebuild/yp.pdf",
+              "Game9K Yellow Paper v1.0",
+              "Formal Specification — Version-Synced Game Capital Formation",
+              kicker="YELLOW PAPER",
+              paper_label="Yellow Paper v1.0",
+              running_tagline="Formal Specification — Version-Synced Game Capital Formation",
+          )
+          PY
+
+      - name: Builder phải tất định trong CÙNG môi trường (2 cache font độc lập)
+        run: |
+          set -euo pipefail
+          # Phân biệt hai loại lỗi rất khác nhau:
+          #   (a) builder không tất định  -> bước này bắt được
+          #   (b) môi trường khác nhau    -> bước md5 bên dưới bắt được
+          # Nếu (a) đỏ thì lỗi ở code; nếu chỉ (b) đỏ thì lỗi ở toolchain/font.
+          for d in /tmp/cacheA /tmp/cacheB; do
+            mkdir -p "$d"
+            GAME9K_FONT_REBUILD=1 XDG_CACHE_HOME="$d" \
+              python scripts/build_pitch_deck.py "$d/deck.pdf"
+            GAME9K_FONT_REBUILD=1 XDG_CACHE_HOME="$d" \
+              python scripts/build_whitepaper_pdf.py docs/WHITEPAPER.md "$d/wp.pdf"
+            GAME9K_FONT_REBUILD=1 XDG_CACHE_HOME="$d" python - <<'PY'
+          import os, sys
+          sys.path.insert(0, "scripts")
+          import build_whitepaper_pdf as B
+          B.build("docs/YELLOWPAPER.md", os.path.join(os.environ["XDG_CACHE_HOME"], "yp.pdf"),
+                  "Game9K Yellow Paper v1.0",
+                  "Formal Specification — Version-Synced Game Capital Formation",
+                  kicker="YELLOW PAPER", paper_label="Yellow Paper v1.0",
+                  running_tagline="Formal Specification — Version-Synced Game Capital Formation")
+          PY
+          done
+          fail=0
+          for k in deck wp yp; do
+            a=$(md5sum "/tmp/cacheA/$k.pdf" | cut -d' ' -f1)
+            b=$(md5sum "/tmp/cacheB/$k.pdf" | cut -d' ' -f1)
+            if [ "$a" != "$b" ]; then
+              echo "::error::builder KHÔNG tất định: $k ($a vs $b)"
+              fail=1
+            else
+              echo "OK  $k  tất định  $a"
+            fi
+          done
+          exit $fail
+
+      - name: So md5 với bản đã commit
+        run: |
+          set -euo pipefail
+          fail=0
+          for pair in "deck:docs/Game9K-Pitch-Deck.pdf" \
+                      "wp:docs/Game9K-Whitepaper-v1.5.pdf" \
+                      "yp:docs/Game9K-Yellow-Paper-v1.0.pdf"; do
+            k="${pair%%:*}"; f="${pair#*:}"
+            a=$(md5sum "$f" | cut -d' ' -f1)
+            b=$(md5sum "/tmp/rebuild/$k.pdf" | cut -d' ' -f1)
+            if [ "$a" != "$b" ]; then
+              echo "::error file=$f::$f không tất định — dựng lại cho md5 khác ($a vs $b)"
+              fail=1
+            else
+              echo "OK  $f  $a"
+            fi
+          done
+          exit $fail
+
+      - name: Không còn macro LaTeX thô trong bản in
+        run: |
+          python - <<'PY'
+          from pypdf import PdfReader
+          BAD = ["texttt", "leftarrow", "mathcal", "begin{cases", "blacksquare",
+                 "triangleq", "dfrac", "lvert", "rvert", "mathsf", "mathrm",
+                 r"\text", r"\implies"]
+          bad = 0
+          for f in ("docs/Game9K-Yellow-Paper-v1.0.pdf",
+                    "docs/Game9K-Whitepaper-v1.5.pdf",
+                    "docs/Game9K-Pitch-Deck.pdf"):
+              r = PdfReader(f)
+              text = " ".join((p.extract_text() or "") for p in r.pages)
+              hits = [b for b in BAD if b in text]
+              if hits:
+                  print(f"::error file={f}::macro LaTeX lọt ra bản in: {hits}")
+                  bad = 1
+              else:
+                  print(f"OK  {f} ({len(r.pages)} trang)")
+          raise SystemExit(bad)
+          PY
