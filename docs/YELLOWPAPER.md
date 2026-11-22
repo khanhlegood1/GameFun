@@ -51,7 +51,7 @@ Toàn bộ phép cộng, trừ, nhân trên hợp đồng thực thi dưới d�
 | $B_{\text{bps}}$ | $10^4$ | `u64` | Mẫu số điểm cơ bản (`1 bps = 0.01%`, `10,000 bps = 100%`). |
 | $S_{\text{tot}}$ | $10^9 \cdot D_{\text{tok}} = 10^{15}$ | `u64` | Tổng cung cố định bất biến của mỗi token dự án/phiên bản (`mint_authority = None`). |
 | $X_0, Y_0$ | Tùy hồ sơ $\Theta$ | `u64` | Dự trữ token ảo ban đầu (base units) và dự trữ SOL ảo ban đầu (`lamports`). |
-| $K$ | $X_0 \cdot Y_0$ | `u128` | Tích bất biến khởi tạo ($K \approx 2.895 \times 10^{25}$ ở hồ sơ A, $6.438 \times 10^{25}$ ở hồ sơ B — nhỏ hơn $2^{127} \approx 1.70 \times 10^{38}$ khoảng **13 bậc độ lớn**, nên không có nguy cơ tràn `u128`). |
+| $K$ | $X_0 \cdot Y_0$ | `u128` | Tích bất biến khởi tạo ($K \approx 2.895 \times 10^{25}$ ở hồ sơ Tăng trưởng, $6.438 \times 10^{25}$ ở hồ sơ Ổn định — nhỏ hơn $2^{127} \approx 1.70 \times 10^{38}$ khoảng **13 bậc độ lớn**, nên không có nguy cơ tràn `u128`). |
 | $X_t, Y_t$ | Trạng thái tại bước $t$ | `u64` | Dự trữ ảo hiện hành của token và SOL trên đường cong. |
 | $R_t$ | $Y_t - Y_0$ | `u64` | Dự trữ SOL thực đối ứng đường cong trong `CurveSolVault` (`lamports`). |
 | $Q_t$ | $X_0 - X_t$ | `u64` | Lượng token ròng đang lưu hành trong các `BuyerPosition` (base units). |
@@ -178,9 +178,9 @@ $$s_u = \min\left(\phi_{\max},\ \lambda \cdot w_u\right), \qquad \text{sao cho }
 
 Khác với vesting tuyến tính thuần thời gian truyền thống (nhà phát triển ngồi yên chờ hết hạn vẫn nhận đủ token), phần phân bổ Creator $A_{\text{dev}}$ chỉ mở khóa theo **hàm tích lũy giờ chơi thật đã xác minh**:
 
-- **Trên Hồ sơ B (`VBOND-LV`, $A_{\text{dev}} = 15\% = 150\text{M}$):** Đặt mục tiêu giờ chơi xác minh lũy kế của phiên bản là $V_{\text{target}} > 0$ (chốt trong `terms_hash`). Tỷ lệ mở khóa tại thời điểm $t$ hoàn toàn độc lập với đồng hồ nếu không có người chơi:
+- **Trên Hồ sơ Ổn định (`VBOND-LV`, $A_{\text{dev}} = 15\% = 150\text{M}$):** Đặt mục tiêu giờ chơi xác minh lũy kế của phiên bản là $V_{\text{target}} > 0$ (chốt trong `terms_hash`). Tỷ lệ mở khóa tại thời điểm $t$ hoàn toàn độc lập với đồng hồ nếu không có người chơi:
   $$\mathrm{DevUnlocked}(t) = \mathbb{I}[\mathsf{status} \ne \texttt{Stalled}] \cdot \left\lfloor A_{\text{dev}} \cdot \min\left(1,\ \frac{\mathrm{VPH}_{\text{cum}}(v_k, t)}{V_{\text{target}}}\right) \right\rfloor$$
-- **Trên Hồ sơ A (`VGBC-4T`, $A_{\text{dev}} = 5\% = 50\text{M}$):** Chia 4 đợt $[10\text{M}, 10\text{M}, 15\text{M}, 15\text{M}]$ gắn với nghiệm thu `M2, M3, M4, M5+` (`0%` ở `M0/M1`), mỗi đợt chảy trong $90\text{ ngày}$ sau khi vượt mốc VPH/Arena, chỉ được rút ra ví sau khi hoàn tất `M4` và đóng băng vĩnh viễn ($\mathsf{frozen} \leftarrow \mathsf{true}$) nếu dự án rơi vào `Stalled`.
+- **Trên Hồ sơ Tăng trưởng (`VGBC-4T`, $A_{\text{dev}} = 5\% = 50\text{M}$):** Chia 4 đợt $[10\text{M}, 10\text{M}, 15\text{M}, 15\text{M}]$ gắn với nghiệm thu `M2, M3, M4, M5+` (`0%` ở `M0/M1`), mỗi đợt chảy trong $90\text{ ngày}$ sau khi vượt mốc VPH/Arena, chỉ được rút ra ví sau khi hoàn tất `M4` và đóng băng vĩnh viễn ($\mathsf{frozen} \leftarrow \mathsf{true}$) nếu dự án rơi vào `Stalled`.
 
 ---
 
@@ -242,11 +242,11 @@ Gốc $\mathrm{Root}_h \in \{0,1\}^{256}$ được ghi lên Solana kèm URI dữ
 
 ## 5. Số học Điểm Cố định `u128` của Đường cong Đồng bộ Phiên bản
 
-### 5.1. Hai Hồ sơ Tham số Đã Khóa bằng Mô phỏng (`VGBC-4T` & `VBOND-LV`)
+### 5.1. Hai Hồ sơ Tham số Đã Khóa bằng Mô phỏng — Tăng trưởng (`VGBC-4T`) & Ổn định (`VBOND-LV`)
 
 Hợp đồng `game9k_curve` tổng quát hóa cả hai chế độ vận hành dưới cùng một bộ tham số bất biến $\Theta$ chụp cứng vào `terms_hash` khi khởi tạo:
 
-| Tham số Hình thức | Ký hiệu | **Hồ sơ A: `VGBC-4T`** *(Toàn vòng đời Game)* | **Hồ sơ B: `VBOND-LV`** *(Version Bond Đầm giá)* |
+| Tham số Hình thức | Ký hiệu | **Hồ sơ Tăng trưởng: `VGBC-4T`** *(Toàn vòng đời Game)* | **Hồ sơ Ổn định: `VBOND-LV`** *(Version Bond Đầm giá)* |
 |---|---|---|---|
 | **Tổng cung cố định** | $S_{\text{tot}}$ | $1{,}000{,}000{,}000 \cdot 10^6$ | $1{,}000{,}000{,}000 \cdot 10^6$ |
 | **Cung mở bán trên đường cong** | $S_{\text{curve}}$ | $700{,}000{,}000 \cdot 10^6$ (`70%`) | $600{,}000{,}000 \cdot 10^6$ (`60%`) |
@@ -310,13 +310,13 @@ Lệnh không cần cấp phép (*permissionless crank*) `graduate_to_dex` thự
 
 $$S_{\text{LP}}^{\text{sol}} = \mathrm{floor\_div}\big(S_{\text{LP}} \cdot Y_{\text{end}},\ X_{\text{end}}\big), \qquad \Delta R_{\text{surplus}} = R_{\text{end}} - S_{\text{LP}}^{\text{sol}} - F_{\text{grad}}$$
 
-với $F_{\text{grad}} = 1{,}500{,}000{,}000$ lamports (`1.50 SOL`) là **Phí Tốt nghiệp Nền tảng** *(bảng §6.1)*. Thứ tự tất toán là **bắt buộc và không thể đảo**: (1) trích $S_{\text{LP}}^{\text{sol}}$ vào pool DEX, (2) thu $F_{\text{grad}}$ về `ProtocolTreasury`, (3) phần còn lại $\Delta R_{\text{surplus}}$ mới được nạp vào `CreatorMilestoneEscrow`. Vì vậy **`60.221994 SOL`** *(không phải `61.721994 SOL`)* là con số duy nhất escrow nhìn thấy ở hồ sơ B — và là con số Whitepaper §6.1 dùng để chia bốn mốc `5 / 15 / 20 / 20.221994 SOL`.
+với $F_{\text{grad}} = 1{,}500{,}000{,}000$ lamports (`1.50 SOL`) là **Phí Tốt nghiệp Nền tảng** *(bảng §6.1)*. Thứ tự tất toán là **bắt buộc và không thể đảo**: (1) trích $S_{\text{LP}}^{\text{sol}}$ vào pool DEX, (2) thu $F_{\text{grad}}$ về `ProtocolTreasury`, (3) phần còn lại $\Delta R_{\text{surplus}}$ mới được nạp vào `CreatorMilestoneEscrow`. Vì vậy **`60.221994 SOL`** *(không phải `61.721994 SOL`)* là con số duy nhất escrow nhìn thấy ở hồ sơ Ổn định — và là con số Whitepaper §6.1 dùng để chia bốn mốc `5 / 15 / 20 / 20.221994 SOL`.
 
 Vì $S_{\text{LP}}^{\text{sol}}$ được **làm tròn xuống** *(tối đa mất `1 lamport`)*, sai lệch giá tương đối giữa sàn DEX và đường cong bị chặn trên bởi **đúng `1 lamport` quy đổi ra tỷ lệ**:
 
 $$0 \le \frac{P_{\text{curve}}^{\text{end}} - P_{\text{DEX}}^{\text{open}}}{P_{\text{curve}}^{\text{end}}} = 1 - \frac{S_{\text{LP}}^{\text{sol}} \cdot X_{\text{end}}}{S_{\text{LP}} \cdot Y_{\text{end}}} < \frac{X_{\text{end}}}{S_{\text{LP}} \cdot Y_{\text{end}}} = \frac{1}{S_{\text{LP}}^{\text{sol}}}$$
 
-| Đại lượng Tất toán khi Tốt nghiệp | **Hồ sơ A: `VGBC-4T`** | **Hồ sơ B: `VBOND-LV`** |
+| Đại lượng Tất toán khi Tốt nghiệp | **Hồ sơ Tăng trưởng: `VGBC-4T`** | **Hồ sơ Ổn định: `VBOND-LV`** |
 |---|---|---|
 | Tổng SOL thực tích lũy ($R_{\text{end}}$) | `79,245,283,019 lamports` (`79.245283 SOL`) | `76,109,936,576 lamports` (`76.109937 SOL`) |
 | Token đưa vào Pool DEX ($S_{\text{LP}}$) | `150,000,000` token (`15%`, khóa vĩnh viễn) | `50,000,000` token (`5%`, khóa $\ge 12\text{ tháng}$) |
@@ -448,8 +448,8 @@ $$\mathrm{PnL}_{\text{RT}} = \frac{\Delta s_{\text{net}} - G}{G} \le \left(1 - \
 $$\Delta s_{\text{net}} \le \Delta s \left(1 - \frac{b_{\text{base}} + b_{\text{exit}}}{B_{\text{bps}}}\right) \le G\left(1 - \frac{b_{\text{base}}}{B_{\text{bps}}}\right)\left(1 - \frac{b_{\text{base}} + b_{\text{exit}}}{B_{\text{bps}}}\right)$$
 
 Thay số:
-- Với **Hồ sơ B (`VBOND-LV`)** ($b_{\text{base}} = 1\%$, $b_{\text{exit}} = 4\%$): $\mathrm{PnL}_{\text{RT}} \le 0.99 \times 0.95 - 1 = \mathbf{-5.95\%}$ (đây là **cận trên** — trượt giá tranh chấp khối hay phí hai chiều chỉ làm khoản lỗ **sâu thêm**, không bao giờ đưa bot về hòa vốn).
-- Với **Hồ sơ A (`VGBC-4T`)** trong $< 1\text{ giờ}$ ($b_{\text{base}} = 1\%$, $b_{\text{exit}} = 11\%$): $\mathrm{PnL}_{\text{RT}} \le 0.99 \times 0.88 - 1 = \mathbf{-12.88\%}$; trong $1\text{–}24\text{h}$: $\mathbf{-6.94\%}$; trong $1\text{–}7\text{d}$: $\mathbf{-3.97\%}$. Bot không tồn tại chiến lược tự giao dịch có lãi. $\blacksquare$
+- Với **Hồ sơ Ổn định (`VBOND-LV`)** ($b_{\text{base}} = 1\%$, $b_{\text{exit}} = 4\%$): $\mathrm{PnL}_{\text{RT}} \le 0.99 \times 0.95 - 1 = \mathbf{-5.95\%}$ (đây là **cận trên** — trượt giá tranh chấp khối hay phí hai chiều chỉ làm khoản lỗ **sâu thêm**, không bao giờ đưa bot về hòa vốn).
+- Với **Hồ sơ Tăng trưởng (`VGBC-4T`)** trong $< 1\text{ giờ}$ ($b_{\text{base}} = 1\%$, $b_{\text{exit}} = 11\%$): $\mathrm{PnL}_{\text{RT}} \le 0.99 \times 0.88 - 1 = \mathbf{-12.88\%}$; trong $1\text{–}24\text{h}$: $\mathbf{-6.94\%}$; trong $1\text{–}7\text{d}$: $\mathbf{-3.97\%}$. Bot không tồn tại chiến lược tự giao dịch có lãi. $\blacksquare$
 
 #### Định lý 5 (Tính Bất biến theo Thứ tự Rút khi `Ragequit` — *Bank-Run Immunity*)
 *Khi $\mathsf{status} = \texttt{Stalled}$ với tổng quỹ $W_0 = R_0 + F_0$ và tổng cung lưu hành $Q_0$, với bất kỳ người nắm giữ nào rút trước một lượng $q_1$ nhận $r_1 = \lfloor q_1 W_0 / Q_0 \rfloor$, tỷ giá hoàn vốn dành cho người rút sau **không bao giờ giảm** (và chênh lệch do làm tròn số nguyên tối đa $1\text{ lamport}$).*
@@ -551,7 +551,7 @@ Mọi độc giả và kiểm toán viên có thể tái lập chính xác 100% 
 |---|---|---|---|
 | **`S1`** | Bot mua `1 SOL` rồi bán ngay cùng khối ($\Delta t = 0$) | `VGBC-4T`: **`−12.88%`** (`<1h`) · `VBOND-LV`: **`−5.95%`** (phí bán `1%+4%`) | **PASS** |
 | **`S2`** | Người chơi mua sớm & giữ tới điểm tốt nghiệp | `VGBC-4T`: $R_{\text{grad}} = 79{,}245{,}283{,}019$ (`13.26×`, `+1,158.2%`) · `VBOND-LV`: $R_{\text{grad}} = 76{,}109{,}936{,}576$ (**`5.15×`**, **`+380.6%`** *(đã trừ `1%` phí bán; mua ở `M1`)*) | **PASS** |
-| **`S3`** | Di chuyển thanh khoản DEX `0%` chênh giá | `VGBC-4T`: sai lệch **`4.27 × 10⁻¹²`** · `VBOND-LV`: sai lệch **`4.19 × 10⁻¹¹`** ($S_{\text{LP}}^{\text{sol}} = 14.387943\text{ SOL}$; Escrow $= 60.221994\text{ SOL}$, $15.908330\text{ SOL}$ ở hồ sơ A — đã trừ $F_{\text{grad}}$) | **PASS** |
+| **`S3`** | Di chuyển thanh khoản DEX `0%` chênh giá | `VGBC-4T`: sai lệch **`4.27 × 10⁻¹²`** · `VBOND-LV`: sai lệch **`4.19 × 10⁻¹¹`** ($S_{\text{LP}}^{\text{sol}} = 14.387943\text{ SOL}$; Escrow $= 60.221994\text{ SOL}$, $15.908330\text{ SOL}$ ở hồ sơ Tăng trưởng — đã trừ $F_{\text{grad}}$) | **PASS** |
 | **`S4`** | Hàm thưởng lõm `PoPW` chống độc quyền ($\gamma = 0.65, \phi_{\max} = 0.05$) | Cá voi chiếm `20.0%` tổng `VPH` nhận đúng **`5.00%` pool**; tổng phân bổ $\sum_u s_u = 1.000000$ | **PASS** |
 | **`S5`** | Cưỡng chế trần ví `5%` & giới hạn Epoch `600s / 10%` | Cá voi nạp `50 SOL` bị chặn đúng ở `30M` token; ví thứ 3 trong cùng `600s` bị chặn ở `0`, mở lại tại $t = 1{,}201\text{ s}$ | **PASS** |
 | **`S6`** | Thanh lý sạch `100%` đường cong bởi 25 người dùng | $Q_{\text{final}} = 0$, $R_{\text{final}} \ge 0\text{ lamports}$ — **0 thiếu hụt tài sản thế chấp** | **PASS** |

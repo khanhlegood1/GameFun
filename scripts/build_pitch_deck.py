@@ -711,10 +711,10 @@ def s07_shield(c):
     # ladder table
     cols = ["Thời gian nắm giữ", "Tổng phí BÁN (cơ bản 1% + phụ phí)", "Bot lướt sóng lỗ ròng", "Ghi chú"]
     rows = [
-        ("Hồ sơ A · < 1 giờ", "12%   (1% + 11%)", "−12,88%", "Cận lý thuyết của cấu hình cực đại"),
-        ("Hồ sơ A · 1 – 24 giờ", "6%   (1% + 5%)", "−6,94%", ""),
-        ("Hồ sơ A · 1 – 7 ngày", "3%   (1% + 2%)", "−3,97%", ""),
-        ("Hồ sơ B · < 7 ngày", "5%   (1% + 4%)", "−5,95%", "CẤU HÌNH CHUẨN — lỗ chắc chắn"),
+        ("Hồ sơ Tăng trưởng · < 1 giờ", "12%   (1% + 11%)", "−12,88%", "Cận lý thuyết của cấu hình cực đại"),
+        ("Hồ sơ Tăng trưởng · 1 – 24 giờ", "6%   (1% + 5%)", "−6,94%", ""),
+        ("Hồ sơ Tăng trưởng · 1 – 7 ngày", "3%   (1% + 2%)", "−3,97%", ""),
+        ("Hồ sơ Ổn định · < 7 ngày", "5%   (1% + 4%)", "−5,95%", "MẶC ĐỊNH — lỗ chắc chắn"),
         ("Cả hai · ≥ 7 ngày\nhoặc đồng hành ≥ 1 version", "1%   (chỉ phí cơ bản)", "−1,99%", "Miễn phụ phí, KHÔNG miễn phí cơ bản"),
     ]
     table(c, M, 400, W - 2 * M, cols, rows,
@@ -723,14 +723,14 @@ def s07_shield(c):
 
     box(c, M, 150, (W - 2 * M - 14) / 2, 74,
         "ĐỌC ĐÚNG CON SỐ −12,88%",
-        "Đây là CẬN LÝ THUYẾT của hồ sơ A trong cửa sổ < 1 giờ (phụ phí 11% là mức trần của mã nguồn). "
-        "Với cấu hình chuẩn VBOND-LV, bot mua–bán chớp nhoáng lỗ ròng CHẮC CHẮN −5,95%. "
+        "Đây là CẬN LÝ THUYẾT của hồ sơ Tăng trưởng trong cửa sổ < 1 giờ (phụ phí 11% là mức trần của mã nguồn). "
+        "Với chế độ mặc định VBOND-LV, bot mua–bán chớp nhoáng lỗ ròng CHẮC CHẮN −5,95%. "
         "Trượt giá chỉ làm khoản lỗ sâu thêm.",
         accent=ORANGE, title_size=8.4, body_size=7.9)
 
     box(c, M + (W - 2 * M - 14) / 2 + 14, 150, (W - 2 * M - 14) / 2, 74,
         "PHỤ PHÍ THOÁT SỚM LINH HOẠT THEO THỜI GIAN NẮM GIỮ",
-        "Mức phụ phí giảm dần theo thời gian giữ: 11% → 5% → 2% → 0% (hồ sơ A) và 4% → 0% (hồ sơ B). "
+        "Mức phụ phí giảm dần theo thời gian giữ: 11% → 5% → 2% → 0% (hồ sơ Tăng trưởng) và 4% → 0% (hồ sơ Ổn định). "
         "Người đồng hành qua ≥ 1 phiên bản mới chỉ chịu duy nhất phí cơ bản 1,00% ở cả hai hồ sơ.",
         accent=GREEN, title_size=8.4, body_size=7.9)
 
@@ -897,7 +897,7 @@ def s11_roadmap(c):
 
     rounds = [
         ("PRE-SEED · ĐANG MỞ", "$1.0M", "$9M Pre / $10M Post Cap · 10,0%", GREEN,
-         [("Công cụ:", "Post-Money SAFE + 1:1 Token Warrant."),
+         [("Công cụ:", "Post-Money SAFE + 1:1 Token Warrant (obligor: pháp nhân phi Hoa Kỳ)."),
           ("Runway & Team:", "15 tháng (0 doanh thu) / 24+ tháng (cơ sở) · 8 FTE."),
           ("Burn gộp:", "~$63,3K/tháng (+ $50K dự phòng)."),
           ("Mở khóa Seed:", "Mainnet + 2 kiểm toán · 400K MAU · 120 game M1+ · 24 game M4 sống >90d.")]),
@@ -1118,8 +1118,8 @@ def s14_ask(c):
         ("Sử dụng vốn kỷ luật:", "40% Eng/Anti-Bot ($400K) · 25% Studio/Jams ($250K) · 15% Audit/Legal ($150K) · 15% UA ($150K) · 5% Dự phòng ($50K)."),
         ("Runway an toàn kép:", "15 tháng ở kịch bản 0 doanh thu; 24+ tháng ở kịch bản cơ sở. Chưa hòa vốn trong năm 1 — J-Curve tới Năm 4."),
         ("Lộ trình nâng hạng:", "Seed $3M ($25M) → Series A $12M ($80M) → Series B $25M ($250M, tương đương 16,8× MOIC cho Pre-Seed)."),
-        ("Đối tác đồng hành:", "Quỹ hệ sinh thái Solana, Gaming & Consumer Crypto VCs, Founders/Angels mảng Web Game & DeFi."),
-    ], M + 18, 132, W - 2 * M - 36, size=7.9, lead=10.4, gap=1.8)
+        ("Ai phát hành warrant:", "pháp nhân phi Hoa Kỳ giữ token là obligor; 9K Holdings, Inc. bảo lãnh thực thi qua Token Rights Agreement. Pháp nhân phát hành CHƯA thành lập — phải chốt trước khi ký SAFE."),
+    ], M + 18, 132, W - 2 * M - 36, size=7.6, lead=10.0, gap=1.6)
 
 
 SLIDES = [s01_cover, s02_problem, s03_solution, s04_why_regulatory, s05_dual_curve,
