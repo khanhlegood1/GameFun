@@ -85,6 +85,7 @@ jobs:
           export XDG_CACHE_HOME=/tmp/fontcache
           python scripts/build_pitch_deck.py /tmp/rebuild/deck.pdf
           python scripts/build_whitepaper_pdf.py docs/WHITEPAPER.md /tmp/rebuild/wp.pdf
+          python scripts/build_legal_brief.py /tmp/rebuild/legal.pdf
           python - <<'PY'
           import sys
           sys.path.insert(0, "scripts")
