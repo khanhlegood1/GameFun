@@ -39,6 +39,7 @@ câu mô tả, để tác nhân AI đọc đúng file thay vì đoán. Nội dun
 - [docs/18-flagship-template-review.md](docs/18-flagship-template-review.md): flagship template — 9K Labs không tạo độc lập, quy tắc reskin ≠ game mới, bảng doanh thu Ads ở Pre-Seed chỉ $60-180/tháng, chặn IP không phải cơ sở pháp lý
 - [docs/19-gitcoin-patterns.md](docs/19-gitcoin-patterns.md): Gitcoin — hồ sơ theo chiến dịch (M2/4), "đang diễn ra", duyệt có tiêu chuẩn; từ chối quadratic funding vì trả theo số người
 - [docs/20-proximax-teardown-storage.md](docs/20-proximax-teardown-storage.md): ProximaX — kết luận đúng nhưng ba lý do sai (chain vẫn có commit 2026; "buộc token native" loại luôn Solana); Greenfield/Arweave không dùng được cho state game vì không xoá được và lộ input_entropy
+- [docs/21-starter-kit-spec-verification.md](docs/21-starter-kit-spec-verification.md): kiểm chứng đặc tả Starter Kit — Presence 5/30s, KV trễ 60 giây, số gói engine đo lại (255/352 KB gz), Realtime đẩy game vào G1
 - [docs/07-docs-as-code-model.md](docs/07-docs-as-code-model.md): mô hình tài liệu & kiểm chứng (AGENTS.md, llms.txt, link check, cổng PDF tái lập)
 - [docs/08-legal-brief-vn-licensing.md](docs/08-legal-brief-vn-licensing.md): nguồn Markdown của legal brief — mô hình Game9K + 4 câu hỏi cho luật sư
 
