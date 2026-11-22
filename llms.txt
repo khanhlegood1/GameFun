@@ -37,6 +37,7 @@ câu mô tả, để tác nhân AI đọc đúng file thay vì đoán. Nội dun
 - [docs/16-anchor-game-for-kol.md](docs/16-anchor-game-for-kol.md): game neo cho KOL — không dùng đua vịt, chọn thể loại "một nút", và sửa ngưỡng referral khỏi Tier Bronze
 - [docs/17-second-screen-race.md](docs/17-second-screen-race.md): đua tương tác second-screen — xếp lệnh trước (giới hạn mobile), đua tất định thay netcode, G4 chưa có căn cứ, tránh vừa làm game vừa xếp hạng
 - [docs/18-flagship-template-review.md](docs/18-flagship-template-review.md): flagship template — 9K Labs không tạo độc lập, quy tắc reskin ≠ game mới, bảng doanh thu Ads ở Pre-Seed chỉ $60-180/tháng, chặn IP không phải cơ sở pháp lý
+- [docs/19-gitcoin-patterns.md](docs/19-gitcoin-patterns.md): Gitcoin — hồ sơ theo chiến dịch (M2/4), "đang diễn ra", duyệt có tiêu chuẩn; từ chối quadratic funding vì trả theo số người
 - [docs/07-docs-as-code-model.md](docs/07-docs-as-code-model.md): mô hình tài liệu & kiểm chứng (AGENTS.md, llms.txt, link check, cổng PDF tái lập)
 - [docs/08-legal-brief-vn-licensing.md](docs/08-legal-brief-vn-licensing.md): nguồn Markdown của legal brief — mô hình Game9K + 4 câu hỏi cho luật sư
 
