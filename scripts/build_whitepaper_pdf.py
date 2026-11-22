@@ -65,10 +65,45 @@ def _find(names, dirs):
     return None
 
 
-def ensure_fonts():
+def _set(table, key, value):
+    """Set a field on a fontTools table, tolerating absent/oddly-typed fields."""
+    try:
+        setattr(table, key, value)
+    except (AttributeError, TypeError):
+        pass
+
+
+def pin_font_metadata(font):
+    """Make a built font byte-reproducible.
+
+    fontTools stamps the build time into `head.modified` and into the font
+    revision string, so the same inputs produced different bytes on every
+    machine -- and therefore different PDFs. Every derived font is pinned to
+    the epoch and to revision 1.0 so the whole chain stays hash-stable.
+    """
+    _set(font["head"], "modified", 0)          # 1904-01-01, the OpenType zero
+    _set(font["head"], "created", 0)
+    for rec in font.get("name").names:
+        if rec.nameID == 5:                     # version string
+            rec.string = "Version 1.000"
+    return font
+
+
+def save_font(font, path):
+    """Save a font with timestamps pinned.
+
+    fontTools' default `recalcTimestamp=True` rewrites `head.modified` to
+    `time.time()` during save, which defeats pin_font_metadata and makes every
+    build differ. Saving with the flag off keeps the bytes stable.
+    """
+    font.recalcTimestamp = False      # instance flag, not a save() argument
+    font.save(path, reorderTables=False)
+
+
+def build_fonts(force=False):
     """Build the derived font set this renderer needs; return its directory."""
     marker = os.path.join(FONT_CACHE, "f_sans.ttf")
-    if os.path.exists(marker):
+    if os.path.exists(marker) and not force:
         return FONT_CACHE
     os.makedirs(FONT_CACHE, exist_ok=True)
     from fontTools.merge import Merger
@@ -99,7 +134,8 @@ def ensure_fonts():
             continue
         f = TTFont(p)
         f.flavor = None
-        f.save(os.path.join(FONT_CACHE, dst))
+        pin_font_metadata(f)
+        save_font(f, os.path.join(FONT_CACHE, dst))
     if missing:
         sys.exit("Missing font sources (%s).\nInstall with: npm i @fontsource/noto-sans "
                  "@fontsource/noto-sans-mono" % ", ".join(missing))
@@ -115,28 +151,32 @@ def ensure_fonts():
         for g in f.getGlyphOrder():
             w, lsb = f["hmtx"][g]
             f["hmtx"][g] = (adv, min(lsb, adv - 1) if lsb > adv else lsb)
-        f.save(dst)
+        pin_font_metadata(f)
+        save_font(f, dst)
 
     monoify(os.path.join(dv_dir, "DejaVuSansMono.ttf"), os.path.join(FONT_CACHE, "DVMs.ttf"))
     for a, b, out in [("NotoL.ttf", "NotoV.ttf", "f_sans.ttf"),
                       ("NotoLB.ttf", "NotoVB.ttf", "f_sansb.ttf"),
                       ("NotoLI.ttf", "NotoVI.ttf", "f_sansi.ttf"),
                       ("NotoLBI.ttf", "NotoVBI.ttf", "f_sansbi.ttf")]:
-        Merger().merge([os.path.join(FONT_CACHE, a), os.path.join(FONT_CACHE, b)]) \
-                .save(os.path.join(FONT_CACHE, out))
+        m = Merger().merge([os.path.join(FONT_CACHE, a), os.path.join(FONT_CACHE, b)])
+        pin_font_metadata(m)
+        save_font(m, os.path.join(FONT_CACHE, out))
     for a, b, out in [("ML.ttf", "MV.ttf", "MNB.ttf"), ("MLB.ttf", "MVB.ttf", "MNBb.ttf")]:
-        Merger().merge([os.path.join(FONT_CACHE, a), os.path.join(FONT_CACHE, b)]) \
-                .save(os.path.join(FONT_CACHE, out))
+        m = Merger().merge([os.path.join(FONT_CACHE, a), os.path.join(FONT_CACHE, b)])
+        pin_font_metadata(m)
+        save_font(m, os.path.join(FONT_CACHE, out))
     for a, out in [("MNB.ttf", "Mono.ttf"), ("MNBb.ttf", "MonoB.ttf")]:
-        Merger().merge([os.path.join(FONT_CACHE, a), os.path.join(FONT_CACHE, "DVMs.ttf")]) \
-                .save(os.path.join(FONT_CACHE, out))
+        m = Merger().merge([os.path.join(FONT_CACHE, a), os.path.join(FONT_CACHE, "DVMs.ttf")])
+        pin_font_metadata(m)
+        save_font(m, os.path.join(FONT_CACHE, out))
     import shutil
     for n in ("DejaVuSans.ttf",):
         shutil.copy(os.path.join(dv_dir, n), os.path.join(FONT_CACHE, n))
     return FONT_CACHE
 
 
-FONTDIR = ensure_fonts()
+FONTDIR = build_fonts(force=bool(os.environ.get("GAME9K_FONT_REBUILD")))
 
 # Running header text; overwritten per document by build().
 BRAND = {"paper": "Whitepaper v1.5",
