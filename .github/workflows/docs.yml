@@ -58,6 +58,11 @@ jobs:
       - name: Quy ước AGENTS.md (6 nhóm, do máy canh)
         run: python3 scripts/check_agent_rules.py
 
+      # Sinh câu hỏi cho 6 cổng HITL từ docs/PRD.md §0. KHÔNG gọi mạng:
+      # cổng CI phải tất định, nên phần "advisory" chỉ kiểm ba bất biến offline.
+      - name: Câu hỏi cổng HITL (offline, 3 bất biến)
+        run: python3 scripts/gate_decide.py --self-test
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04
