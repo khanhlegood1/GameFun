@@ -76,6 +76,12 @@ jobs:
       - name: Hợp đồng SDK game-sdk (5 bất biến · ngân sách 12 KB)
         run: python3 scripts/check_sdk.py --selftest
 
+      # Cổng thứ chín: hợp đồng SDK đã KHOÁ chưa (docs/28). check_sdk.py kiểm hợp đồng
+      # hiện tại; cổng này kiểm nó không đổi lặng lẽ: khoá ↔ mã ↔ docs/03 §3, và
+      # không có dist/*.min.js trong git (bài học từ repo splice).
+      - name: Khoá hợp đồng SDK (5 bất biến · hash bề mặt)
+        run: python3 scripts/check_sdk_drift.py
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04
