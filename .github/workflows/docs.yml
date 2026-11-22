@@ -33,6 +33,12 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Cài phụ thuộc kiểm chứng
+        run: |
+          python -m pip install --upgrade pip
+          # check_pitch_deck.py đọc text layer của deck để đối chiếu chuỗi bắt buộc
+          pip install pypdf
+
       - name: Liên kết nội bộ & chỉ mục
         run: python3 scripts/check_docs_links.py
 
@@ -57,8 +63,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install reportlab fonttools pypdf pypdfium2
 
-      - name: Cài font nguồn
-        run: npm install --no-audit --no-fund @fontsource/noto-sans @fontsource/noto-sans-mono
+      - name: Cài font nguồn (ghim phiên bản)
+        run: |
+          # Phiên bản phải ghim: PDF chỉ tất định khi bộ font là tất định.
+          npm install --no-audit --no-fund \
+            @fontsource/noto-sans @fontsource/noto-sans-mono \
+            dejavu-fonts-ttf@2.37.3
 
       - name: Dựng lại ba PDF vào thư mục tạm
         run: |

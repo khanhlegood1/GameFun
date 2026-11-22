@@ -11,8 +11,10 @@
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install reportlab fonttools pypdf
-npm i @fontsource/noto-sans @fontsource/noto-sans-mono   # nguồn font (Noto Sans + Noto Sans Mono)
-sudo apt install fonts-dejavu-core                       # phương án dự phòng ký tự đặc biệt
+npm i @fontsource/noto-sans @fontsource/noto-sans-mono \
+      dejavu-fonts-ttf@2.37.3   # nguồn font — DejaVu PHẢI ghim phiên bản
+# KHÔNG dùng fonts-dejavu-core của OS: 22.04 (2.35) và 24.04 (2.37) khác nhau,
+# dựa vào OS là PDF mất tính tất định giữa máy local và CI.
 
 # Whitepaper
 .venv/bin/python scripts/build_whitepaper_pdf.py \

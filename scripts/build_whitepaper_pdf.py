@@ -19,8 +19,12 @@ What it produces (see docs/Game9K-Whitepaper-v1.5.pdf):
 Prerequisites
 -------------
     python3 -m venv .venv && .venv/bin/pip install reportlab fonttools pypdf
-    npm i @fontsource/noto-sans @fontsource/noto-sans-mono   # font sources
-    DejaVu fonts (package `fonts-dejavu-core`)
+    npm i @fontsource/noto-sans @fontsource/noto-sans-mono dejavu-fonts-ttf@2.37.3
+
+Mọi bộ font phải đến từ package đã ghim, KHÔNG từ OS. DejaVu của Ubuntu 22.04
+là 2.35 còn 24.04 là 2.37 — dựa vào bản của OS thì cùng một nguồn sinh ra PDF
+khác nhau giữa máy local và CI. Bản OS chỉ dùng làm phương án cuối khi thiếu
+package npm, và khi đó tính tất định không còn được bảo đảm.
 
 Fonts are merged/derived at run time into a cache directory; nothing binary is
 written into the repository except the produced PDF.
@@ -54,6 +58,8 @@ FONT_CACHE = os.path.join(os.environ.get("XDG_CACHE_HOME", os.path.expanduser("~
 
 DEJAVU_DIRS = ["/usr/share/fonts/truetype/dejavu", "/usr/share/fonts/TTF", "/Library/Fonts"]
 NPM_DIRS = ["node_modules/@fontsource", os.path.expanduser("~/.npm/@fontsource")]
+# Pinned DejaVu (npm dejavu-fonts-ttf@2.37.3) — searched before the OS copy.
+FONT_SRC_DIRS = ["node_modules/dejavu-fonts-ttf", "node_modules/@fontsource"]
 
 
 def _find(names, dirs):
@@ -138,11 +144,20 @@ def build_fonts(force=False):
         save_font(f, os.path.join(FONT_CACHE, dst))
     if missing:
         sys.exit("Missing font sources (%s).\nInstall with: npm i @fontsource/noto-sans "
-                 "@fontsource/noto-sans-mono" % ", ".join(missing))
+                 "@fontsource/noto-sans-mono dejavu-fonts-ttf@2.37.3" % ", ".join(missing))
 
-    dv_dir = next((d for d in DEJAVU_DIRS if os.path.isdir(d)), None)
+    # DejaVu must come from the PINNED npm package, not the host OS. Copying
+    # /usr/share/fonts/truetype/dejavu/*.ttf made the PDF depend on whichever
+    # DejaVu build the machine happened to ship (2.37 on Ubuntu 24.04, 2.35 on
+    # 22.04), so a rebuild on CI produced different bytes than a local build.
+    # Only fall back to the OS copy if the pinned package is absent.
+    dv_dir = _find(["DejaVuSans.ttf"], FONT_SRC_DIRS)
+    if dv_dir:
+        dv_dir = os.path.dirname(dv_dir)
+    else:
+        dv_dir = next((d for d in DEJAVU_DIRS if os.path.isdir(d)), None)
     if not dv_dir:
-        sys.exit("DejaVu fonts not found. Install `fonts-dejavu-core`.")
+        sys.exit("DejaVu fonts not found. Install `npm i dejavu-fonts-ttf@2.37.3`.")
 
     def monoify(src, dst, upem=1000, adv=600):
         f = TTFont(src)
@@ -170,9 +185,10 @@ def build_fonts(force=False):
         m = Merger().merge([os.path.join(FONT_CACHE, a), os.path.join(FONT_CACHE, "DVMs.ttf")])
         pin_font_metadata(m)
         save_font(m, os.path.join(FONT_CACHE, out))
-    import shutil
     for n in ("DejaVuSans.ttf",):
-        shutil.copy(os.path.join(dv_dir, n), os.path.join(FONT_CACHE, n))
+        f = TTFont(os.path.join(dv_dir, n))
+        pin_font_metadata(f)
+        save_font(f, os.path.join(FONT_CACHE, n))
     return FONT_CACHE
 
 
