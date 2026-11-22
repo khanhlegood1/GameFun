@@ -1,0 +1,190 @@
+{
+  "$comment": "SPEC cho cổng P01 — GIA THUYẾT, không phải nguồn số. Số nào cũng có `source` trỏ về docs/. Sửa số ở đây mà không sửa docs/ ⇒ check_specs.py báo lệch.",
+  "gate": "P01",
+  "version": "0.1.0-hypothesis",
+  "status": "HYPOTHESIS — chưa ai duyệt",
+  "source": "docs/WHITEPAPER.md §6.1 + §6.1b · docs/PRD.md §0 · docs/05-c4-architecture-and-nfr.md",
+  "entities": [
+    {
+      "name": "token",
+      "presence_in_spec": true,
+      "description": "SPL Token-2022 của Game9K",
+      "attributes": [
+        {
+          "name": "supply",
+          "value": "1,000,000,000",
+          "source": "docs/WHITEPAPER.md:478"
+        },
+        {
+          "name": "platform_allocation",
+          "value": "`0%`",
+          "source": "docs/WHITEPAPER.md:484"
+        },
+        {
+          "name": "m1",
+          "value": "15%",
+          "source": "docs/WHITEPAPER.md:259"
+        },
+        {
+          "name": "m2",
+          "value": "33%",
+          "source": "docs/WHITEPAPER.md:259"
+        },
+        {
+          "name": "m3",
+          "value": "53%",
+          "source": "docs/WHITEPAPER.md:259"
+        },
+        {
+          "name": "m4",
+          "value": "70%",
+          "source": "docs/WHITEPAPER.md:259"
+        },
+        {
+          "name": "community_curve",
+          "value": "70%",
+          "source": "docs/WHITEPAPER.md:482"
+        },
+        {
+          "name": "player_reward_pool",
+          "value": "10%",
+          "source": "docs/WHITEPAPER.md:483"
+        },
+        {
+          "name": "creator_vesting",
+          "value": "5%",
+          "source": "docs/WHITEPAPER.md:484"
+        },
+        {
+          "name": "locked_lp",
+          "value": "15%",
+          "source": "docs/WHITEPAPER.md:485"
+        }
+      ]
+    },
+    {
+      "name": "pop_decay",
+      "presence_in_spec": true,
+      "description": "Suy giảm pop_score theo epoch",
+      "attributes": [
+        {
+          "name": "W_retention",
+          "value": "W=0,60",
+          "source": "docs/10-zorochain-xwg-teardown.md:129"
+        },
+        {
+          "name": "H_half_work",
+          "value": "H=180",
+          "source": "docs/10-zorochain-xwg-teardown.md:129"
+        },
+        {
+          "name": "epoch_days",
+          "value": "epoch 7 ngày",
+          "source": "docs/10-zorochain-xwg-teardown.md:129"
+        }
+      ]
+    },
+    {
+      "name": "revenue_split",
+      "presence_in_spec": true,
+      "description": "Chia doanh thu quảng cáo theo nguồn traffic",
+      "attributes": [
+        {
+          "name": "split",
+          "value": "100% direct traffic / 50-50 portal traffic",
+          "source": "docs/PRD.md:155"
+        },
+        {
+          "name": "ecpm_base",
+          "value": "$1–$3",
+          "source": "docs/WHITEPAPER.md:192"
+        }
+      ]
+    },
+    {
+      "name": "moic_pre_seed",
+      "presence_in_spec": true,
+      "description": "Bội số hoàn vốn giả định ở Series B",
+      "attributes": [
+        {
+          "name": "multiple",
+          "value": "16,8x",
+          "source": "docs/WHITEPAPER.md:621"
+        }
+      ]
+    }
+  ],
+  "constraints": [
+    {
+      "id": "C1",
+      "text": "Không đổi cung 1.000.000.000 hoặc tỉ lệ phân bổ khi chưa có quyết định ghi trong ADR",
+      "severity": "blocking"
+    },
+    {
+      "id": "C2",
+      "text": "Không hạ eCPM cơ sở dưới $1 hoặc nâng trên $3 khi chưa có dữ liệu thật",
+      "severity": "blocking"
+    },
+    {
+      "id": "C3",
+      "text": "W = 0,60 và H = 180 chỉ đổi qua PR có chạy verify_pop_decay.py",
+      "severity": "blocking"
+    },
+    {
+      "id": "C4",
+      "text": "MOIC là dự phóng: mọi câu chữ phải giữ từ 'dự phóng'",
+      "severity": "blocking"
+    },
+    {
+      "id": "C5",
+      "text": "Không thêm trường PII vào docs/02 khi chưa có ý kiến luật sư",
+      "severity": "blocking",
+      "refuses_question": "q_pii"
+    },
+    {
+      "id": "C6",
+      "text": "Không hứa hỗ trợ YouTube Live khi chưa có observer-youtube chạy được",
+      "severity": "blocking",
+      "refuses_question": "q_youtube"
+    },
+    {
+      "id": "C7",
+      "text": "Số bảng schema là 34; thêm bảng phải sửa mọi câu '34 bảng' cùng lúc",
+      "severity": "blocking"
+    },
+    {
+      "id": "C8",
+      "text": "Tiến độ chia 5 mốc M0–M4; đổi mốc phải sửa lộ trình gọi vốn",
+      "severity": "blocking"
+    }
+  ],
+  "open_questions": [
+    {
+      "id": "q_m1_scope",
+      "text": "M1 (15% cung) gồm những cột mốc kỹ thuật nào?",
+      "asked": false
+    },
+    {
+      "id": "q_kyc",
+      "text": "Gamer Priority Window 24h có cần KYC không?",
+      "asked": false
+    },
+    {
+      "id": "q_legal_entity",
+      "text": "Pháp nhân phát hành (9K Holdings) đặt ở đâu và khi nào?",
+      "asked": false
+    },
+    {
+      "id": "q_pii",
+      "text": "Có thêm trường định danh vào docs/02 không?",
+      "asked": false,
+      "answered_by_constraint": "C5"
+    },
+    {
+      "id": "q_youtube",
+      "text": "Có hứa hỗ trợ YouTube Live trong tài liệu không?",
+      "asked": false,
+      "answered_by_constraint": "C6"
+    }
+  ]
+}
