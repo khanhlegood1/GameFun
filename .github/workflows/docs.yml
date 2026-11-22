@@ -51,6 +51,13 @@ jobs:
       - name: Suy giảm PoP score (11 bất biến)
         run: python3 scripts/verify_pop_decay.py --quiet
 
+      # Cổng thứ năm: biến quy ước văn xuôi trong AGENTS.md thành kiểm tự động
+      # (docs/22 A1, docs/24 §4). Sáu nhóm: dòng nhận diện tài liệu, `CREATE TABLE`
+      # = 34, từ cấm, thứ bậc nguồn, chỉ mục README/llms.txt, dấu vết soạn thảo.
+      # Chạy TRƯỚC các cổng nặng vì nó rẻ và bắt lỗi biên tập sớm.
+      - name: Quy ước AGENTS.md (6 nhóm, do máy canh)
+        run: python3 scripts/check_agent_rules.py
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04
