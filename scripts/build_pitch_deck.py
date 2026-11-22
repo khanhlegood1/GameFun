@@ -1131,11 +1131,23 @@ def register_fonts_deck():
     """WB.register_fonts() plus a bold DejaVu for exotic glyphs in bold runs."""
     WB.register_fonts()
     src = os.path.join(WB.FONTDIR, "DejaVuSans.ttf")
-    bold_src = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+    # DejaVu Bold must come from the SAME pinned source as DejaVu Regular and be
+    # pinned the same way. Reading it straight from /usr/share/fonts made the deck
+    # depend on the host's DejaVu build (2.35 on Ubuntu 22.04, 2.37 on 24.04) and
+    # bypassed pin_font_metadata() entirely -- the deck stayed non-reproducible
+    # even after the whitepaper builder was fixed.
     dst = os.path.join(WB.FONTDIR, "DejaVuSans-Bold.ttf")
-    if os.path.exists(bold_src) and not os.path.exists(dst):
-        import shutil
-        shutil.copyfile(bold_src, dst)
+    if not os.path.exists(dst):
+        from fontTools.ttLib import TTFont as FTTFont
+        bold_src = WB._find(["DejaVuSans-Bold.ttf"], WB.FONT_SRC_DIRS) or \
+            next((os.path.join(d, "DejaVuSans-Bold.ttf") for d in WB.DEJAVU_DIRS
+                  if os.path.exists(os.path.join(d, "DejaVuSans-Bold.ttf"))), None)
+        if not bold_src:
+            raise SystemExit("DejaVuSans-Bold.ttf not found. "
+                             "Install `npm i dejavu-fonts-ttf@2.37.3`.")
+        f = FTTFont(bold_src)
+        WB.pin_font_metadata(f)
+        WB.save_font(f, dst)
     from reportlab.pdfbase.ttfonts import TTFont as RLTTFont
     pdfmetrics.registerFont(RLTTFont(FALLBACK, src))
     pdfmetrics.registerFont(RLTTFont(FALLBACK_B, dst))
