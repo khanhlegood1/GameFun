@@ -36,6 +36,7 @@
 | 14 | [`docs/12-mintlify-docs-site.md`](./docs/12-mintlify-docs-site.md) | Docs | Kiểm chứng `chainstack/dev-portal` + `Game9Kmintlify` và kế hoạch dựng docs site: hai chỗ **sửa lại** nhận định ban đầu, và rào cản MDX (48 khối `$$`, 782 inline math, 1.168 cặp ngoặc) |
 | 15 | [`docs/13-affiliate-growth-loop.md`](./docs/13-affiliate-growth-loop.md) | Growth | GoStream + StreamAgain: lấy **trả theo doanh thu định kỳ** và **phễu duyệt**; từ chối mô hình thuê bao, câu "thu nhập thụ động", và trả thưởng bằng token |
 | 16 | [`docs/14-growth-tools-and-measurement.md`](./docs/14-growth-tools-and-measurement.md) | Growth | StreamMix + Similarweb: bán theo **đơn vị đo được**, làm **plugin trong công cụ sẵn có**, và **sổ số liệu 6 cột** (nguồn · ngày · loại · sai lệch) |
+| 17 | [`docs/15-livestream-tools-and-token-question.md`](./docs/15-livestream-tools-and-token-question.md) | Growth | "Coin" của StreamMix là **credit trả trước**, không phải token; TikFinity (simulate mode) + StreamToEarn (**trần theo USD**) + Similarweb (**panel không thấy iframe**) |
 
 **Tài liệu cho tác nhân & chỉ mục máy đọc:** [`AGENTS.md`](./AGENTS.md) là quy ước bắt buộc cho mọi người/AI sửa repo (ba luật, thứ bậc nguồn sự thật, cách kiểm chứng tất định). [`llms.txt`](./llms.txt) là chỉ mục máy đọc của toàn bộ tài liệu — để tác nhân AI đọc đúng file thay vì đoán.
 
