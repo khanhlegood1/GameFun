@@ -23,6 +23,24 @@ giao thức**, nơi một con số sai không làm hỏng build mà làm hỏng 
 
 ---
 
+## Văn phong tài liệu
+
+Mượn từ hợp đồng tác nhân của `chainstack/dev-portal` (xem `docs/12-mintlify-docs-site.md`).
+Phần số liệu ở trên là luật cứng; phần này là luật mềm nhưng vẫn phải theo.
+
+| Quy ước | Cụ thể | Không làm |
+|---|---|---|
+| **Một ý một câu** | Câu dài hơn 35 từ thì tách | Câu ba mệnh đề nối bằng dấu phẩy |
+| **Nói thẳng kết luận trước** | Mỗi mục mở bằng câu trả lời, rồi mới giải thích | Mở bài bằng bối cảnh dài rồi mới vào ý |
+| **Gọi tên con số có nguồn** | "`79,245283 SOL` (`§6.1b`)" | "khoảng 79 SOL" |
+| **Nêu rõ cái KHÔNG biết** | "chưa kiểm chứng", "bên thứ ba", "không tìm thấy bằng chứng" | Viết như sự thật đã xác nhận |
+| **Trích dẫn phải có loại** | Bảng nguồn ghi rõ: *quan sát trực tiếp* / *tự công bố* / *bên thứ ba* / *tự đo lại* | Trộn lẫn bốn loại trên trong một câu |
+| **Callout thay đoạn văn** | Dùng `>` cho cảnh báo ngắn thay vì đoạn "quan trọng:" 5 dòng | Chôn cảnh báo giữa đoạn văn |
+| **Tiếng Việt, một ngôn ngữ** | Không thêm i18n; thuật ngữ kỹ thuật giữ tiếng Anh khi chuẩn là tiếng Anh (`commit`, `hash`, `nonce`) | Dịch nửa vời (`băm xâu` cho `hash`) |
+
+> **Không** dùng từ mang tính hứa hẹn: "sẽ sớm", "gần như chắc chắn", "dẫn đầu thị trường" —
+> trừ khi có số liệu tái lập được ngay bên cạnh.
+
 ## Cấu trúc repo
 
 ```

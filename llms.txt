@@ -30,6 +30,7 @@ câu mô tả, để tác nhân AI đọc đúng file thay vì đoán. Nội dun
 - [docs/09-xwg-portal-teardown.md](docs/09-xwg-portal-teardown.md): teardown cổng `xwg.games` — cái gì áp dụng được cho catalog Game9K, cái gì từ chối, kèm bằng chứng quan sát F1–F12
 - [docs/10-zorochain-xwg-teardown.md](docs/10-zorochain-xwg-teardown.md): teardown ZoroChain + XWG — Proof-of-workload, luật suy giảm điểm uy tín, và danh sách từ chối P3/P6/P7/P8
 - [docs/11-auth-wallet-ux.md](docs/11-auth-wallet-ux.md): ADR-007 — đăng nhập email/Google + passkey smart wallet (không seed phrase), paymaster có trần, luồng khôi phục 72h
+- [docs/12-mintlify-docs-site.md](docs/12-mintlify-docs-site.md): kiểm chứng repo Chainstack/Game9Kmintlify và kế hoạch docs site 3 phase — kèm rào cản MDX đã đo
 - [docs/07-docs-as-code-model.md](docs/07-docs-as-code-model.md): mô hình tài liệu & kiểm chứng (AGENTS.md, llms.txt, link check, cổng PDF tái lập)
 - [docs/08-legal-brief-vn-licensing.md](docs/08-legal-brief-vn-licensing.md): nguồn Markdown của legal brief — mô hình Game9K + 4 câu hỏi cho luật sư
 

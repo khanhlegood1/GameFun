@@ -33,6 +33,7 @@
 | 11 | [`docs/09-xwg-portal-teardown.md`](./docs/09-xwg-portal-teardown.md) | Research | Teardown cổng `xwg.games`: cái gì dùng được cho catalog Game9K (chip mốc/trạng thái, facet thiết bị, bảng thông số kiểm chứng) và 6 thứ từ chối — kèm bằng chứng quan sát có mã F1–F12 |
 | 12 | [`docs/10-zorochain-xwg-teardown.md`](./docs/10-zorochain-xwg-teardown.md) | Research | Teardown ZoroChain + XWG whitepaper: Proof-of-workload và luật **suy giảm PoP score** (`W=0,60`, epoch 7 ngày) đã vá vào schema — chốt bằng `scripts/verify_pop_decay.py` |
 | 13 | [`docs/11-auth-wallet-ux.md`](./docs/11-auth-wallet-ux.md) | ADR-007 | Đăng nhập email/Google + **ví Web3 ẩn dưới nền** bằng passkey smart wallet (SIMD-0075): so sánh 3 phương án (MPC vendor / passkey PDA / server giữ khoá), paymaster có trần, khôi phục 72h |
+| 14 | [`docs/12-mintlify-docs-site.md`](./docs/12-mintlify-docs-site.md) | Docs | Kiểm chứng `chainstack/dev-portal` + `Game9Kmintlify` và kế hoạch dựng docs site: hai chỗ **sửa lại** nhận định ban đầu, và rào cản MDX (48 khối `$$`, 782 inline math, 1.168 cặp ngoặc) |
 
 **Tài liệu cho tác nhân & chỉ mục máy đọc:** [`AGENTS.md`](./AGENTS.md) là quy ước bắt buộc cho mọi người/AI sửa repo (ba luật, thứ bậc nguồn sự thật, cách kiểm chứng tất định). [`llms.txt`](./llms.txt) là chỉ mục máy đọc của toàn bộ tài liệu — để tác nhân AI đọc đúng file thay vì đoán.
 
