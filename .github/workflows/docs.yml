@@ -48,6 +48,9 @@ jobs:
       - name: Deck ↔ Yellow Paper
         run: python3 scripts/check_pitch_deck.py --with-verifier
 
+      - name: Suy giảm PoP score (11 bất biến)
+        run: python3 scripts/verify_pop_decay.py --quiet
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04

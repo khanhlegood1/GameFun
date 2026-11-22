@@ -28,6 +28,7 @@ câu mô tả, để tác nhân AI đọc đúng file thay vì đoán. Nội dun
 - [docs/05-c4-architecture-and-nfr.md](docs/05-c4-architecture-and-nfr.md): kiến trúc C4 level 1–4, 6 ADR, NFR và STRIDE
 - [docs/06-implementation-roadmap.md](docs/06-implementation-roadmap.md): lộ trình 9 module `M01`–`M09` và backlog sprint
 - [docs/09-xwg-portal-teardown.md](docs/09-xwg-portal-teardown.md): teardown cổng `xwg.games` — cái gì áp dụng được cho catalog Game9K, cái gì từ chối, kèm bằng chứng quan sát F1–F12
+- [docs/10-zorochain-xwg-teardown.md](docs/10-zorochain-xwg-teardown.md): teardown ZoroChain + XWG — Proof-of-workload, luật suy giảm điểm uy tín, và danh sách từ chối P3/P6/P7/P8
 - [docs/07-docs-as-code-model.md](docs/07-docs-as-code-model.md): mô hình tài liệu & kiểm chứng (AGENTS.md, llms.txt, link check, cổng PDF tái lập)
 - [docs/08-legal-brief-vn-licensing.md](docs/08-legal-brief-vn-licensing.md): nguồn Markdown của legal brief — mô hình Game9K + 4 câu hỏi cho luật sư
 
@@ -46,6 +47,7 @@ câu mô tả, để tác nhân AI đọc đúng file thay vì đoán. Nội dun
 - [scripts/build_pitch_deck.py](scripts/build_pitch_deck.py): sinh deck 14 slide, tất định byte-for-byte
 - [scripts/build_whitepaper_pdf.py](scripts/build_whitepaper_pdf.py): sinh whitepaper + yellow paper từ markdown
 - [scripts/build_legal_brief.py](scripts/build_legal_brief.py): sinh legal brief 1 tờ A4, fail nếu tràn trang
+- [scripts/verify_pop_decay.py](scripts/verify_pop_decay.py): chốt luật suy giảm `pop_score` (W=0,60, epoch 7 ngày) — 11 bất biến, in bảng 8 tuần
 
 ## Phạm vi
 
