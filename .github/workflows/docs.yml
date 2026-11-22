@@ -63,6 +63,13 @@ jobs:
       - name: Câu hỏi cổng HITL (offline, 3 bất biến)
         run: python3 scripts/gate_decide.py --self-test
 
+      # Cổng thứ bảy: bản ghi niềm tin của dự án (docs/26, lấy từ Proactive-Co-Creator).
+      # `--tick` so từng giá trị trong pm/spec-*.json với ĐÚNG dòng nguồn trong docs/;
+      # `--self-test` kiểm 4 bất biến (source · không hỏi lại · không mâu thuẫn · có đường thoát).
+      # Không gọi mạng: chỉ đọc tệp.
+      - name: Bản ghi niềm tin P01 (16 giá trị · 4 bất biến)
+        run: python3 scripts/check_specs.py --tick && python3 scripts/check_specs.py --self-test
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04
