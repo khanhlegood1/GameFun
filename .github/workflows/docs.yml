@@ -112,6 +112,11 @@ jobs:
       - name: Phân loại tuyên bố (5 bất biến · sổ đăng ký)
         run: python3 scripts/check_claims.py --selftest
 
+      # Cổng thứ mười lăm: biên bản đo (docs/35). Một con số không kèm điều kiện đo thì
+      # không kiểm toán được — và bất biến 5 kiểm đúng lỗi "đo trên tệp đã bị đột biến".
+      - name: Biên bản đo (6 bất biến · khoá model, phiên bản)
+        run: python3 scripts/receipt_lock.py --selftest
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04
