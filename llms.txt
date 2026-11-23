@@ -54,6 +54,7 @@ câu mô tả, để tác nhân AI đọc đúng file thay vì đoán. Nội dun
 - [docs/33-claim-taxonomy-version-unit.md](docs/33-claim-taxonomy-version-unit.md): Phân loại tuyên bố — [QUAN SÁT]/[TỰ CÔNG BỐ]/[ĐỀ XUẤT]/[CHƯA KIỂM CHỨNG], không gộp ba tầng bằng chứng; sổ đăng ký pm/claims-registry.json (scripts/check_claims.py, offline)
 - [docs/34-accountable-owner-and-claims-register.md](docs/34-accountable-owner-and-claims-register.md): Người ký có tên + hạn là ngày thật; bất biến 6 (quá hạn là đỏ); tờ A4 Claims Register sinh từ pm/claims-registry.json (scripts/build_claims_register.py, offline)
 - [docs/35-measurement-receipt-model-version-lock.md](docs/35-measurement-receipt-model-version-lock.md): Biên bản đo — khoá (model, phiên bản) do phản hồi trả về, hash đầu vào phải khớp tệp thật, không điểm số; receipts/ (scripts/receipt_lock.py, offline)
+- [docs/36-kvu-lemmas-and-the-version-unit.md](docs/36-kvu-lemmas-and-the-version-unit.md): Bốn bổ đề (R đơn điệu, escrow ≥ 0 ⟺ (★), ràng buộc biên, Σ payout_bps ≤ 10000) kiểm trên miền tham số của repo; tái lập 60.221994 + 15.908330 SOL độc lập (scripts/kvu_invariants.py, offline)
 - [docs/07-docs-as-code-model.md](docs/07-docs-as-code-model.md): mô hình tài liệu & kiểm chứng (AGENTS.md, llms.txt, link check, cổng PDF tái lập)
 - [docs/08-legal-brief-vn-licensing.md](docs/08-legal-brief-vn-licensing.md): nguồn Markdown của legal brief — mô hình Game9K + 4 câu hỏi cho luật sư
 
