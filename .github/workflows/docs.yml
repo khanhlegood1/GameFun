@@ -117,6 +117,12 @@ jobs:
       - name: Biên bản đo (6 bất biến · khoá model, phiên bản)
         run: python3 scripts/receipt_lock.py --selftest
 
+      # Cổng thứ mười sáu: bốn bổ đề của nguyên lý đơn vị (docs/36). Tái lập số đã
+      # công bố của CẢ HAI hồ sơ bằng một đường tính độc lập với verify_protocol_math,
+      # và kiểm (★) trên toàn miền tham số thay vì điểm mặc định.
+      - name: Bốn bổ đề KVU (6 bất biến · biên + tái lập số đã công bố)
+        run: python3 scripts/kvu_invariants.py --selftest
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04

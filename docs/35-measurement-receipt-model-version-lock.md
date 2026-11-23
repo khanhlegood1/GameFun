@@ -71,6 +71,20 @@ Và nó dẫn một lỗi thật của chính nó: một phép đo chạy trên 
 
 > **Đừng gộp ba dòng này trong một câu.** Đây đúng là thứ `check_claims.py` bất biến 4 chặn — và nó chặn cả tôi.
 
+### 2.2. Hai đơn vị **không** thay thế nhau — sửa một thiếu sót của chính tài liệu này
+
+Bản sửa của tài liệu nguồn (vòng 23) thêm một callout mà bản tôi đọc ở vòng trước không có, và nó bắt đúng một chỗ **tôi đã viết thiếu**:
+
+| | **Phiên bản game** | **`(model, phiên bản)`** |
+|---|---|---|
+| Đơn vị của | **tài sản** — thứ được định giá, mở khoá, giải ngân | **phép đo** — thứ được ghi lại để kiểm toán |
+| Ai xác nhận | 🔴 **người chơi thật** (`play_sessions`, `verified_minutes`) | máy, tất định, có khoá |
+| Thay thế nhau được? | ❌ **KHÔNG** | ❌ **KHÔNG** |
+
+> **Một dòng `(model, phiên bản)` không bao giờ là bằng chứng chất lượng của một phiên bản game.** Nó chỉ nói *"phép đo này do model nào thực hiện"*. Đọc §0–§2 ở trên mà không đọc dòng này thì dễ kết luận ngược lại — và kết luận đó sẽ là một tuyên bố `NEEDS_DATA` đội lốt `PROVEN`.
+
+**Giới hạn đã biết của cổng:** `check_claims.py` bất biến 4 chặn việc trộn ba tầng **trong một dòng**. Lỗi này nằm ở **khoảng cách giữa hai mục**, nên không cổng nào bắt được — chỉ có câu chặn viết ra bằng lời. Ghi ở `docs/36` §4.
+
 ---
 
 ## 3. Hai lỗ hổng repo này có, và KVU-2 chỉ ra chúng
