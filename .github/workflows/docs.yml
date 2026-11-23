@@ -100,6 +100,12 @@ jobs:
       - name: Thang 6 cổng HITL (4 bất biến · 20 hạng mục)
         run: python3 scripts/check_gate_ladder.py --selftest
 
+      # Cổng thứ mười ba: hồ sơ chứng cứ của gói SDK (docs/32). docs/28 và docs/29
+      # từng KHÔNG thuộc cổng nào — nên khi SDK lên 0.2.0, docs/28 vẫn ghi hash 0.1.x
+      # mà không ai báo. Cổng này quét docs/ tìm hash + phiên bản lạc hậu.
+      - name: Hồ sơ chứng cứ SDK (5 bất biến · hash + phiên bản trong docs/)
+        run: python3 scripts/check_sdk_manifest.py --selftest
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04

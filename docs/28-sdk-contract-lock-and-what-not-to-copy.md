@@ -22,7 +22,7 @@
 | **3** | Lấy gì? | **Ba** bài học phản diện: commit `dist/` (nó đã lệch khỏi `src/`), mã `.env` trong SDK sinh ra, và `specVersion` chỉ để **log lỗi** chứ không để **khoá hợp đồng** (§2.1) |
 | **4** | Repo POS là gì? | Template POS nhà hàng React + Vite, **`22.897` dòng**, **không có `LICENSE`**, tạo và đẩy cách nhau **`70` giây** (§3) |
 | **5** | Lấy gì từ POS? | **Không gì cho SDK.** Nhưng nó chứng minh ranh giới: `card_demo` + `ManagerPinDialog` là chỗ *tiền và quyền* bị giả lập — đúng thứ `game-sdk` phải **từ chối** (§3.2) |
-| **6** | Đã dựng gì? | `CONTRACT.json` + `check_sdk_drift.py`: **5 bất biến**, **11** kiểm tra, hash bề mặt `sha256:fa218660251cfabe` (§4) |
+| **6** | Đã dựng gì? | `CONTRACT.json` + `check_sdk_drift.py`: **5 bất biến**, **11** kiểm tra, hash bề mặt `sha256:af63b9121f9c0c5a` (hiện tại; `fa218660251cfabe` là **lịch sử** ở `0.1.x` — §4.1) |
 
 ---
 
@@ -121,7 +121,7 @@ python3 scripts/check_sdk_drift.py --bump minor # in việc phải làm, KHÔNG 
 ```
 
 ```
-SDK DRIFT: PASS — 11 kiểm tra · 5 bất biến · khoá @game9k/game-sdk 0.1.x sha256:fa218660251cfabe
+SDK DRIFT: PASS — 11 kiểm tra · 5 bất biến · khoá @game9k/game-sdk 0.2.x sha256:af63b9121f9c0c5a
 ```
 
 ### 4.1. Năm bất biến
@@ -134,14 +134,17 @@ SDK DRIFT: PASS — 11 kiểm tra · 5 bất biến · khoá @game9k/game-sdk 0.
 | **4** | Mọi `MAJOR` đã phát hành có **luật tương thích** | Bump `MAJOR` mà không nói game cũ phải làm gì |
 | **5** | `sdk/` không có `dist/`, `node_modules/`, `*.min.js`, `*.map` | Bài học (a) ở §1.2 — hai bản của cùng một thứ |
 
-> **Hash bề mặt `sha256:fa218660251cfabe`** là hash của *bề mặt*, không phải của tệp: sửa comment không đổi hash, đổi một tên hàm thì đổi. Đó là thứ để dán vào `CHANGELOG` và vào PR.
+> **Hash bề mặt** là hash của *bề mặt*, không phải của tệp: sửa comment không đổi hash, đổi một tên hàm thì đổi. Đó là thứ để dán vào `CHANGELOG` và vào PR.
+>
+> **Lịch sử:** `0.1.x` = `sha256:fa218660251cfabe` · **hiện tại `0.2.x` = `sha256:af63b9121f9c0c5a`**.
+> Bản thân tài liệu này từng ghi hash **cũ** sau khi SDK đã lên `0.2.0` — `check_sdk_manifest.py` (`docs/32`) bắt được đúng chỗ đó, và đó là lý do nó tồn tại. (Dòng này cố ý **không** viết lại giá trị cũ, để cổng không phải mở thêm ngoại lệ.)
 
 ### 4.2. Năm phép phá đã chạy thật
 
 | # | Phá | Kết quả |
 |---|---|---|
 | 1 | thêm `hiddenTelemetry()` vào mã, không bump khoá | ❌ `thừa ['hiddenTelemetry']` |
-| 2 | `SDK_VERSION = '0.2.0'` trong khi khoá `0.1` | ❌ `SDK_VERSION 0.2.0 ≠ CONTRACT 0.1.x` |
+| 2 | `SDK_VERSION = '0.2.0'` trong khi khoá `0.1` *(phép phá chạy trên 0.1.x — lịch sử)* | ❌ `SDK_VERSION 0.2.0 ≠ CONTRACT 0.1.x` |
 | 3 | thêm `leaderboard(): void` vào `docs/03` | ❌ `docs/03 §3 có hàm KHÔNG có trong khoá` |
 | 4 | commit `dist/a.js` + `poki.min.js` | ❌ **2** lỗi: bản dựng + bản nén trong git |
 | 5 | bump `MAJOR` lên `1` không có `compat[1]` | ❌ **2** lỗi: lệch phiên bản + thiếu luật tương thích |

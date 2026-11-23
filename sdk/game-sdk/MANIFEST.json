@@ -1,0 +1,29 @@
+{
+  "$comment": "Hồ sơ chứng cứ của @game9k/game-sdk — MỘT dòng của bảng 'SDK là gì', có cột kiểm được. Mỗi trường ở `evidence` nêu lệnh tái lập nó; check_sdk_manifest.py bắt buộc các trường đó khớp CONTRACT.json, SDK_VERSION và docs/.",
+  "name": "@game9k/game-sdk",
+  "version": "0.2.0",
+  "major": 0,
+  "minor": 2,
+  "surface_hash": "af63b9121f9c0c5a",
+  "surface_functions": 8,
+  "license": "Apache-2.0",
+  "license_note": "Giấy phép của gói do Game9K phát hành. Khác với giấy phép của các repo được ĐỌC để học: `splice` MIT, hai repo `awesome-*` là NOASSERTION/không có (docs/28 §1, docs/31 §1).",
+  "built_from": "sdk/game-sdk/game9k-sdk.js (bản tham chiếu trong repo, chưa phát hành npm)",
+  "runtime": "iframe sandbox, không same-origin (docs/03 §3)",
+  "compat_removal": "next_major",
+  "budget_bytes": 12000,
+  "measured_gzip_bytes": 3975,
+  "error_codes": 7,
+  "evidence": {
+    "version": "python3 scripts/check_sdk_drift.py",
+    "surface_hash": "python3 scripts/check_sdk_drift.py --surface",
+    "surface": "python3 scripts/check_sdk.py",
+    "budget": "python3 scripts/check_sdk.py",
+    "errors": "python3 scripts/check_sdk_errors.py"
+  },
+  "not_claimed": [
+    "Không phát hành trên npm — bản này là tham chiếu (docs/06 M03).",
+    "Không có người dùng thật; `0.x` không kèm bảo đảm tương thích (CONTRACT.json compat).",
+    "`measured_gzip_bytes` đo trên bản trong repo, không phải trên CDN."
+  ]
+}
