@@ -1,0 +1,46 @@
+{
+  "$comment": "Sổ đăng ký tuyên bố về THẾ GIỚI (docs/33). Mỗi mục = một câu 'chưa ai / đầu tiên / duy nhất' trong tài liệu, kèm nhãn loại và người chịu trách nhiệm. Mục đích KHÔNG phải hợp thức hoá câu đó — mục đích là để mỗi câu có người ký và có hạn xem lại. `check_claims.py` bắt buộc mọi mục có label + owner + reason + review_by.",
+  "policy": "docs/33 §4 — một tuyên bố là [ĐỀ XUẤT] không bao giờ được viết như sự thật về thế giới, và không bao giờ được dẫn làm căn cứ cho một con số khác.",
+  "claims": [
+    {
+      "path": "docs/WHITEPAPER.md",
+      "match": "Bệ phóng Vốn đồng bộ theo phiên bản Game đầu tiên trên Thế giới",
+      "label": "[CHƯA KIỂM CHỨNG]",
+      "status": "OPEN",
+      "owner": "PO",
+      "reason": "Câu này đang nằm ở TIÊU ĐỀ whitepaper. Không có khảo sát nào trong repo chứng minh 'chưa ai làm'; ADR-0023 đòi dẫn chứng trước khi dùng chữ 'đầu tiên'. Tương tự gần nhất đã biết = season/phase token.",
+      "review_by": "trước khi gửi whitepaper cho nhà đầu tư",
+      "suggested_rewrite": "Bệ phóng Vốn đồng bộ theo phiên bản game — mỗi phiên bản là một đơn vị tài sản riêng [ĐỀ XUẤT]",
+      "blocked_on": "một khảo sát launchpad (≥ 10 nền tảng) ghi trong docs/00 hoặc ADR"
+    },
+    {
+      "path": "docs/WHITEPAPER.md",
+      "match": "**Vị thế tiên phong độc quyền (Category Creator):** Nền tảng đầu tiên kết hợp",
+      "label": "[CHƯA KIỂM CHỨNG]",
+      "status": "OPEN",
+      "owner": "PO",
+      "reason": "Hai tuyên bố trong một câu: 'tiên phong độc quyền' và 'nền tảng đầu tiên kết hợp'. Cả hai đều về thị trường, không về sản phẩm. Chưa có khảo sát nào trong repo. Đây là câu mạnh nhất trong mục 'điểm mạnh' — nên cũng là câu dễ bị hỏi nhất trong buổi pitch.",
+      "review_by": "trước buổi pitch với nhà đầu tư kế tiếp",
+      "suggested_rewrite": "Bốn cơ chế chưa từng được ghép cùng nhau trong một sản phẩm công khai mà chúng tôi biết [CHƯA KIỂM CHỨNG] — Sổ cái Phiên bản + Đánh giá mù Arena + Bệ phóng khoá theo mốc + Chống bot PoP",
+      "blocked_on": "khảo sát 4 nhóm sản phẩm tương ứng, ghi ở docs/00 §2, kèm ngày"
+    },
+    {
+      "path": "docs/WHITEPAPER.md",
+      "match": "Dự án đầu tiên tốt nghiệp tự động 0% chênh lệch giá",
+      "label": "[ĐỀ XUẤT]",
+      "status": "OPEN",
+      "owner": "PO",
+      "reason": "Cột 'Mô tả kiểm thử' của S8 mô tả điều KIỂM THỬ SẼ chứng minh, không phải điều đã xảy ra. Viết 'Dự án đầu tiên tốt nghiệp tự động' trong cột kiểm thử là đọc thành thành tựu đã có.",
+      "review_by": "trước khi P05 đóng (docs/PRD §0)",
+      "suggested_rewrite": "Kiểm thử S8 phải chứng minh: tốt nghiệp tự động với 0% chênh lệch giá và hoàn vốn Ragequit hoạt động [ĐỀ XUẤT]",
+      "blocked_on": "programs/ hiện thực + một lần chạy trên devnet"
+    }
+  ],
+  "not_claims": [
+    {
+      "pattern": "X đầu tiên",
+      "where": "đơn vị thời gian/đếm đứng trước (giờ đầu tiên, khối đầu tiên, bản mẫu đầu tiên, vòng lặp đầu tiên)",
+      "why": "Đây là mốc thời gian của CHÍNH dự án, không phải tuyên bố về thị trường. Cổng bỏ qua có chủ đích — xem docstring check_claims.py."
+    }
+  ]
+}
