@@ -1,0 +1,106 @@
+{
+  "$comment": "Sổ đăng ký VIỆC PHẢI LÀM (docs/37). Mỗi mục = một việc đã được một tài liệu trong repo xác định là cần làm, kèm NGƯỜI, NGÀY, và HẬU QUẢ nếu quá hạn. Khác với pm/claims-registry.json: sổ đó giữ các câu VỀ THẾ GIỚI (đúng/sai); sổ này giữ các VIỆC (xong/chưa). `check_actions.py` bắt buộc mọi mục có owner + due + source + block_if_unmet + evidence.",
+  "$schema_version": 1,
+  "as_of": "2026-11-23",
+  "policy": "docs/37 — một việc không có người và ngày là một mong muốn. Quá hạn hoặc quá ngày cấm-xong-sớm-mà-không-có-bằng-chứng ⇒ cổng ĐỎ. Không mục nào được chuyển sang DONE mà không có `evidence` trỏ tới một tệp/lệnh trong repo.",
+  "owner_protocol": "`id` ở đây là NGƯỜI (LXK) hoặc AGENT. AGENT chỉ được đóng những mục có loại mà máy kiểm được (cổng, tài liệu, điều kiện tham số) — xem `agent_allowed` của từng mục.",
+  "actions": [
+    {
+      "id": "P1",
+      "title": "Thêm ràng buộc biên S_LP < X_end·(1−f) vào validate_launch",
+      "source": "docs/36-kvu-lemmas-and-the-version-unit.md §3.3 và §9 (mục P1)",
+      "source_doc": "docs/36-kvu-lemmas-and-the-version-unit.md",
+      "why": "Nếu S_LP vượt biên, mẫu số của (★) âm và bất đẳng thức escrow ≥ 0 KHÔNG NÓI ĐƯỢC GÌ — loại lỗi nguy hiểm hơn 'sai'. Hiện validate_launch chưa chặn.",
+      "owner": "LXK",
+      "agent_allowed": false,
+      "owner_reason": "Sửa spec nguồn ⇒ đổi terms_hash của mọi launch tương lai và rebuild PDF. Cần người quyết.",
+      "not_before": "2026-11-23",
+      "due": "2026-12-18",
+      "block_if_unmet": "revert",
+      "block_if_unmet_note": "Quá hạn ⇒ DÙNG số biên rút gọn và ghi rõ spec chưa chặn; hoặc gỡ câu 'escrow ≥ 0 được bảo đảm trước launch' khỏi mọi tài liệu.",
+      "evidence_required": "docs/YELLOWPAPER.md §5.1 hoặc §6.1 có câu ràng buộc biên, VÀ scripts/kvu_invariants.py lemma3 vẫn xanh",
+      "status": "OPEN"
+    },
+    {
+      "id": "P2",
+      "title": "Ghi vào YELLOWPAPER §4.3 rằng gộp root Merkle theo giờ là BẮT BUỘC vì rent",
+      "source": "docs/36 §6.3",
+      "source_doc": "docs/36-kvu-lemmas-and-the-version-unit.md",
+      "why": "Spec đã dùng Root_h (một root/giờ) nhưng không nói đó là quyết định chi phí. Nếu mỗi phiên bản một root: 10.000 root/giờ × 48 B ⇒ ~11 SOL/giờ rent, không khả thi.",
+      "owner": "LXK",
+      "agent_allowed": false,
+      "owner_reason": "Thêm một câu vào nguồn spec ⇒ rebuild PDF. Nội dung câu thì agent soạn được, việc ký thì không.",
+      "not_before": "2026-11-23",
+      "due": "2026-12-18",
+      "block_if_unmet": "revert",
+      "block_if_unmet_note": "Quá hạn ⇒ gỡ con số '11 SOL/giờ' khỏi mọi tài liệu trình bày và chỉ nói 'gộp theo giờ'.",
+      "evidence_required": "docs/YELLOWPAPER.md §4.3 chứa một câu về rent/gộp",
+      "status": "OPEN"
+    },
+    {
+      "id": "P3",
+      "title": "Requirements lock: ghim phiên bản Python cho mọi cổng chạy CI (điều kiện tham số, không phải lời hứa)",
+      "source": "docs/30 §5.4 (audit 4 tệp import ngoài chuẩn) · docs/37 §3",
+      "source_doc": "docs/30-openrouter-deterministic-egress.md",
+      "why": "Cổng chỉ chạy được nếu môi trường dựng lại được. `docs/README-PDF.md` còn nói `pip install reportlab` không phiên bản trong khi CI ghim 5.1.0 ⇒ md5 PDF khác giữa máy dev và CI.",
+      "owner": "AGENT",
+      "agent_allowed": true,
+      "owner_reason": "Máy kiểm được: tệp tồn tại, phiên bản khớp workflow, cổng đọc được nó.",
+      "not_before": "2026-12-15",
+      "due": "2026-12-20",
+      "block_if_unmet": "remove",
+      "block_if_unmet_note": "Quá hạn ⇒ gỡ dòng 'md5 khớp' khỏi docs/README-PDF.md vì nó không còn đúng.",
+      "evidence_required": "requirements.txt có reportlab/fonttools/pypdf/pypdfium2, và docs/README-PDF.md trỏ tới nó",
+      "status": "OPEN"
+    },
+    {
+      "id": "P4",
+      "title": "Cổng thứ 17: mọi việc có hạn đều phải kiểm được (check_actions.py)",
+      "source": "docs/37 §2 · docs/34 §2 (hạn quyết định vs điều kiện chấp nhận)",
+      "source_doc": "docs/37-action-register-and-contradiction-hunt.md",
+      "why": "P1 và P2 vừa được đăng ký bằng văn xuôi trong docs/36. Một việc có hạn nằm trong văn xuôi là một việc không có hạn — không cổng nào đọc được nó.",
+      "owner": "AGENT",
+      "agent_allowed": true,
+      "owner_reason": "Toàn bộ là mã và dữ liệu; máy tự kiểm.",
+      "not_before": "2026-11-23",
+      "due": "2026-11-24",
+      "block_if_unmet": "remove",
+      "block_if_unmet_note": "Quá hạn ⇒ xoá tệp này và ghi lại rằng P1/P2 chỉ là văn xuôi.",
+      "evidence_required": "scripts/check_actions.py --selftest xanh trong .github/workflows/docs.yml",
+      "status": "DONE",
+      "done_on": "2026-11-23",
+      "evidence": "scripts/check_actions.py --selftest → 'ACTION LOCK SELFTEST: PASS — 7/7 phép thử đúng chiều' (tệp: scripts/check_actions.py)"
+    },
+    {
+      "id": "P5",
+      "title": "Biên (★) trên mô hình ĐẦY ĐỦ của cả hai hồ sơ là một bất biến của verify_protocol_math.py",
+      "source": "docs/36 §3.2 (4,79×) · docs/36 §5.2",
+      "source_doc": "docs/36-kvu-lemmas-and-the-version-unit.md",
+      "why": "kvu_invariants.py đã tính 4,79× nhưng dưới dạng SỐ IN RA. Một con số in ra không phải một cổng: nó không làm CI đỏ khi công thức §6.1 đổi.",
+      "owner": "AGENT",
+      "agent_allowed": true,
+      "owner_reason": "Thêm assert vào tệp đã có; không đổi số đã công bố.",
+      "not_before": "2026-11-23",
+      "due": "2026-11-24",
+      "block_if_unmet": "remove",
+      "block_if_unmet_note": "Quá hạn ⇒ xoá dòng 'biên thật 4,79×' khỏi docs/36 §5.2 vì nó chưa được khoá.",
+      "evidence_required": "verify_protocol_math.py có assert biên cho cả VBOND-LV và VGBC-4T; chạy lại vẫn 100%",
+      "status": "DONE",
+      "done_on": "2026-11-23",
+      "evidence": "scripts/verify_protocol_math.py in 'margin (★) = 1.251170x / 4.790421x' và assert đúng hai giá trị đó (tệp: scripts/verify_protocol_math.py)"
+    }
+  ],
+  "people": {
+    "LXK": {
+      "name": "Lê Xuân Khánh",
+      "role": "người sáng lập kiêm PO",
+      "basis": "Xác nhận trực tiếp 2026-11-23 (docs/34 §3, cùng căn cứ với pm/claims-registry.json)"
+    }
+  },
+  "agents": {
+    "AGENT": {
+      "name": "tác nhân tự động trong phiên làm việc",
+      "scope": "chỉ việc máy kiểm được (agent_allowed: true)"
+    }
+  }
+}

@@ -112,7 +112,7 @@ Cổng quét **toàn bộ** `docs/` + `README.md` và tìm được **đúng ba*
 |---|---|---|
 | **3** (tiêu đề) | *"Bệ phóng Vốn đồng bộ theo phiên bản Game **đầu tiên trên Thế giới**"* | `[CHƯA KIỂM CHỨNG]` |
 | **583** | *"**Vị thế tiên phong độc quyền (Category Creator):** Nền tảng **đầu tiên** kết hợp…"* | `[CHƯA KIỂM CHỨNG]` |
-| 736 | *"Dự án đầu tiên tốt nghiệp tự động 0% chênh lệch giá"* (cột **kiểm thử** của S8) | `[ĐỀ XUẤT]` |
+| 736 | *"Dự án đầu tiên tốt nghiệp tự động … sai lệch ≤ 1 lamport"* (cột **kiểm thử** của S8 — câu đã được nới nghĩa ở `docs/37` §2.1) | `[ĐỀ XUẤT]` |
 
 > **Ba câu này không được sửa trong vòng này.** Lý do: chúng nằm trong **nguồn số** (`WHITEPAPER.md`), và sửa chúng là **rebuild 4 PDF** — việc `AGENTS.md` cấm làm tuỳ tiện. Thay vào đó chúng được **đăng ký** trong `pm/claims-registry.json` với `status: OPEN`, kèm **câu viết lại đề xuất** và **điều kiện gỡ** (`blocked_on`).
 >

@@ -24,7 +24,7 @@
 3. [Hình thức hóa `PoPW`, `VPH`, Ước lượng `BotShare` & Hàm Thưởng Lõm Chống Độc quyền (§3)](#3-hình-thức-hóa-popw-vph-ước-lượng-botshare--hàm-thưởng-lõm-chống-độc-quyền)
 4. [Thống kê Xếp hạng Phiên bản, Đấu mù Bradley–Terry & Neo Merkle Hàng giờ (§4)](#4-thống-kê-xếp-hạng-phiên-bản-đấu-mù-bradleyterry--neo-merkle-hàng-giờ)
 5. [Số học Điểm Cố định `u128` của Đường cong Đồng bộ Phiên bản (§5)](#5-số-học-điểm-cố-định-u128-của-đường-cong-đồng-bộ-phiên-bản)
-6. [Chuyển đổi Tốt nghiệp DEX Không Chênh giá & Cơ chế `Stall / Ragequit` (§6)](#6-chuyển-đổi-tốt-nghiệp-dex-không-chênh-giá--cơ-chế-stall--ragequit)
+6. [Chuyển đổi Tốt nghiệp DEX: sai lệch ≤ 1 lamport & Cơ chế `Stall / Ragequit` (§6)](#6-chuyển-đổi-tốt-nghiệp-dex-không-chênh-giá--cơ-chế-stall--ragequit)
 7. [Đặc tả Mật mã, Định dạng Byte On-Chain & Ôtômat Quản trị Tự Khóa Tay (§7)](#7-đặc-tả-mật-mã-định-dạng-byte-on-chain--ôtômat-quản-trị-tự-khóa-tay)
 8. [Hệ 12 Bất biến Hình thức (`INV-01..INV-12`) & Chứng minh 6 Định lý Cốt lõi (§8)](#8-hệ-12-bất-biến-hình-thức-inv-01inv-12--chứng-minh-6-định-lý-cốt-lõi)
 9. [Phân tích An toàn Kinh tế & Cận Dưới Chi phí Thao túng (§9)](#9-phân-tích-an-toàn-kinh-tế--cận-dưới-chi-phí-thao-túng)
@@ -302,7 +302,7 @@ Phụ phí thoát sớm $f_{\text{exit}}$ được phân chia tất định khô
 
 ---
 
-## 6. Chuyển đổi Tốt nghiệp DEX Không Chênh giá & Cơ chế `Stall / Ragequit`
+## 6. Chuyển đổi Tốt nghiệp DEX: sai lệch ≤ 1 lamport & Cơ chế `Stall / Ragequit`
 
 ### 6.1. Điều kiện & Phương trình Di chuyển Thanh khoản DEX (`Zero-MEV Gap`)
 
@@ -368,7 +368,7 @@ Hợp đồng không tự thực thi phép nhân đường cong elliptic tốn C
  86..118 (32 B) : base_sha256     = h_{k-1} (khớp đúng latest_build_sha256)
 118..150 (32 B) : report_hash     = SHA-256 báo cáo thô (VPH, Fit, Arena, BotShare)
 150..152 ( 2 B) : build_diff_bps  = delta_k * 10,000 (>= 800 bps)
-152..154 ( 2 B) : arena_lcb_bps   = LCB_0.95 * 10,000 (> 5,000 bps cho M2+)
+152..154 ( 2 B) : arena_lcb_bps   = LCB_0.95 * 10,000 (> 5,000 bps cho M2+; floor ⇒ >= 5,001 bps, tức > 0.50)
 154..162 ( 8 B) : expiry_ts       = Unix timestamp hết hạn
 ```
 
@@ -392,7 +392,7 @@ stateDiagram-v2
 ```
 
 - Ở trạng thái `G0/G1` ($t < t_0 + 90\text{ ngày}$): Không cá nhân nào tự nâng cấp được (cần $\ge 4/7$ thành viên độc lập), không thể thực thi bí mật (hàng đợi công khai $48\text{ giờ}$ trên chuỗi), và không thể sửa `terms_hash` của các bond đang hoạt động.
-- Ở trạng thái `G2` ($t \ge t_0 + 90\text{ ngày}$): Lệnh `solana program set-upgrade-authority --final` đặt `upgrade_authority = None` ở chính tầng máy ảo Solana SVM — làm cho rủi ro `R11` (*nới Play-Gate trên hợp đồng đã triển khai*) trở nên **bất khả thi về mặt toán học và mật mã**.
+- Ở trạng thái `G2` ($t \ge t_0 + 90\text{ ngày}$): Lệnh `solana program set-upgrade-authority --final` đặt `upgrade_authority = None` ở chính tầng máy ảo Solana SVM — làm cho rủi ro `R11` (*nới Play-Gate trên hợp đồng **sau khi** triển khai*) trở nên **bất khả thi về mặt toán học và mật mã**.
 
 ---
 
