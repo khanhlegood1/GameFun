@@ -224,6 +224,10 @@ Game9K-Starter-Kit/
 
 ---
 
+> **Cập nhật vòng 43 (`docs/42`):** bundle nay ở **v1.1.0** — thêm lớp vẽ viên bi và khối
+> `obstacles` công bố trước. Cân bằng **không đổi** (10,8% · 0/60 · trung vị 7/80), nên bảng
+> dưới vẫn đúng; chỉ `rules_sha256` và số cổng đổi. Mã cũ vẫn nằm ở commit `8a0e7ae` trong bundle.
+
 ### 8.1. Chưa đẩy được lên GitHub — và cách đẩy trong một lệnh
 
 Token của phiên làm việc này là **GitHub App** chỉ cài trên `khanhlegood1/GameFun`:
@@ -249,9 +253,9 @@ Hoặc cài lại GitHub App cho repo đó trong Arena, rồi phiên sau đẩy 
 
 | | |
 |---|---|
-| `rules_sha256` | `f910cb5234806382d2ffa35d3210f2777691cb9691d8394220f7f2e04cc2fbd9` |
+| `rules_sha256` | `7c0f470a4d5a62f3151e393b14b98e3546672586ad1bd4b0cc52d7321326a330` *(v1.1.0 — docs/42)* |
 | Fixture vàng | **3** (`empty`, `wave-8`, `full-80`), Node và Python ra cùng `result_sha256` |
-| Cổng | **5/5 xanh** — purity · rules hash · ref engine · determinism · server end-to-end |
+| Cổng | **6/6 xanh** — purity · rules hash · ref engine · determinism · server end-to-end · marble layer |
 | Về đích | **`10,8%`** người-chơi trong một ván 80 người (60 seed) |
 | Người không bấm thắng | **`0/60`** ván khi 40 người khác bấm hoàn hảo |
 | Một người bấm hoàn hảo | hạng trung vị **`7/80`** (p10 `1`, p90 `35`) |

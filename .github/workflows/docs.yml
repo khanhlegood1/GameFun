@@ -156,6 +156,12 @@ jobs:
       - name: Nối cổng (20 cổng · cả chế độ tự kiểm và kiểm repo)
         run: python3 scripts/check_gate_wiring.py --selftest && python3 scripts/check_gate_wiring.py
 
+      # Cổng thứ hai mươi hai: bundle Starter Kit phải ĐÚNG là bản docs/23 mô tả
+      # (docs/42). Bundle là tệp nhị phân — không cổng nào đọc nó thì docs ghi hash
+      # một đằng, artefact chứa hash một nẻo, và cả hai vẫn xanh.
+      - name: Bundle Starter Kit (4 bất biến · hash khớp docs/23, 6 cổng kit)
+        run: python3 scripts/verify_kit_bundle.py --selftest && python3 scripts/verify_kit_bundle.py
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04
