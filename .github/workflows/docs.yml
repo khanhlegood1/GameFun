@@ -106,6 +106,12 @@ jobs:
       - name: Hồ sơ chứng cứ SDK (5 bất biến · hash + phiên bản trong docs/)
         run: python3 scripts/check_sdk_manifest.py --selftest
 
+      # Cổng thứ mười bốn: loại của từng câu tuyên bố (docs/33). AGENTS.md cấm HỨA HẸN
+      # nhưng chưa cấm TUYÊN BỐ VỀ THẾ GIỚI — và câu "chưa ai làm" là câu sai được,
+      # kiểm được, và làm yếu mọi con số khác trong cùng tài liệu.
+      - name: Phân loại tuyên bố (5 bất biến · sổ đăng ký)
+        run: python3 scripts/check_claims.py --selftest
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04
