@@ -88,6 +88,12 @@ jobs:
       - name: Mã lỗi SDK khớp hợp đồng (4 bất biến)
         run: python3 scripts/check_sdk_errors.py --selftest
 
+      # Cổng thứ mười một: khoá xuất mạng (docs/30). `AGENTS.md` gọi cổng là "tất định
+      # byte-for-byte" nhưng thứ chứng minh điều đó từng là hai CI run xanh. Cổng này
+      # đọc mã: không HTTP client trong scripts/, không dịch vụ AI trong workflow.
+      - name: Khoá xuất mạng (4 bất biến · không HTTP client)
+        run: python3 scripts/check_egress_lock.py --selftest
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04

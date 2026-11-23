@@ -48,6 +48,7 @@ câu mô tả, để tác nhân AI đọc đúng file thay vì đoán. Nội dun
 - [docs/27-sdk-contract-poki-vs-xsolla.md](docs/27-sdk-contract-poki-vs-xsolla.md): Hợp đồng SDK — Poki là hiến pháp (5 sự kiện + 3 tiện ích), Xsolla chỉ để lấy Web Shop và trạng thái giao dịch; SDK tham chiếu 2.633 B gzip / 12.000 B (scripts/check_sdk.py, offline)
 - [docs/28-sdk-contract-lock-and-what-not-to-copy.md](docs/28-sdk-contract-lock-and-what-not-to-copy.md): Khoá hợp đồng SDK — CONTRACT.json phải khớp mã và docs/03 §3, không dist/ trong git, bump là việc của người (scripts/check_sdk_drift.py, offline)
 - [docs/29-sandbox-errors-and-sdk-boundary.md](docs/29-sandbox-errors-and-sdk-boundary.md): Lỗi SDK có tên — bỏ resolve(null), 4 hằng + 3 mã chỗ gọi, không Promise.reject ngoài fail(); sandbox E2B để học cách đặt tên lỗi, không để chạy game (scripts/check_sdk_errors.py, offline)
+- [docs/30-openrouter-deterministic-egress.md](docs/30-openrouter-deterministic-egress.md): Khoá xuất mạng — không HTTP client trong scripts/, không dịch vụ AI trong workflow, allowlist action; OpenRouter để học 4 tham số từ chối định tuyến (scripts/check_egress_lock.py, offline)
 - [docs/07-docs-as-code-model.md](docs/07-docs-as-code-model.md): mô hình tài liệu & kiểm chứng (AGENTS.md, llms.txt, link check, cổng PDF tái lập)
 - [docs/08-legal-brief-vn-licensing.md](docs/08-legal-brief-vn-licensing.md): nguồn Markdown của legal brief — mô hình Game9K + 4 câu hỏi cho luật sư
 
