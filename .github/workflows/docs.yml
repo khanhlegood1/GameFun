@@ -82,6 +82,12 @@ jobs:
       - name: Khoá hợp đồng SDK (5 bất biến · hash bề mặt)
         run: python3 scripts/check_sdk_drift.py
 
+      # Cổng thứ mười: bảng lỗi SDK khớp hợp đồng (docs/29). Bắt đúng loại hỏng
+      # mà docs/29 tìm ra: `send()` từng trả resolve(null) nên mọi kiểu hỏng
+      # thành "không biết"; và mã lỗi đổi ở CHỖ GỌI mà không khai.
+      - name: Mã lỗi SDK khớp hợp đồng (4 bất biến)
+        run: python3 scripts/check_sdk_errors.py --selftest
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04

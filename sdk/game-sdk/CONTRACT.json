@@ -2,8 +2,8 @@
   "$comment": "Khoá hợp đồng của @game9k/game-sdk. Bề mặt ở đây là một phần của giao kèo với studio: check_sdk_drift.py bắt buộc nó khớp docs/03 §3, khớp mã, và khớp SDK_VERSION. Sửa tệp này là sửa công khai — phải qua PR + ADR.",
   "package": "@game9k/game-sdk",
   "major": 0,
-  "minor": 1,
-  "patch_note": "0.1.0 = bản tham chiếu trong repo; chưa phát hành lên npm (docs/06 M03).",
+  "minor": 2,
+  "patch_note": "0.2.0 = lỗi có TÊN thay cho `resolve(null)` (docs/29 §2.3). Bề mặt 8 hàm KHÔNG đổi.",
   "functions": [
     "init",
     "gameLoadingFinished",
@@ -43,5 +43,15 @@
     "localStorage / sessionStorage / document.cookie",
     "hàm thanh toán (openCheckout, payStation, xsolla)",
     "hàm ký/gửi giao dịch (signTransaction, sendTransaction, window.solana)"
-  ]
+  ],
+  "error_codes": {
+    "sdk_no_parent": "Không có portal (window.parent === window)",
+    "sdk_timeout": "Đã gửi, portal không trả lời trong 4000 ms",
+    "sdk_refused": "Portal trả lời nhưng từ chối (kèm reason)",
+    "sdk_not_mounted": "Chưa init() hoặc sai môi trường",
+    "cloud_save_too_large": "cloudSave > 128 KB (docs/03 §4 PAYLOAD_TOO_LARGE)",
+    "cloud_save_not_json": "giá trị cloudSave không JSON hoá được",
+    "progress_invalid_key": "reportProgress thiếu milestoneKey"
+  },
+  "error_note": "Bốn mã này KHÔNG thay bảng lỗi REST ở docs/03 §4; chúng là mặt cắt của bảng đó trong iframe, nơi không có mã HTTP nào tới được game."
 }
