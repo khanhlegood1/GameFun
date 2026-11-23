@@ -56,6 +56,7 @@ CONTENT_MODE = {
     "check_invariants_coverage.py": "--selftest",
     "verify_invariants.py": "--selftest",
     "check_gate_wiring.py": "--selftest",
+    "verify_kit_bundle.py": "--selftest",
 }
 
 # Cổng được PHÉP nhận cờ `--selftest` mà không đọc cờ, vì chế độ mặc định của nó đã
