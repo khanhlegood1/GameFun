@@ -123,6 +123,18 @@ jobs:
       - name: Bốn bổ đề KVU (6 bất biến · biên + tái lập số đã công bố)
         run: python3 scripts/kvu_invariants.py --selftest
 
+      # Cổng thứ mười bảy: việc đã hứa phải có NGƯỜI, NGÀY, HẬU QUẢ, BẰNG CHỨNG (docs/37).
+      # P1/P2 từng được đăng ký bằng văn xuôi trong docs/36 §9 — và một hạn nằm trong
+      # văn xuôi là một hạn không có, vì không cổng nào đọc được nó.
+      - name: Sổ việc có hạn (5 bất biến · quá hạn là đỏ)
+        run: python3 scripts/check_actions.py --selftest && python3 scripts/check_actions.py
+
+      # Cổng thứ mười tám: bốn cặp câu KHÔNG THỂ CÙNG ĐÚNG (docs/37 §2). Bốn cổng
+      # trước kiểm sự HIỆN DIỆN (có nhãn chưa, có owner chưa, có biên bản chưa); cổng
+      # này kiểm MÂU THUẪN — hai câu mỗi câu đúng ngữ pháp, cộng lại thì sai.
+      - name: Bốn cặp mâu thuẫn (4 cặp · 7 phép thử)
+        run: python3 scripts/find_contradictions.py --selftest && python3 scripts/find_contradictions.py
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04

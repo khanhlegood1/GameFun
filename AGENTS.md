@@ -54,10 +54,15 @@ GameFun/
 │   ├── YELLOWPAPER.md           # SSOT cho đặc tả hình thức (bất biến, định lý, byte layout)
 │   ├── README-PDF.md            # cách dựng & kiểm chứng bản PDF
 │   └── *.pdf                    # SINH TỰ ĐỘNG — không sửa tay
+├── pm/
+│   ├── claims-registry.json   # TUYÊN BỐ về thế giới (đúng/sai) — người + hạn
+│   └── action-register.json   # VIỆC phải làm (xong/chưa) — người + hạn + hậu quả
 └── scripts/
     ├── build_pitch_deck.py      # deck 14 slide (ReportLab, 16:9)
     ├── build_whitepaper_pdf.py  # markdown → A4 (whitepaper + yellow paper)
     ├── check_pitch_deck.py      # 48 kiểm tra chéo deck ↔ yellow paper
+    ├── check_actions.py         # sổ việc: quá hạn / DONE không bằng chứng ⇒ ĐỎ (docs/37)
+    ├── find_contradictions.py   # bốn cặp câu không thể cùng đúng (docs/37)
     └── verify_protocol_math.py  # S1–S9 + fuzz, in dòng PASS 100%
 ```
 

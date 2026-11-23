@@ -601,9 +601,21 @@ def verify_scenarios_s1_to_s9() -> None:
     assert sum(ladder_b_lamports) == surp_b
     ladder_a_lamports = [10_000_000_000, 2_908_330_367, 1_500_000_000, 1_500_000_000]
     assert sum(ladder_a_lamports) == surp_a
+    # P5 (docs/37 §3): biên của bất biến (★) `R_end >= S_LP + F_grad` là một BẤT BIẾN,
+    # không phải một con số in ra. Trước vòng này chỉ có `print`; nghĩa là nếu ai đổi
+    # tham số làm biên tụt từ 4,79× xuống 1,05× thì cổng vẫn xanh. Giờ thì không.
+    # Hai hồ sơ, hai biên khác nhau — và hồ sơ HẸP là hồ sơ phải canh.
+    #   1,251169810 = 79.245283019 / (61.836952652 + 1.50)   (VGBC-4T)
+    #   4,790421183 = 76.109936576 / (14.387942555 + 1.50)   (VBOND-LV)
+    margin_a = (c_grad_a.real_sol / LAMPORTS_PER_SOL) / (lp_sol_a / LAMPORTS_PER_SOL + 1.50)
+    margin_b = (c_grad_b.real_sol / LAMPORTS_PER_SOL) / (lp_sol_b / LAMPORTS_PER_SOL + 1.50)
+    assert abs(margin_a - 1.251169810) < 1e-9, margin_a
+    assert abs(margin_b - 4.790421183) < 1e-9, margin_b
+    assert margin_a > 1.0 and margin_b > 1.0, (margin_a, margin_b)
     print(
         f"  S3 PASS (Zero-Gap Graduation): VGBC-4T LP={lp_sol_a/1e9:.6f} SOL (gap={gap_a:.2e}) | "
-        f"VBOND-LV LP={lp_sol_b/1e9:.6f} SOL, Escrow={surp_b/1e9:.6f} SOL after F_grad=1.50 SOL (gap={gap_b:.2e})"
+        f"VBOND-LV LP={lp_sol_b/1e9:.6f} SOL, Escrow={surp_b/1e9:.6f} SOL after F_grad=1.50 SOL (gap={gap_b:.2e}) | "
+        f"margin (★) = {margin_a:.6f}x / {margin_b:.6f}x"
     )
 
     # S4: Concave Anti-Monopoly PoPW Reward Cap (20% hours -> capped 5.0% pool)
