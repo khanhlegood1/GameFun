@@ -12,6 +12,10 @@
 (function (global) {
   'use strict';
 
+  // Bản khai SDK. `docs/03` §3 + `CONTRACT.json` là nguồn sự thật; số này để
+  // Inspector in ra và để game kiểm "portal đang phục vụ bản nào" (docs/28 §4).
+  var SDK_VERSION = '0.2.0';
+
   var P = global.parent;
   var W = global;
   var pending = {};
@@ -23,23 +27,57 @@
   // ---- PoP: chỉ đếm, không ghi nội dung (docs/PRD.md FR-SDK-01) ------------
   var pop = { input: 0, lastInputAt: 0, gaps: [], errors: 0, fps: 0 };
 
+  // ---- lỗi có TÊN (docs/29 §2.3) -----------------------------------------
+  // Bốn kiểu hỏng mà game phải xử lý khác nhau. Trước bản này, cả bốn đều
+  // thành `resolve(null)` — tức là "không biết", và game không thể làm gì.
+  var CODE = {
+    NOT_MOUNTED: 'sdk_not_mounted',        // chưa init() hoặc chạy ngoài iframe
+    NO_PARENT: 'sdk_no_parent',            // window.parent === window: mở trực tiếp, không có portal
+    TIMEOUT: 'sdk_timeout',                // đã gửi, không có trả lời trong REQUEST_TIMEOUT_MS
+    REFUSED: 'sdk_refused'                 // portal trả lời, nhưng từ chối (kèm reason)
+  };
+  var REQUEST_TIMEOUT_MS = 4000;
+  var AD_SLOT_TIMEOUT_MS = 4000;
+  var CLOUD_SAVE_MAX_BYTES = 131072;       // 128 KB — docs/03 §4
+
+  function noParent() { return !P || P === W; }
+
+  function fail(code, message, extra) {
+    var e = new Error(message);
+    e.name = 'Game9KError';
+    e.code = code;
+    if (extra) for (var k in extra) e[k] = extra[k];
+    return Promise.reject(e);
+  }
+
   function send(type, payload) {
-    return new Promise(function (resolve) {
+    if (noParent()) return fail(CODE.NO_PARENT, 'SDK chỉ chạy trong iframe của portal (window.parent === window)');
+    return new Promise(function (resolve, reject) {
       var id = ++seq;
       var done = false;
       var timer = W.setTimeout(function () {
-        if (!done) { done = true; delete pending[id]; resolve(null); }
-      }, 4000);
+        if (done) return;
+        done = true; delete pending[id];
+        // Hết giờ KHÔNG phải "không có gì xảy ra": portal có thể đã phát quảng cáo
+        // và câu trả lời bị mất. Nói rõ ra để game không cộng thưởng mù.
+        fail(CODE.TIMEOUT, 'portal không trả lời `' + type + '` trong ' + REQUEST_TIMEOUT_MS + ' ms')
+          .then(null, reject);
+      }, type === 'rewardedBreak' || type === 'commercialBreak' ? AD_SLOT_TIMEOUT_MS : REQUEST_TIMEOUT_MS);
       pending[id] = function (data) {
         if (done) return;
         done = true;
         W.clearTimeout(timer);
-        resolve(data);
+        if (data && data.__error) {
+          var rej = fail(CODE.REFUSED, data.message || ('portal từ chối `' + type + '`'), { reason: data.reason });
+          rej.then(null, reject);
+        } else {
+          resolve(data);
+        }
       };
       // `targetOrigin` là '*' ở đây vì SDK không tự biết origin của portal.
       // Portal mới là bên siết: nó kiểm `event.origin === origin của bản build`
       // (docs/03 §3 quy tắc 1). SDK không bao giờ tin bản tin nhận vào.
-      P.postMessage({ __game9k: 1, id: id, type: type, payload: payload }, '*');
+      P.postMessage({ __game9k: 1, id: id, type: type, payload: payload, v: SDK_VERSION }, '*');
     });
   }
 
@@ -92,15 +130,13 @@
   W.setInterval(beat, 30000);
 
   // ---- API công khai -----------------------------------------------------
-  // Bản khai SDK. `docs/03` §3 và `check_sdk.py` là nguồn sự thật; số này chỉ để
-  // Inspector in ra và để game tự kiểm "portal đang phục vụ bản nào" (docs/28 §5).
-  var SDK_VERSION = '0.1.0';
-
   var SDK = {
     version: SDK_VERSION,
 
     init: function () {
-      return send('init', { ua_webgl: !!W.WebGLRenderingContext }).then(function (r) {
+      // Gọi thẳng, KHÔNG qua `send`: nếu ngoài iframe thì `NO_PARENT` mới là
+      // câu trả lời đúng, không phải `TIMEOUT` sau 4 giây.
+      return send('init', { ua_webgl: !!W.WebGLRenderingContext, sdk: SDK_VERSION }).then(function (r) {
         env = (r && r.environment) || 'direct';
         versionLabel = r && r.versionLabel;   // arena: portal CỐ Ý không trả
         ready = true;
@@ -135,14 +171,38 @@
     },
 
     cloudSave: {
-      get: function (slot) { return send('cloudSave.get', { slot: slot || 'default' }).then(function (r) { return r ? r.value : null; }); },
-      set: function (value, slot) { return send('cloudSave.set', { slot: slot || 'default', value: value }).then(function () {}); }
+      get: function (slot) {
+        return send('cloudSave.get', { slot: slot || 'default' }).then(function (r) {
+          return r && 'value' in r ? r.value : null;   // null = ô trống, KHÔNG phải lỗi
+        });
+      },
+      set: function (value, slot) {
+        // Kiểm TRƯỚC khi gửi: 128 KB là giới hạn của portal (docs/03 §4). Gửi rồi
+        // bị từ chối thì studio nhận một lỗi mạng khó hiểu thay vì một câu rõ ràng.
+        var size = 0;
+        try { size = JSON.stringify(value).length; } catch (e) {
+          return fail('cloud_save_not_json', 'giá trị cloudSave phải JSON hoá được', { cause: String(e) });
+        }
+        if (size > CLOUD_SAVE_MAX_BYTES) {
+          return fail('cloud_save_too_large',
+            'cloudSave ' + size + ' B > ' + CLOUD_SAVE_MAX_BYTES + ' B (docs/03 §4)',
+            { bytes: size, limit: CLOUD_SAVE_MAX_BYTES });
+        }
+        return send('cloudSave.set', { slot: slot || 'default', value: value, bytes: size }).then(function () {});
+      }
     },
 
     // Không tự cấp token, không tự cộng SPARK: chỉ báo một mốc đã xảy ra.
+    // Gửi kèm `idem` (docs/29 §2.4): portal được phát lại thì cũng không cộng hai lần.
     reportProgress: function (milestoneKey, numericValue) {
-      send('reportProgress', { key: milestoneKey, value: numericValue === undefined ? 1 : numericValue });
-    }
+      if (typeof milestoneKey !== 'string' || !milestoneKey) {
+        return fail('progress_invalid_key', 'reportProgress cần một `milestoneKey` không rỗng');
+      }
+      var idem = milestoneKey + ':' + (numericValue === undefined ? 1 : numericValue);
+      return send('reportProgress', { key: milestoneKey, value: numericValue === undefined ? 1 : numericValue, idem: idem })
+        .then(function () {});
+    },
+
   };
 
   W.Game9KSDK = SDK;
