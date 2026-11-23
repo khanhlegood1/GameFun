@@ -59,6 +59,7 @@ câu mô tả, để tác nhân AI đọc đúng file thay vì đoán. Nội dun
 - [docs/38-invariant-ledger-and-the-three-numbering-systems.md](docs/38-invariant-ledger-and-the-three-numbering-systems.md): Sổ 12 bất biến — 8 mã có assert mang thẻ INV-nn, 4 mã còn là đặc tả chờ programs/; ba hệ đánh số INV-nn trùng tên phải khai báo tường minh (scripts/check_invariants_coverage.py, offline)
 - [docs/39-four-invariants-get-code.md](docs/39-four-invariants-get-code.md): Bốn bất biến INV-05/07/11/12 nay có assert trong mô hình quyết định — VersionChain (5 mã lỗi), CustodyLedger, BotShare + cầu dao hai chu kỳ, ôtômat governance 3 trạng thái (Fraction, không float) (scripts/verify_invariants.py, offline)
 - [docs/40-gates-that-never-ran.md](docs/40-gates-that-never-ran.md): bảy cổng CI chỉ chạy --selftest, ba cổng thoát sớm nên chưa từng kiểm repo; check_claims đỏ trên main; cổng 21 đọc AST để canh việc nối cổng (scripts/check_gate_wiring.py, offline)
+- [docs/41-testing-is-the-product.md](docs/41-testing-is-the-product.md): mạnh ở kiểm định chứ không phải chơi game — bán Trust Stamp miễn phí cho người chơi, bán báo cáo chẩn đoán cho studio; cảnh báo bẫy issuer-pays; 4 quyết định cần người (R1–R4)
 - [docs/07-docs-as-code-model.md](docs/07-docs-as-code-model.md): mô hình tài liệu & kiểm chứng (AGENTS.md, llms.txt, link check, cổng PDF tái lập)
 - [docs/08-legal-brief-vn-licensing.md](docs/08-legal-brief-vn-licensing.md): nguồn Markdown của legal brief — mô hình Game9K + 4 câu hỏi cho luật sư
 

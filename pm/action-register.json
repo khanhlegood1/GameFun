@@ -122,6 +122,22 @@
       "block_if_unmet_note": "Quá hạn ⇒ chấp nhận hai tên cờ, nhưng phải ghi vào AGENTS.md rằng tên cờ KHÁC NHAU giữa các cổng — để người chép workflow biết mà tra.",
       "evidence_required": "mọi cổng trong scripts/ nhận cùng một tên cờ, và check_gate_wiring.py vẫn xanh",
       "status": "OPEN"
+    },
+    {
+      "id": "P8",
+      "title": "Chọn thứ tự sản phẩm: launchpad-first hay dịch-vụ-kiểm-định-first",
+      "source": "docs/41-testing-is-the-product.md §4–§5 và §7 (R1)",
+      "source_doc": "docs/41-testing-is-the-product.md",
+      "why": "docs/41 §2 chỉ ra arena đấu mù cần người chấm là game thủ, còn §5 chỉ ra 3/5 nguồn thu (quảng cáo 50/50, dịch vụ studio, và gián tiếp LP) không cần nhà đầu tư nào tồn tại. Nếu sản phẩm đầu là dịch vụ kiểm định thì điều kiện mở launchpad '500 người chơi thật/tuần' đang đặt sai chỗ: nó là điều kiện cho sản phẩm thứ hai.",
+      "owner": "LXK",
+      "agent_allowed": false,
+      "owner_reason": "Đổi thứ tự sản phẩm ⇒ đổi §3 WHO, §5.4 doanh thu, điều kiện mở launchpad, và rebuild whitepaper + pitch deck. Đây là quyết định chiến lược, không phải việc máy kiểm được.",
+      "not_before": "2026-11-23",
+      "due": "2026-12-15",
+      "block_if_unmet": "accept",
+      "block_if_unmet_note": "Quá hạn ⇒ giữ nguyên launchpad-first và ghi vào whitepaper rằng dịch vụ kiểm định là nguồn thu giai đoạn 2 — tức chấp nhận rủi ro Cold-Start 3 bên đã nêu ở §8.",
+      "evidence_required": "docs/WHITEPAPER.md §3 hoặc §5.4 có câu trả lời rõ cho thứ tự sản phẩm, HOẶC docs/41 được đánh dấu ACCEPTED với lý do giữ nguyên",
+      "status": "OPEN"
     }
   ],
   "people": {
