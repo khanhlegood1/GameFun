@@ -324,7 +324,7 @@ Offset | Size | Trường dữ liệu
 
 ## 5. Bất biến Bảo mật (Security Invariants) & Kế hoạch Fuzzing (`Trident` + `LiteSVM`)
 
-Mọi PR chạm vào `programs/*` bắt buộc vượt qua 8 bất biến toán học chạy tự động bằng **Ackee Trident** (≥ 100,000 chuỗi giao dịch ngẫu nhiên) và **LiteSVM**:
+Mọi PR chạm vào `programs/*` bắt buộc vượt qua 8 bất biến toán học — **hệ đánh số riêng của tầng chương trình**, KHÔNG phải 12 bất biến `INV-01..INV-12` của `YELLOWPAPER.md` §8.1 — chạy tự động bằng **Ackee Trident** (≥ 100,000 chuỗi giao dịch ngẫu nhiên) và **LiteSVM**:
 
 1. **INV-01 (Solvency tuyệt đối):** Tại mọi slot khi `status ∈ {Active, Stalled}`, `lamports(CurveSolVault) - rent_exempt_min >= real_sol_reserves + penalty_floor_lamports + creator_fee_accrued`.
 2. **INV-02 (Bảo toàn hằng số tích):** Sau mọi `buy` và `sell`, `u128::from(virtual_sol_reserves) * u128::from(virtual_token_reserves) >= invariant_k` (chỉ được tăng nhẹ do làm tròn có lợi cho vault, không bao giờ giảm).

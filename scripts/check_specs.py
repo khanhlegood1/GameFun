@@ -76,6 +76,32 @@ def source_line(path_str: str) -> str | None:
     return lines[n - 1]
 
 
+def find_value(value: str, path_str: str, window: int = 40) -> str | None:
+    """Tìm GIÁ TRỊ quanh dòng ghim, không đòi nó nằm ĐÚNG dòng đó.
+
+    Vì sao (docs/38 §5): ghim theo số dòng tuyệt đối là một cổng sẽ đỏ vì lý do
+    **không liên quan** — thêm một callout ở dòng 73 làm lệch 11 ghim ở dòng 259,
+    và CI đỏ dù không con số nào đổi. Đó là loại cổng khiến người ta tắt cổng.
+    `source` giờ là **điểm neo** (đúng tệp, đúng vùng), còn `tick` kiểm **giá trị
+    còn tồn tại trong vùng đó**. Đổi số thì vẫn đỏ; thêm/bớt đoạn văn thì không.
+    """
+    m = re.match(r"^(.+?):(\d+)$", path_str)
+    if not m:
+        return None
+    path = ROOT / m.group(1)
+    if not path.exists():
+        return None
+    lines = path.read_text(encoding="utf-8").splitlines()
+    n = int(m.group(2))
+    if n < 1 or n > len(lines):
+        return None
+    lo, hi = max(0, n - 1 - window), min(len(lines), n - 1 + window + 1)
+    for line in lines[lo:hi]:
+        if norm(value) in norm(line):
+            return line
+    return None
+
+
 def iter_values(spec: dict):
     for ent in spec.get("entities", []):
         for attr in ent.get("attributes", []):
@@ -100,10 +126,15 @@ def tick() -> int:
             value = attr["value"]
             # Chấp nhận cả hai dạng viết số thập phân và phân cách hàng nghìn.
             candidates = {value, value.replace(",", "."), value.replace(".", ",")}
-            if not any(norm(c) in norm(line) for c in candidates):
+            hit = next((l for c in candidates if norm(c) in norm(line)), None)
+            if hit is None:
+                hit = next(
+                    (l for c in candidates if (l := find_value(c, src)) is not None), None
+                )
+            if hit is None:
                 problems.append(
-                    f"{path.name}/{ent_name}.{attr['name']}: giá trị `{value}` KHÔNG còn ở {src}\n"
-                    f"      dòng nguồn: {line.strip()[:120]}"
+                    f"{path.name}/{ent_name}.{attr['name']}: giá trị `{value}` KHÔNG còn ở {src} "
+                    f"(±{40} dòng)\n      dòng nguồn: {line.strip()[:120]}"
                 )
     if problems:
         print("SPEC TICK: FAIL — tài liệu và bản ghi lệch nhau")

@@ -88,6 +88,22 @@
       "status": "DONE",
       "done_on": "2026-11-23",
       "evidence": "scripts/verify_protocol_math.py in 'margin (★) = 1.251170x / 4.790421x' và assert đúng hai giá trị đó (tệp: scripts/verify_protocol_math.py)"
+    },
+    {
+      "id": "P6",
+      "title": "Bốn bất biến chưa có mã kiểm (INV-05, INV-07, INV-11, INV-12) phải có assert hoặc bị gỡ khỏi danh mục",
+      "source": "docs/38 §3.2 (bảng 12 dòng) · docs/YELLOWPAPER.md §8.1",
+      "source_doc": "docs/38-invariant-ledger-and-the-three-numbering-systems.md",
+      "why": "Yellow Paper §8.1 khai 12 bất biến; scripts/ kiểm 8. Bốn mã còn lại là TÊN: INV-05 (phả hệ phiên bản), INV-07 (cô lập lưu ký token), INV-11 (cầu dao BotShare), INV-12 (bất biến governance). Một bất biến không có mã kiểm vẫn được trích trong tài liệu gọi vốn — và người đọc không có cách nào biết nó chưa được kiểm.",
+      "owner": "AGENT",
+      "agent_allowed": true,
+      "owner_reason": "Máy kiểm được: either có assert mang thẻ, hoặc mã bị gỡ khỏi danh mục và gỡ khỏi mọi câu trích. Cả hai đều là thay đổi cổng đọc được.",
+      "not_before": "2026-11-23",
+      "due": "2026-12-05",
+      "block_if_unmet": "remove",
+      "block_if_unmet_note": "Quá hạn ⇒ gỡ 4 mã khỏi §8.1 và đổi mọi câu '12 bất biến' thành '8 bất biến có mã kiểm'.",
+      "evidence_required": "scripts/check_invariants_coverage.py --audit cho 12/12 asserted, HOẶC danh mục YP §8.1 còn 8 mã và không tài liệu nào nói '12'",
+      "status": "OPEN"
     }
   ],
   "people": {

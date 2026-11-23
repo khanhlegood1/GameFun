@@ -70,6 +70,8 @@ Bốn nguyên tử ở trên chỉ đáng tin nếu mỗi nguyên tử trả l�
 | **3. Version-Gated Bonding Curve & Ragequit** | `BondingCurve` PDA **`u128`**, `terms_hash` bất biến | §5 *(số học điểm cố định)*, §6, §7.1 | `INV-01`–`INV-04`, **Định lý 1–6** | `S2` **PASS** `79,245,283,019` lamports · `S6` **PASS** *0 thiếu hụt* · `S7` **PASS** *lệch `1 lamport`* |
 | **4. On-Chain Play-Gate & Anti-Snipe** | `PopBuyAttestation` **`106 B`** cưỡng chế bằng nội quan lệnh `Ed25519` | §5.2–5.3, §7.1, §9 | `INV-07`, `INV-08`, **Định lý 4** | `S1` **PASS** `−12.88%` · `S8` **PASS** `0 bps` · `S9` **PASS** `−20,000` lamports · `FUZZ` **`10,000`** ops, **`0`** vi phạm |
 
+> **Thẻ `INV-nn` ở cột trên dùng danh mục chuẩn `YELLOWPAPER.md` §8.1** — nơi `INV-01..INV-12` được định nghĩa đầy đủ. Không phải mã nào trong 12 mã cũng đã có mã kiểm: xem `docs/38` §3 cho trạng thái từng mã, và `python3 scripts/check_invariants_coverage.py --audit`.
+
 #### Nguyên tử 1 — Phiên bản là một *đối tượng kiểm tra được bằng máy*, không phải một cái nhãn
 
 - **Bộ 10 thành phần bất biến.** Mỗi phiên bản $v_k = (g, k, \ell_k, \nu_k, h_k, h_{\text{base},k}, \delta_k, \kappa_k, m_k, t_k)$ *(§2.2)* — nghĩa là "phiên bản" không phải chuỗi quảng cáo `"v2.0"` mà là **10 trường số/mã băm** mà hợp đồng có thể phán xử.

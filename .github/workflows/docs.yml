@@ -135,6 +135,13 @@ jobs:
       - name: Bốn cặp mâu thuẫn (4 cặp · 7 phép thử)
         run: python3 scripts/find_contradictions.py --selftest && python3 scripts/find_contradictions.py
 
+      # Cổng thứ mười chín: bất biến nào THỰC SỰ có mã (docs/38). Yellow Paper §8.1
+      # khai 12 bất biến; trước vòng 38 mã chỉ assert 4, và câu "0 vi phạm
+      # INV-01..INV-08" ở §12.1 không thể đúng cũng không thể sai. Cổng đọc THẺ
+      # `INV-nn` trên chính dòng `assert` — chú thích không tính.
+      - name: Sổ 12 bất biến (5 bất biến · 8/12 mã có mã kiểm)
+        run: python3 scripts/check_invariants_coverage.py --selftest && python3 scripts/check_invariants_coverage.py
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04

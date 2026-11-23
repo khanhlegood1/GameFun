@@ -186,30 +186,45 @@ class CurveState:
         return (self.v_sol / LAMPORTS_PER_SOL) / (self.v_tok / TOKEN_DECIMALS)
 
     def check_invariants(self) -> None:
+        """Mỗi assert mang thẻ `INV-nn` khớp **đúng tên** trong `docs/YELLOWPAPER.md` §8.1.
+
+        Thẻ không phải chú thích cho vui: `scripts/check_invariants_coverage.py` đọc
+        chính các dòng này để trả lời câu "bất biến nào thực sự có mã". Trước vòng
+        38, `docs/YELLOWPAPER.md` §12.1 in "0 vi phạm bất biến `INV-01..INV-08`"
+        trong khi mã chỉ có bốn bất biến — và không cổng nào đối chiếu hai câu đó.
+        """
         p = self.profile
-        # INV-01: Supply conservation & 0% platform allocation
+        # INV-01: Bảo toàn Cung & 0% Nền tảng
         assert p.platform_tokens == 0, "INV-01 violated: platform allocation != 0"
         assert (
             p.curve_supply + p.lp_tokens + p.player_pool_tokens + p.creator_tokens
             == TOTAL_SUPPLY_UNITS
         ), "INV-01 violated: total supply != 1B"
         if self.status == "Active":
-            # INV-02: Constant-product non-depletion (v_sol * v_tok >= k)
+            # INV-02: Không Suy giảm Tích Bất biến
             assert self.v_sol * self.v_tok >= p.k, "INV-02 violated: v_sol * v_tok < k"
-            # INV-03: Strict reserve solvency (real_sol == v_sol - Y0 >= 0)
+            # INV-03: Khả năng Thanh toán Dự trữ Thực (mô hình không có rent ⇒ bỏ hạng tử rent)
             assert self.real_sol == self.v_sol - p.virtual_sol_0 >= 0, "INV-03 violated"
-            # INV-04: Token accounting identity & tranche gate
+            assert self.penalty_floor >= 0, "INV-03 violated: penalty_floor < 0"
+            # INV-04: Đồng nhất Hạch toán Token & Khóa Chặng
             assert self.net_sold == p.virtual_tok_0 - self.v_tok, "INV-04 violated"
             assert 0 <= self.net_sold <= self.unlocked_cap <= p.curve_supply, "INV-04 cap violated"
             assert sum(pos.tokens for pos in self.positions.values()) == self.net_sold, "INV-04 pos sum"
+            # INV-06: Thứ tự Cột mốc Tuần tự — m_act ∈ [1, |{C_m}|], không nhảy cóc
+            assert 1 <= self.active_milestone <= len(p.tranche_caps), "INV-06 violated: m_act ngoài dải"
         elif self.status == "Stalled":
-            assert self.real_sol >= 0 and self.penalty_floor >= 0
-            assert self.creator_fee == 0 and self.creator_vest_frozen
+            # INV-03 giữ nguyên ở trạng thái Stall: két sắt không được âm
+            assert self.real_sol >= 0 and self.penalty_floor >= 0, "INV-03 violated (Stalled)"
+            # INV-09: Đóng băng Trừng phạt khi Đình trệ
+            assert self.creator_fee == 0 and self.creator_vest_frozen, "INV-09 violated"
 
     def unlock_next_milestone(self) -> None:
         assert self.status == "Active"
         assert self.active_milestone < len(self.profile.tranche_caps)
+        before = self.active_milestone
         self.active_milestone += 1
+        # INV-06: tăng đúng +1 mỗi lần, không nhảy cóc, không lùi
+        assert self.active_milestone == before + 1, "INV-06 violated: m_act không tăng đúng +1"
         self.check_invariants()
 
     def buy(
@@ -289,6 +304,13 @@ class CurveState:
         self.real_sol += delta_s
         self.net_sold += delta_t
         self.epoch_bought_units += delta_t
+        # INV-08: Giới hạn Hấp thụ Epoch & Trần Ví — chỉ ràng buộc khi cờ cưỡng chế bật.
+        # `enforce_caps=False` là **cửa thoát của kịch bản** (S2/S6 nạp 200 SOL để chạm
+        # trần curve), không phải một tuyên bố rằng trần không tồn tại. Vì vậy bất biến
+        # được assert đúng ở nhánh có cưỡng chế, và ledger ghi rõ điều kiện đó.
+        if enforce_caps:
+            assert pos.tokens <= p.wallet_cap_units, "INV-08 violated: trần ví bị vượt"
+            assert self.epoch_bought_units <= p.epoch_cap_units, "INV-08 violated: trần epoch bị vượt"
         self.check_invariants()
         return (delta_t, gross_charged)
 
@@ -384,6 +406,8 @@ class CurveState:
         p_curve = self.v_sol / self.v_tok
         p_dex = lp_sol / p.lp_tokens
         rel_gap = abs(p_dex - p_curve) / p_curve
+        # INV-10: Liên tục Giá khi Tốt nghiệp DEX — |P_dex − P_curve| / P_curve < 1/S_LP
+        assert rel_gap < 1.0 / lp_sol, f"INV-10 violated: rel_gap={rel_gap:.3e} >= 1/S_LP"
         self.status = "Graduated"
         return (lp_sol, surplus, rel_gap)
 
