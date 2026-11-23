@@ -94,6 +94,12 @@ jobs:
       - name: Khoá xuất mạng (4 bất biến · không HTTP client)
         run: python3 scripts/check_egress_lock.py --selftest
 
+      # Cổng thứ mười hai: 6 cổng HITL có đúng là một THANG không (docs/31).
+      # "Trượt bài dễ thì không qua bài khó" — nên thứ tự bài kiểm là một phần của
+      # bài kiểm. Đọc tiêu chí trực tiếp từ docs/PRD.md §0, không có bản sao.
+      - name: Thang 6 cổng HITL (4 bất biến · 20 hạng mục)
+        run: python3 scripts/check_gate_ladder.py --selftest
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04
