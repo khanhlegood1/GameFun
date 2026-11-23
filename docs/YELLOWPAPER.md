@@ -559,7 +559,7 @@ Mọi độc giả và kiểm toán viên có thể tái lập chính xác 100% 
 | **`S8`** | Miễn phí thoát sớm khi đồng hành qua phiên bản mới | Mua ở `M1`, bán sau khi mở `M2` ($60\text{ s}$): phụ phí phạt = **`0 bps`** | **PASS** |
 | **`S9`** | Tấn công bào mòn bụi `1,000` lệnh siêu nhỏ (`1,000 lamports`) | Lợi nhuận lũy kế kẻ tấn công = **`−20,000 lamports` $< 0$** (két sắt không mất 1 `lamport`) | **PASS** |
 | **`DOC`** | **Đối chiếu tài liệu ↔ mô hình** (mọi hằng số in trong Whitepaper/Yellow Paper) | `K = 2.895 × 10²⁵` / `6.438 × 10²⁵` lamport·unit · rent 9 PDA = `17,567,040` lamports (`17,567,040 = Σ(128+L)·6,960`) · `$2.3672 / 1,000 VPH` · thang lỗ bot `−12.88 / −6.94 / −3.97 / −1.99 / −5.95%` · ROI `+1,158.2 / +801.9 / +450.8 / +380.6%` | **PASS** |
-| **`FUZZ`** | **`10,000` phép toán ngẫu nhiên** (mua/bán/mở mốc/stall/ragequit) | **`0` vi phạm** trên các bất biến mô hình có mã kiểm (`INV-01..INV-04`, `INV-06`, `INV-08..INV-10` — 8/12 mã, xem `docs/38` §3) · `0` cơ hội arbitrage · giá đơn điệu `100%` | **PASS** |
+| **`FUZZ`** | **`10,000` phép toán ngẫu nhiên** (mua/bán/mở mốc/stall/ragequit) | **`0` vi phạm** trên các bất biến mô hình có mã kiểm (`INV-01..INV-12` — 12/12 mã; bốn mã đầu từng chỉ có tên nay kiểm bằng `scripts/verify_invariants.py`, xem `docs/39`) · **21** cổng máy canh `docs/` — mỗi cổng chạy cả phép tự kiểm và phép kiểm repo (`docs/40`) · `0` cơ hội arbitrage · giá đơn điệu `100%` | **PASS** |
 
 ### 12.2. Vị từ Tuân thủ Pháp lý (`05/2025/NQ-CP`) & Phép chiếu Bảo toàn `Off-Chain Fallback`
 

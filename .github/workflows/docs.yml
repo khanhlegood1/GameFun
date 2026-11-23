@@ -61,7 +61,7 @@ jobs:
       # Sinh câu hỏi cho 6 cổng HITL từ docs/PRD.md §0. KHÔNG gọi mạng:
       # cổng CI phải tất định, nên phần "advisory" chỉ kiểm ba bất biến offline.
       - name: Câu hỏi cổng HITL (offline, 3 bất biến)
-        run: python3 scripts/gate_decide.py --self-test
+        run: python3 scripts/gate_decide.py --self-test && python3 scripts/gate_decide.py
 
       # Cổng thứ bảy: bản ghi niềm tin của dự án (docs/26, lấy từ Proactive-Co-Creator).
       # `--tick` so từng giá trị trong pm/spec-*.json với ĐÚNG dòng nguồn trong docs/;
@@ -74,7 +74,7 @@ jobs:
       # trong docs/03 §3, SDK không gọi mạng / không chạm thanh toán, và ngân sách
       # 12 KB gzip của FR-SDK-01 được ĐO chứ không chỉ hứa. Không gọi mạng.
       - name: Hợp đồng SDK game-sdk (5 bất biến · ngân sách 12 KB)
-        run: python3 scripts/check_sdk.py --selftest
+        run: python3 scripts/check_sdk.py --selftest && python3 scripts/check_sdk.py
 
       # Cổng thứ chín: hợp đồng SDK đã KHOÁ chưa (docs/28). check_sdk.py kiểm hợp đồng
       # hiện tại; cổng này kiểm nó không đổi lặng lẽ: khoá ↔ mã ↔ docs/03 §3, và
@@ -86,42 +86,42 @@ jobs:
       # mà docs/29 tìm ra: `send()` từng trả resolve(null) nên mọi kiểu hỏng
       # thành "không biết"; và mã lỗi đổi ở CHỖ GỌI mà không khai.
       - name: Mã lỗi SDK khớp hợp đồng (4 bất biến)
-        run: python3 scripts/check_sdk_errors.py --selftest
+        run: python3 scripts/check_sdk_errors.py --selftest && python3 scripts/check_sdk_errors.py
 
       # Cổng thứ mười một: khoá xuất mạng (docs/30). `AGENTS.md` gọi cổng là "tất định
       # byte-for-byte" nhưng thứ chứng minh điều đó từng là hai CI run xanh. Cổng này
       # đọc mã: không HTTP client trong scripts/, không dịch vụ AI trong workflow.
       - name: Khoá xuất mạng (4 bất biến · không HTTP client)
-        run: python3 scripts/check_egress_lock.py --selftest
+        run: python3 scripts/check_egress_lock.py --selftest && python3 scripts/check_egress_lock.py
 
       # Cổng thứ mười hai: 6 cổng HITL có đúng là một THANG không (docs/31).
       # "Trượt bài dễ thì không qua bài khó" — nên thứ tự bài kiểm là một phần của
       # bài kiểm. Đọc tiêu chí trực tiếp từ docs/PRD.md §0, không có bản sao.
       - name: Thang 6 cổng HITL (4 bất biến · 20 hạng mục)
-        run: python3 scripts/check_gate_ladder.py --selftest
+        run: python3 scripts/check_gate_ladder.py --selftest && python3 scripts/check_gate_ladder.py
 
       # Cổng thứ mười ba: hồ sơ chứng cứ của gói SDK (docs/32). docs/28 và docs/29
       # từng KHÔNG thuộc cổng nào — nên khi SDK lên 0.2.0, docs/28 vẫn ghi hash 0.1.x
       # mà không ai báo. Cổng này quét docs/ tìm hash + phiên bản lạc hậu.
       - name: Hồ sơ chứng cứ SDK (5 bất biến · hash + phiên bản trong docs/)
-        run: python3 scripts/check_sdk_manifest.py --selftest
+        run: python3 scripts/check_sdk_manifest.py --selftest && python3 scripts/check_sdk_manifest.py
 
       # Cổng thứ mười bốn: loại của từng câu tuyên bố (docs/33). AGENTS.md cấm HỨA HẸN
       # nhưng chưa cấm TUYÊN BỐ VỀ THẾ GIỚI — và câu "chưa ai làm" là câu sai được,
       # kiểm được, và làm yếu mọi con số khác trong cùng tài liệu.
       - name: Phân loại tuyên bố (5 bất biến · sổ đăng ký)
-        run: python3 scripts/check_claims.py --selftest
+        run: python3 scripts/check_claims.py --selftest && python3 scripts/check_claims.py
 
       # Cổng thứ mười lăm: biên bản đo (docs/35). Một con số không kèm điều kiện đo thì
       # không kiểm toán được — và bất biến 5 kiểm đúng lỗi "đo trên tệp đã bị đột biến".
       - name: Biên bản đo (6 bất biến · khoá model, phiên bản)
-        run: python3 scripts/receipt_lock.py --selftest
+        run: python3 scripts/receipt_lock.py --selftest && python3 scripts/receipt_lock.py
 
       # Cổng thứ mười sáu: bốn bổ đề của nguyên lý đơn vị (docs/36). Tái lập số đã
       # công bố của CẢ HAI hồ sơ bằng một đường tính độc lập với verify_protocol_math,
       # và kiểm (★) trên toàn miền tham số thay vì điểm mặc định.
       - name: Bốn bổ đề KVU (6 bất biến · biên + tái lập số đã công bố)
-        run: python3 scripts/kvu_invariants.py --selftest
+        run: python3 scripts/kvu_invariants.py --selftest && python3 scripts/kvu_invariants.py
 
       # Cổng thứ mười bảy: việc đã hứa phải có NGƯỜI, NGÀY, HẬU QUẢ, BẰNG CHỨNG (docs/37).
       # P1/P2 từng được đăng ký bằng văn xuôi trong docs/36 §9 — và một hạn nằm trong
@@ -139,8 +139,22 @@ jobs:
       # khai 12 bất biến; trước vòng 38 mã chỉ assert 4, và câu "0 vi phạm
       # INV-01..INV-08" ở §12.1 không thể đúng cũng không thể sai. Cổng đọc THẺ
       # `INV-nn` trên chính dòng `assert` — chú thích không tính.
-      - name: Sổ 12 bất biến (5 bất biến · 8/12 mã có mã kiểm)
+      - name: Sổ 12 bất biến (5 bất biến · 12/12 mã có mã kiểm)
         run: python3 scripts/check_invariants_coverage.py --selftest && python3 scripts/check_invariants_coverage.py
+
+      # Cổng thứ hai mươi: bốn bất biến TỪNG CHỈ CÓ TÊN (docs/39). Chúng không thiếu
+      # người viết — chúng thiếu ĐỐI TƯỢNG DỮ LIỆU. Cổng này assert hàm quyết định
+      # (record_version_milestone, withdraw, allow_new_launch, ôtômat governance) bằng
+      # Fraction, và có phép phá theo ĐÚNG mã lỗi của YP §2.2.
+      - name: Bốn bất biến từng chỉ có tên (4 bất biến · 66 kiểm tra)
+        run: python3 scripts/verify_invariants.py --selftest && python3 scripts/verify_invariants.py
+
+      # Cổng thứ hai mươi mốt: CỔNG NÀO CŨNG PHẢI ĐƯỢC GỌI (docs/40). Ba cổng từng
+      # nhận `&& python3 scripts/x.py` muộn hơn phần còn lại — và check_claims đã ĐỎ
+      # trên `main` suốt nhiều vòng mà CI vẫn xanh, vì CI chỉ chạy --selftest của nó.
+      # Một cổng chỉ tự kiểm chính nó là một cổng chưa bao giờ kiểm repo.
+      - name: Nối cổng (20 cổng · cả chế độ tự kiểm và kiểm repo)
+        run: python3 scripts/check_gate_wiring.py --selftest && python3 scripts/check_gate_wiring.py
 
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit

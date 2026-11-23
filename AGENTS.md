@@ -64,6 +64,8 @@ GameFun/
     ├── check_actions.py         # sổ việc: quá hạn / DONE không bằng chứng ⇒ ĐỎ (docs/37)
     ├── find_contradictions.py   # bốn cặp câu không thể cùng đúng (docs/37)
     ├── check_invariants_coverage.py  # 12 bất biến: cái nào có mã, cái nào chỉ có tên (docs/38)
+    ├── verify_invariants.py     # 4 bất biến từng chỉ có tên: INV-05/07/11/12 (docs/39)
+    ├── check_gate_wiring.py     # mỗi cổng phải được CI gọi cả chế độ kiểm repo (docs/40)
     └── verify_protocol_math.py  # S1–S9 + fuzz, in dòng PASS 100%
 ```
 

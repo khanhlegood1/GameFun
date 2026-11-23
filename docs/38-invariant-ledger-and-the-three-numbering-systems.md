@@ -2,6 +2,7 @@
 
 > **Tài liệu sống:** `docs/38-invariant-ledger-and-the-three-numbering-systems.md`
 > **Trạng thái:** `SCOPING` — đã dựng cổng (`scripts/check_invariants_coverage.py`) + sửa nguồn 3 chỗ
+> **Cập nhật (cùng ngày):** bốn mã `INV-05`, `INV-07`, `INV-11`, `INV-12` **nay đã có mã kiểm** — xem `docs/39`. Mọi con số "8/12" dưới đây là **trạng thái lịch sử của vòng 38**, giữ nguyên để đọc được diễn biến.
 > **Ngày:** 23/11/2026
 > **Đầu vào:** *"làm tiếp"* — không kèm yêu cầu khác
 > **Liên quan:** `docs/YELLOWPAPER` §8.1, §12.1 · `docs/WHITEPAPER` §1.3 · `docs/04` §5 · `docs/37` (sổ việc) · `scripts/verify_protocol_math.py`
@@ -15,7 +16,7 @@
 | # | Câu hỏi | Trả lời |
 |---|---|---|
 | **1** | Có bao nhiêu bất biến được khai? | **12** (`YELLOWPAPER` §8.1, `INV-01..INV-12`) |
-| **2** | Bao nhiêu cái thực sự có phép kiểm trong `scripts/`? | **Trước vòng này: 4.** Sau vòng này: **8** — tôi thêm `INV-06`, `INV-08`, `INV-09`, `INV-10` vào chỗ chúng thực sự thuộc về (§2) |
+| **2** | Bao nhiêu cái thực sự có phép kiểm trong `scripts/`? | **Trước vòng này: 4.** Sau vòng này: **8** — tôi thêm `INV-06`, `INV-08`, `INV-09`, `INV-10` vào chỗ chúng thực sự thuộc về (§2). **Vòng sau (docs/39): 12/12** |
 | **3** | Vậy câu *"0 vi phạm toàn dải 01–08"* ở §12.1 đúng hay sai? | **Không đánh giá được** — đó chính là lỗi. Nay câu đã được viết lại để nêu **đúng 8 mã có mã kiểm** (§4) |
 | **4** | Ba hệ đánh số là gì? | `docs/YELLOWPAPER` §8.1 (12 bất biến **của giao thức**), `docs/WHITEPAPER` §1.3 (cùng mã, khác nghĩa), `docs/04` §5 (8 bất biến **của chương trình Anchor**) (§1) |
 | **5** | Đã sửa gì? | 3 chỗ chữ trong nguồn + **gắn thẻ `INV-nn` cho từng dòng `assert`** để cổng đọc được. Không đổi con số nào (§4) |
@@ -60,7 +61,7 @@ INV-10  ✓ asserted    1        graduate(): rel_gap < 1/S_LP
 INV-11  · unasserted  0        cần đóng dấu BotShare của Oracle
 INV-12  · unasserted  0        cần trạng thái governance (upgrade_authority, terms_hash)
 
-8/12 mã có phép kiểm trong `scripts/` · 4 mã còn là TÊN
+8/12 mã có phép kiểm trong `scripts/` · 4 mã còn là TÊN   ← trạng thái CUỐI VÒNG 38
 ```
 
 ### 2.1. Bốn bất biến tôi **thêm** trong vòng này — và vì sao chúng thuộc về đây
@@ -162,7 +163,7 @@ Thêm một callout vào `WHITEPAPER.md` §1.3 làm `check_specs.py --tick` **đ
 
 | Câu hỏi | Trả lời đúng | Trả lời **sai** |
 |---|---|---|
-| *"12 bất biến của anh đã kiểm hết chưa?"* | *"Tám cái có mã kiểm trong mô hình, bốn cái là đặc tả chờ `programs/` — bảng ở `docs/38` §2, máy canh."* | *"Đã kiểm 12"* — sai; hoặc *"đã kiểm hết"* — không có nghĩa |
+| *"12 bất biến của anh đã kiểm hết chưa?"* | *"Mười hai mã đều có phép kiểm trong mô hình (`docs/39`). Nhưng đó là **hàm quyết định**, không phải chương trình chạy on-chain — `programs/` vẫn trống."* | *"Đã kiểm 12"* mà không nói mô hình hay on-chain — hai tầng khác nhau |
 | *"Sao `INV-05` chỗ này khác chỗ kia?"* | *"Hai hệ đánh số: 12 bất biến giao thức (`YELLOWPAPER` §8.1) và 8 bất biến chương trình (`docs/04` §5). Nay cả hai chỗ đều khai điều đó."* | *"Chắc là cùng nghĩa"* |
 | *"Làm sao biết bảng đó không lạc hậu?"* | *"Bảng không phải nguồn — thẻ `INV-nn` trên dòng `assert` là nguồn. Cổng đọc mã, nên xoá một `assert` là đỏ."* | *"Bảng được cập nhật thường xuyên"* |
 
@@ -173,6 +174,6 @@ Thêm một callout vào `WHITEPAPER.md` §1.3 làm `check_specs.py --tick` **đ
 | # | Việc | Hạn | Nếu quá hạn |
 |---|---|---|---|
 | **1** | Đưa `check_invariants_coverage.py` thành cổng **19** của CI | trong PR này | cổng không tồn tại ⇒ bảng §2 lại thành văn xuôi |
-| **2** | **P6** — bốn mã chưa có mã kiểm: hoặc có `assert`, hoặc bị gỡ khỏi §8.1 | 2026-12-05 | gỡ 4 mã và đổi mọi câu "12 bất biến" thành "8 bất biến có mã kiểm" |
+| **2** | ~~**P6** — bốn mã chưa có mã kiểm~~ **ĐÃ XONG 2026-11-23** — xem `docs/39` | 2026-12-05 | — |
 
 `P6` nằm trong `pm/action-register.json` — cùng cơ chế `docs/37`: có người, có hạn, có hậu quả, và quá hạn là **ĐỎ**.

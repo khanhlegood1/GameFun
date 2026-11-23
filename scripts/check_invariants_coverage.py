@@ -63,14 +63,14 @@ DECLARED = {
     "INV-02": ("asserted", "check_invariants: v_sol * v_tok >= K"),
     "INV-03": ("asserted", "check_invariants: real_sol == v_sol - Y0 >= 0, penalty_floor >= 0"),
     "INV-04": ("asserted", "check_invariants: net_sold == VT - v_tok, trần chặng, tổng position"),
-    "INV-05": ("unasserted", "cần đối tượng VersionRecord (h_k, h_base, nu_k) — mô hình đường cong không có; assert cùng programs/"),
+    "INV-05": ("asserted", "verify_invariants: VersionChain — ν tăng từ điển, h_base nối cha, δ >= θ_diff"),
     "INV-06": ("asserted", "check_invariants + unlock_next_milestone: m_act tăng đúng +1"),
-    "INV-07": ("unasserted", "cần custody token trước Graduation — mô hình chỉ giữ SOL, không giữ token"),
+    "INV-07": ("asserted", "verify_invariants: CustodyLedger — token chỉ rời PDA sau Graduated"),
     "INV-08": ("asserted", "buy(enforce_caps=True): trần ví + trần epoch"),
     "INV-09": ("asserted", "check_invariants(Stalled): creator_fee == 0 và creator_vest_frozen"),
     "INV-10": ("asserted", "graduate(): rel_gap < 1/S_LP"),
-    "INV-11": ("unasserted", "cần đóng dấu BotShare của Oracle — đăng ký P6, cùng lúc với programs/"),
-    "INV-12": ("unasserted", "cần trạng thái governance (upgrade_authority, terms_hash) — ngoài mô hình đường cong; đăng ký P6"),
+    "INV-11": ("asserted", "verify_invariants: LaunchBreaker — BotShare > 0.08 ⇒ đóng; mở sau 2 chu kỳ sạch"),
+    "INV-12": ("asserted", "verify_invariants: Governance — terms_hash bất biến, authority = None từ t0 + 7.776.000 s"),
 }
 
 FAILS: list[str] = []
