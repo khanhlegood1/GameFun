@@ -6,6 +6,7 @@
 | [`Game9K-Yellow-Paper-v1.0.pdf`](./Game9K-Yellow-Paper-v1.0.pdf) | Yellow Paper `v1.0` — đặc tả hình thức (audit) | 17 |
 | [`Game9K-Pitch-Deck.pdf`](./Game9K-Pitch-Deck.pdf) | Pitch deck 14 slides, 16:9, dựng bằng script (không còn nguồn Google Slides) | 14 |
 | [`Game9K-Legal-Brief-VN.pdf`](./Game9K-Legal-Brief-VN.pdf) | Legal brief gửi luật sư — mô hình Game9K + 4 câu hỏi, in 1 tờ A4 (**chưa phải ý kiến pháp lý**) | 1 |
+| [`Game9K-Claims-Register.pdf`](./Game9K-Claims-Register.pdf) | Claims Register — 3 tuyên bố chưa kiểm chứng, **người chịu trách nhiệm có tên + hạn là ngày**, in 1 tờ A4 (**sinh tự động từ `pm/claims-registry.json`**) | 1 |
 
 ## Dựng lại
 
@@ -27,6 +28,10 @@ npm i @fontsource/noto-sans @fontsource/noto-sans-mono \
 
 # Legal Brief — ĐÚNG 1 tờ A4 (script tự fail nếu tràn sang trang 2)
 .venv/bin/python scripts/build_legal_brief.py docs/Game9K-Legal-Brief-VN.pdf
+
+# Claims Register — ĐÚNG 1 tờ A4, sinh từ pm/claims-registry.json
+# (script tự fail nếu tràn trang, hoặc nếu có mục OPEN đã quá review_by so với as_of)
+.venv/bin/python scripts/build_claims_register.py docs/Game9K-Claims-Register.pdf
 
 # Yellow Paper
 .venv/bin/python - <<'PY'
