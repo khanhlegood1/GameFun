@@ -61,6 +61,8 @@ from __future__ import annotations
 
 import argparse
 import json
+from datetime import date
+import os
 import re
 import sys
 import unicodedata
@@ -115,6 +117,10 @@ NAME_DROP = re.compile(r"(?:giống như|như)\s+([A-Z][a-zà-ỹ]{2,}\s+[A-Z][a
 # KHÔNG miễn chỉ vì câu có "chúng tôi" — ngược lại, có "chúng tôi" thì càng rõ là tự so.
 # (Phép phá: "Chúng tôi làm việc này giống như Steve Jobs" từng LỌT vì lý do đó.)
 NAME_DROP_OK = re.compile(r"\btheo\s+|đã (?:nói|viết|chỉ ra)", re.I)
+
+# Ngày hôm nay được GHIM qua biến môi trường để phép thử hạn chạy được mà không
+# phụ thuộc đồng hồ máy. Trong CI: không đặt ⇒ dùng ngày thật.
+TODAY = date.fromisoformat(os.environ.get("GAME9K_TODAY") or date.today().isoformat())
 
 FAILS: list[str] = []
 PASSES = 0
@@ -253,15 +259,58 @@ def violations(registry: dict) -> int:
                 )
 
     # 5. Mỗi mục sổ phải có owner + lý do + hạn xem lại.
+    people = registry.get("accountable", {}) if isinstance(registry.get("accountable"), dict) else {}
+    people = {people["id"]: people} if people.get("id") else {}
     for i, entry in enumerate(registry.get("claims", [])):
         tag = entry.get("match", f"#{i}")[:40]
         check(bool(entry.get("label")) and entry["label"] in LABELS,
               f"sổ claims [{tag}]: `label` phải là một trong {LABELS}")
-        check(bool(entry.get("owner")), f"sổ claims [{tag}]: thiếu `owner`")
+        # 5a. `owner` phải trỏ tới một NGƯỜI có tên, không phải một chức danh.
+        #     "PO", "team", "TBD" là chỗ để lảng tránh — docs/34 §3.
+        owner = entry.get("owner")
+        check(bool(owner), f"sổ claims [{tag}]: thiếu `owner`")
+        if owner:
+            check(owner in people,
+                  f"sổ claims [{tag}]: `owner` = {owner!r} không có trong `accountable` "
+                  "— phải trỏ tới một NGƯỜI có tên, không phải chức danh (docs/34 §3)")
+            if owner in people:
+                check(bool(people[owner].get("name")),
+                      f"sổ accountable [{owner}]: thiếu `name` — chức danh không phải người")
+                check(bool(people[owner].get("basis")),
+                      f"sổ accountable [{owner}]: thiếu `basis` — căn cứ nào chỉ định người này?")
         check(bool(entry.get("reason")), f"sổ claims [{tag}]: thiếu `reason`")
-        check(bool(entry.get("review_by")), f"sổ claims [{tag}]: thiếu `review_by` — không có mục 'để sau'")
+        # 5b. Hạn phải là MỘT NGÀY kiểm được, không phải một cụm mô tả.
+        #     "trước buổi pitch" không kiểm được — không ai biết hôm nào quá hạn.
+        due = entry.get("review_by")
+        check(bool(due), f"sổ claims [{tag}]: thiếu `review_by` — không có mục 'để sau'")
+        if due:
+            try:
+                date.fromisoformat(str(due))
+            except ValueError:
+                FAILS.append(
+                    f"sổ claims [{tag}]: `review_by` = {due!r} không phải ngày YYYY-MM-DD "
+                    "— hạn mô tả thì không bao giờ quá hạn (docs/34 §3)"
+                )
+        # 5c. Quá hạn mà vẫn OPEN ⇒ ĐỎ. Đây là bất biến thứ sáu: một hạn không có
+        #     hậu quả là một hạn trang trí.
+        if due and entry.get("status") == "OPEN":
+            try:
+                if date.fromisoformat(str(due)) < TODAY:
+                    FAILS.append(
+                        f"sổ claims [{tag}]: QUÁ HẠN {due} (hôm nay {TODAY}) mà vẫn OPEN — "
+                        "dùng `suggested_rewrite`, hoặc đổi status (docs/34 §4)"
+                    )
+            except ValueError:
+                pass
+        # 5d. Khi quá hạn thì phải biết làm gì — không có "sẽ tính sau".
         check(entry.get("status") in {"OPEN", "REWRITTEN", "ACCEPTED"},
               f"sổ claims [{tag}]: `status` phải là OPEN / REWRITTEN / ACCEPTED")
+        if entry.get("status") == "OPEN":
+            check(entry.get("block_if_unmet") in {"rewrite", "remove", "accept"},
+                  f"sổ claims [{tag}]: `block_if_unmet` phải là rewrite / remove / accept "
+                  "— quá hạn mà không biết làm gì là mục 'để sau' trá hình")
+            check(bool(entry.get("suggested_rewrite")) or entry.get("block_if_unmet") != "rewrite",
+                  f"sổ claims [{tag}]: `block_if_unmet: rewrite` nhưng thiếu `suggested_rewrite`")
 
     return claims
 
@@ -287,7 +336,8 @@ def selftest() -> int:
             "P2 mục sổ thiếu hạn xem lại",
             "Câu sạch.\n",
             [{"path": "docs/scratch.md", "match": "Câu sạch", "label": "[ĐỀ XUẤT]",
-              "owner": "PO", "reason": "thử", "status": "OPEN", "suggested_rewrite": "x"}],
+              "owner": "T1", "reason": "thử", "status": "OPEN", "suggested_rewrite": "x",
+              "block_if_unmet": "rewrite"}],
             "review_by",
         ),
         (
@@ -317,6 +367,34 @@ def selftest() -> int:
             "không có nhãn",
         ),
         (
+            # docs/34 §3: chức danh không phải người. "PO" từng nằm trong sổ thật.
+            "P8 owner là CHỨC DANH, không phải người",
+            "Câu sạch.\n",
+            [{"path": "docs/scratch.md", "match": "Câu sạch", "label": "[ĐỀ XUẤT]",
+              "owner": "PO", "reason": "thử", "status": "OPEN", "review_by": "2999-01-01",
+              "suggested_rewrite": "x", "block_if_unmet": "rewrite"}],
+            "không có trong `accountable`",
+        ),
+        (
+            # docs/34 §3: "trước buổi pitch" không bao giờ quá hạn.
+            "P9 hạn là cụm mô tả, không phải ngày",
+            "Câu sạch.\n",
+            [{"path": "docs/scratch.md", "match": "Câu sạch", "label": "[ĐỀ XUẤT]",
+              "owner": "T1", "reason": "thử", "status": "OPEN",
+              "review_by": "trước buổi pitch", "suggested_rewrite": "x",
+              "block_if_unmet": "rewrite"}],
+            "không phải ngày YYYY-MM-DD",
+        ),
+        (
+            # BẤT BIẾN 6: quá hạn mà vẫn OPEN thì cổng phải ĐỎ.
+            "P10 quá hạn vẫn OPEN",
+            "Câu sạch.\n",
+            [{"path": "docs/scratch.md", "match": "Câu sạch", "label": "[ĐỀ XUẤT]",
+              "owner": "T1", "reason": "thử", "status": "OPEN", "review_by": "2020-01-01",
+              "suggested_rewrite": "x", "block_if_unmet": "rewrite"}],
+            "QUÁ HẠN",
+        ),
+        (
             # ĐỐI CHỨNG: nếu miễn trừ quá rộng thì cổng vô dụng; nếu quá hẹp thì không
             # viết được tài liệu dạy về tuyên bố. Dòng dưới là giáo cụ ⇒ phải SẠCH.
             "P6 dòng dạy học trong backtick KHÔNG bị bắt",
@@ -325,6 +403,9 @@ def selftest() -> int:
             None,
         ),
     ]
+
+    # Người có tên — dùng cho các phép thử về owner/hạn (docs/34 §3).
+    person = {"id": "T1", "name": "Người thử có tên", "basis": "phép thử"}
 
     saved_root, saved_reg = ROOT, REGISTRY
     ok = 0
@@ -335,7 +416,8 @@ def selftest() -> int:
             (tmp / "docs" / "scratch.md").write_text(body, encoding="utf-8")
             reg = tmp / "pm-registry.json"
             reg.write_text(
-                json.dumps({"claims": claims, "not_claims": []}, ensure_ascii=False),
+                json.dumps({"accountable": person, "claims": claims, "not_claims": []},
+                           ensure_ascii=False),
                 encoding="utf-8",
             )
             ROOT, REGISTRY, FAILS, PASSES = tmp, reg, [], 0
@@ -361,7 +443,7 @@ def selftest() -> int:
         return 1
     print(
         f"CLAIMS SELFTEST: PASS — {ok}/{len(cases)} phép thử đúng chiều "
-        f"(6 phép phá làm cổng đỏ + 1 đối chứng dòng dạy học phải sạch)"
+        f"({len(cases) - 1} phép phá làm cổng đỏ + 1 đối chứng dòng dạy học phải sạch)"
     )
     return 0
 

@@ -150,6 +150,7 @@ jobs:
           python scripts/build_pitch_deck.py /tmp/rebuild/deck.pdf
           python scripts/build_whitepaper_pdf.py docs/WHITEPAPER.md /tmp/rebuild/wp.pdf
           python scripts/build_legal_brief.py /tmp/rebuild/legal.pdf
+          python scripts/build_claims_register.py /tmp/rebuild/claims.pdf
           python - <<'PY'
           import sys
           sys.path.insert(0, "scripts")
@@ -180,6 +181,8 @@ jobs:
               python scripts/build_whitepaper_pdf.py docs/WHITEPAPER.md "$d/wp.pdf"
             GAME9K_FONT_REBUILD=1 XDG_CACHE_HOME="$d" \
               python scripts/build_legal_brief.py "$d/legal.pdf"
+            GAME9K_FONT_REBUILD=1 XDG_CACHE_HOME="$d" \
+              python scripts/build_claims_register.py "$d/claims.pdf"
             GAME9K_FONT_REBUILD=1 XDG_CACHE_HOME="$d" python - <<'PY'
           import os, sys
           sys.path.insert(0, "scripts")
@@ -192,7 +195,7 @@ jobs:
           PY
           done
           fail=0
-          for k in deck wp yp legal; do
+          for k in deck wp yp legal claims; do
             a=$(md5sum "/tmp/cacheA/$k.pdf" | cut -d' ' -f1)
             b=$(md5sum "/tmp/cacheB/$k.pdf" | cut -d' ' -f1)
             if [ "$a" != "$b" ]; then
@@ -204,14 +207,15 @@ jobs:
           done
           exit $fail
 
-      - name: So md5 với bản đã commit (4 tệp)
+      - name: So md5 với bản đã commit (5 tệp)
         run: |
           set -euo pipefail
           fail=0
           for pair in "deck:docs/Game9K-Pitch-Deck.pdf" \
                       "wp:docs/Game9K-Whitepaper-v1.5.pdf" \
                       "yp:docs/Game9K-Yellow-Paper-v1.0.pdf" \
-                      "legal:docs/Game9K-Legal-Brief-VN.pdf"; do
+                      "legal:docs/Game9K-Legal-Brief-VN.pdf" \
+                      "claims:docs/Game9K-Claims-Register.pdf"; do
             k="${pair%%:*}"; f="${pair#*:}"
             a=$(md5sum "$f" | cut -d' ' -f1)
             b=$(md5sum "/tmp/rebuild/$k.pdf" | cut -d' ' -f1)
@@ -235,7 +239,8 @@ jobs:
           for f in ("docs/Game9K-Yellow-Paper-v1.0.pdf",
                     "docs/Game9K-Whitepaper-v1.5.pdf",
                     "docs/Game9K-Pitch-Deck.pdf",
-                    "docs/Game9K-Legal-Brief-VN.pdf"):
+                    "docs/Game9K-Legal-Brief-VN.pdf",
+                    "docs/Game9K-Claims-Register.pdf"):
               r = PdfReader(f)
               text = " ".join((p.extract_text() or "") for p in r.pages)
               hits = [b for b in BAD if b in text]

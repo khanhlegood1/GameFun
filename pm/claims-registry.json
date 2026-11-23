@@ -1,39 +1,67 @@
 {
-  "$comment": "Sổ đăng ký tuyên bố về THẾ GIỚI (docs/33). Mỗi mục = một câu 'chưa ai / đầu tiên / duy nhất' trong tài liệu, kèm nhãn loại và người chịu trách nhiệm. Mục đích KHÔNG phải hợp thức hoá câu đó — mục đích là để mỗi câu có người ký và có hạn xem lại. `check_claims.py` bắt buộc mọi mục có label + owner + reason + review_by.",
-  "policy": "docs/33 §4 — một tuyên bố là [ĐỀ XUẤT] không bao giờ được viết như sự thật về thế giới, và không bao giờ được dẫn làm căn cứ cho một con số khác.",
+  "$comment": "Sổ đăng ký tuyên bố về THẾ GIỚI (docs/33, docs/34). Mỗi mục = một câu 'chưa ai / đầu tiên / duy nhất' trong tài liệu, kèm nhãn loại, NGƯỜI CHỊU TRÁCH NHIỆM CÓ TÊN, và HẠN XEM LẠI LÀ MỘT NGÀY. Mục đích KHÔNG phải hợp thức hoá câu đó — mục đích là để mỗi câu có người ký và có hạn. `check_claims.py` bắt buộc: label + owner + reason + review_by + block_if_unmet.",
+  "$schema_version": 2,
+  "as_of": "2026-11-23",
+  "policy": "docs/33 §4 — một tuyên bố là [ĐỀ XUẤT] không bao giờ được viết như sự thật về thế giới, và không bao giờ được dẫn làm căn cứ cho một con số khác. docs/34 §3 — người chịu trách nhiệm là NGƯỜI, có tên; hạn là NGÀY, kiểm được; quá hạn thì cổng ĐỎ.",
+  "accountable": {
+    "id": "LXK",
+    "name": "Lê Xuân Khánh",
+    "role": "người sáng lập kiêm PO (product owner)",
+    "basis": "Xác nhận trực tiếp của chủ dự án trong phiên làm việc 2026-11-18. Đây là căn cứ DUY NHẤT cho tên này — repo không có văn bản nào khác chỉ định PO (docs/34 §3, quyết định D1).",
+    "scope": "Chịu trách nhiệm về NỘI DUNG ba tuyên bố dưới đây và về việc đóng chúng đúng hạn. KHÔNG phải: người phát ngôn pháp lý, cam kết về kết quả khảo sát, hay cam kết rằng câu viết lại sẽ đúng.",
+    "not_a_legal_signature": "Tên ở đây là trách nhiệm biên tập nội bộ (ai sửa câu này, khi nào), không phải chữ ký pháp lý và không phải đại diện phát ngôn."
+  },
   "claims": [
     {
+      "id": "C1",
       "path": "docs/WHITEPAPER.md",
       "match": "Bệ phóng Vốn đồng bộ theo phiên bản Game đầu tiên trên Thế giới",
       "label": "[CHƯA KIỂM CHỨNG]",
       "status": "OPEN",
-      "owner": "PO",
-      "reason": "Câu này đang nằm ở TIÊU ĐỀ whitepaper. Không có khảo sát nào trong repo chứng minh 'chưa ai làm'; ADR-0023 đòi dẫn chứng trước khi dùng chữ 'đầu tiên'. Tương tự gần nhất đã biết = season/phase token.",
-      "review_by": "trước khi gửi whitepaper cho nhà đầu tư",
+      "owner": "LXK",
+      "owner_name": "Lê Xuân Khánh",
+      "reason": "Câu này đang nằm ở TIÊU ĐỀ whitepaper. Không có khảo sát nào trong repo chứng minh 'chưa ai làm'; docs/33 đòi dẫn chứng trước khi dùng chữ 'đầu tiên'. Tương tự gần nhất đã biết = season/phase token.",
+      "review_by": "2026-12-18",
+      "review_by_label": "30 ngày — trước khi gửi whitepaper cho nhà đầu tư",
       "suggested_rewrite": "Bệ phóng Vốn đồng bộ theo phiên bản game — mỗi phiên bản là một đơn vị tài sản riêng [ĐỀ XUẤT]",
-      "blocked_on": "một khảo sát launchpad (≥ 10 nền tảng) ghi trong docs/00 hoặc ADR"
+      "blocked_on": "một khảo sát launchpad (≥ 10 nền tảng) ghi trong docs/00 hoặc ADR",
+      "block_if_unmet": "rewrite",
+      "block_if_unmet_note": "Quá hạn mà chưa có khảo sát ⇒ dùng câu viết lại ở trên, gỡ chữ 'đầu tiên trên Thế giới' khỏi tiêu đề, rebuild 4 PDF trong cùng PR.",
+      "quote_short": "Tiêu đề whitepaper (dòng 3)"
     },
     {
+      "id": "C2",
       "path": "docs/WHITEPAPER.md",
       "match": "**Vị thế tiên phong độc quyền (Category Creator):** Nền tảng đầu tiên kết hợp",
       "label": "[CHƯA KIỂM CHỨNG]",
       "status": "OPEN",
-      "owner": "PO",
+      "owner": "LXK",
+      "owner_name": "Lê Xuân Khánh",
       "reason": "Hai tuyên bố trong một câu: 'tiên phong độc quyền' và 'nền tảng đầu tiên kết hợp'. Cả hai đều về thị trường, không về sản phẩm. Chưa có khảo sát nào trong repo. Đây là câu mạnh nhất trong mục 'điểm mạnh' — nên cũng là câu dễ bị hỏi nhất trong buổi pitch.",
-      "review_by": "trước buổi pitch với nhà đầu tư kế tiếp",
+      "review_by": "2026-12-18",
+      "review_by_label": "30 ngày — trước buổi pitch với nhà đầu tư kế tiếp",
       "suggested_rewrite": "Bốn cơ chế chưa từng được ghép cùng nhau trong một sản phẩm công khai mà chúng tôi biết [CHƯA KIỂM CHỨNG] — Sổ cái Phiên bản + Đánh giá mù Arena + Bệ phóng khoá theo mốc + Chống bot PoP",
-      "blocked_on": "khảo sát 4 nhóm sản phẩm tương ứng, ghi ở docs/00 §2, kèm ngày"
+      "blocked_on": "khảo sát 4 nhóm sản phẩm tương ứng, ghi ở docs/00 §2, kèm ngày",
+      "block_if_unmet": "rewrite",
+      "block_if_unmet_note": "Quá hạn ⇒ dùng câu viết lại, hoặc gỡ hẳn cụm 'tiên phong độc quyền' khỏi mục điểm mạnh.",
+      "quote_short": "Mục “điểm mạnh” (dòng 583) — “Vị thế tiên phong độc quyền”"
     },
     {
+      "id": "C3",
       "path": "docs/WHITEPAPER.md",
       "match": "Dự án đầu tiên tốt nghiệp tự động 0% chênh lệch giá",
       "label": "[ĐỀ XUẤT]",
       "status": "OPEN",
-      "owner": "PO",
+      "owner": "LXK",
+      "owner_name": "Lê Xuân Khánh",
       "reason": "Cột 'Mô tả kiểm thử' của S8 mô tả điều KIỂM THỬ SẼ chứng minh, không phải điều đã xảy ra. Viết 'Dự án đầu tiên tốt nghiệp tự động' trong cột kiểm thử là đọc thành thành tựu đã có.",
-      "review_by": "trước khi P05 đóng (docs/PRD §0)",
+      "review_by": "2026-12-18",
+      "review_by_label": "30 ngày — trước khi P05 đóng (docs/PRD §0)",
       "suggested_rewrite": "Kiểm thử S8 phải chứng minh: tốt nghiệp tự động với 0% chênh lệch giá và hoàn vốn Ragequit hoạt động [ĐỀ XUẤT]",
-      "blocked_on": "programs/ hiện thực + một lần chạy trên devnet"
+      "blocked_on": "programs/ hiện thực + một lần chạy trên devnet",
+      "block_if_unmet": "rewrite",
+      "block_if_unmet_note": "Quá hạn ⇒ dùng câu viết lại. Không được để cột kiểm thử đọc như kết quả đã có.",
+      "quote_short": "Cột “mô tả kiểm thử” của S8 (dòng 736)"
     }
   ],
   "not_claims": [
@@ -41,6 +69,11 @@
       "pattern": "X đầu tiên",
       "where": "đơn vị thời gian/đếm đứng trước (giờ đầu tiên, khối đầu tiên, bản mẫu đầu tiên, vòng lặp đầu tiên)",
       "why": "Đây là mốc thời gian của CHÍNH dự án, không phải tuyên bố về thị trường. Cổng bỏ qua có chủ đích — xem docstring check_claims.py."
+    },
+    {
+      "pattern": "X chưa từng có",
+      "where": "trạng từ nhấn mạnh (nhu cầu trở nên cấp bách chưa từng có)",
+      "why": "Không có chủ thể thị trường đứng trước. Cổng chỉ tính 'chưa từng có' khi có chủ thể — xem docs/33 §4.4."
     }
   ]
 }
