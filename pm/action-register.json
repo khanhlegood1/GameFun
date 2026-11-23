@@ -103,6 +103,24 @@
       "block_if_unmet": "remove",
       "block_if_unmet_note": "Quá hạn ⇒ gỡ 4 mã khỏi §8.1 và đổi mọi câu '12 bất biến' thành '8 bất biến có mã kiểm'.",
       "evidence_required": "scripts/check_invariants_coverage.py --audit cho 12/12 asserted, HOẶC danh mục YP §8.1 còn 8 mã và không tài liệu nào nói '12'",
+      "status": "DONE",
+      "done_on": "2026-11-23",
+      "evidence": "python3 scripts/verify_invariants.py → 'INVARIANTS: PASS — 66 kiểm tra · 4 bất biến (INV-05, 07, 11, 12)' và check_invariants_coverage.py --audit → 12/12 asserted (tệp: scripts/verify_invariants.py)"
+    },
+    {
+      "id": "P7",
+      "title": "Thống nhất `--selftest` / `--self-test` thành MỘT tên cờ trên mọi cổng",
+      "source": "docs/40-gates-that-never-ran.md §2 (kiểu hỏng 3) và §7 (W1)",
+      "source_doc": "docs/40-gates-that-never-ran.md",
+      "why": "`gate_decide.py` và `check_specs.py` nhận `--self-test`; mười cổng còn lại nhận `--selftest`. Chép một dòng workflow sang cổng khác ⇒ argparse thoát mã 2 với 'unrecognized arguments'. Lỗi ồn ào nhưng dễ bị 'sửa' bằng cách xoá cổng khỏi workflow — đúng thứ docs/40 muốn chặn.",
+      "owner": "AGENT",
+      "agent_allowed": true,
+      "owner_reason": "Đổi tên cờ là việc cơ học, máy kiểm được: mọi cổng nhận cùng một tên, và check_gate_wiring.py đọc được cờ.",
+      "not_before": "2026-11-23",
+      "due": "2026-12-10",
+      "block_if_unmet": "accept",
+      "block_if_unmet_note": "Quá hạn ⇒ chấp nhận hai tên cờ, nhưng phải ghi vào AGENTS.md rằng tên cờ KHÁC NHAU giữa các cổng — để người chép workflow biết mà tra.",
+      "evidence_required": "mọi cổng trong scripts/ nhận cùng một tên cờ, và check_gate_wiring.py vẫn xanh",
       "status": "OPEN"
     }
   ],

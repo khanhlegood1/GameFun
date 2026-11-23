@@ -76,11 +76,24 @@ def load() -> dict:
 
 
 def evidence_paths(ev: str) -> list[Path]:
-    """Rút ra mọi đường dẫn tệp từ chuỗi evidence rồi kiểm chúng có thật."""
+    """Rút ra mọi đường dẫn tệp từ chuỗi evidence rồi kiểm chúng có thật.
+
+    Tên tệp TRẦN (`check_invariants_coverage.py`, không có thư mục) được thử thêm
+    trong `scripts/` và `pm/` — vì đó là cách người ta thật sự viết bằng chứng
+    ("chạy `foo.py`"), và một cổng đỏ vì *cách viết* chứ không vì *bằng chứng sai*
+    là một cổng sẽ bị tắt. Nếu tên tệp không tồn tại ở đâu cả thì vẫn đỏ.
+    """
     out = []
     for m in re.finditer(r"[\w./-]+\.(?:py|md|json|js|yml|yaml|txt)", ev):
-        p = m.group(0).rstrip(".,;)")
-        out.append(ROOT / p)
+        raw = m.group(0).rstrip(".,;)")
+        cand = ROOT / raw
+        if not cand.exists() and "/" not in raw:
+            for sub in ("scripts", "pm", "docs"):
+                alt = ROOT / sub / raw
+                if alt.exists():
+                    cand = alt
+                    break
+        out.append(cand)
     return out
 
 
@@ -182,7 +195,7 @@ def audit(reg: dict) -> int:
 
 
 def selftest() -> int:
-    """5 phép phá + 1 đối chứng, trên corpus tạm."""
+    """6 phép phá + 2 đối chứng, trên corpus tạm."""
     global REGISTRY, FAILS, PASSES
 
     def item(**over) -> dict:
@@ -213,6 +226,12 @@ def selftest() -> int:
         ], "DONE trước `not_before`"),
         ("P6 đối chứng: DONE có bằng chứng thật", [
             item(status="DONE", evidence="scripts/check_actions.py xanh trong CI"),
+        ], None),
+        # Bằng chứng ghi bằng TÊN TỆP TRẦN là cách viết thật của con người
+        # ("chạy check_invariants_coverage.py") — cổng phải giải được, không đỏ
+        # vì cách viết. Xem `evidence_paths`.
+        ("P8 đối chứng: evidence là tên tệp trần", [
+            item(status="DONE", evidence="check_invariants_coverage.py --audit cho 12/12"),
         ], None),
     ]
 
