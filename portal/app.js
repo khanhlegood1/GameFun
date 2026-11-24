@@ -76,6 +76,12 @@ const STATE_LABEL = {
   done: "Xong",
   dropped: "Đã bỏ",
 };
+const SIG_LABEL = {
+  named: "có tên người ký",
+  role_only: "chỉ có chức danh — chưa ai ký",
+  unsigned: "chưa ký",
+  no_file: "không có tệp",
+};
 const ADR_LABEL = {
   proposed: "Chờ ký",
   accepted: "Đã nhận",
@@ -110,7 +116,7 @@ function derive(d) {
   };
   for (const r of rows) r.depth = depth(r.id);
   const roots = open.filter((r) => (blocks[r.id] || []).length);
-  const adr = d.adr.items.map((i) => ({ ...i, isSigned: i.state === "accepted" && !i.needs_signature }));
+  const adr = d.adr.items.map((i) => ({ ...i, isSigned: i.display_state === "accepted" }));
   return {
     today, rows, open, byId, blocks, blockedBy, roots,
     adr,
@@ -122,8 +128,11 @@ function derive(d) {
       overdue: rows.filter((r) => r.state === "overdue").length,
       untouchable: open.filter((r) => r.depth > 0).length,
       adrTotal: adr.length,
-      adrProposed: adr.filter((i) => i.state === "proposed").length,
-      adrMissing: adr.filter((i) => i.state === "missing").length,
+      adrProposed: adr.filter((i) => i.display_state === "proposed").length,
+      adrNamed: adr.filter((i) => i.signature === "named").length,
+      adrRoleOnly: adr.filter((i) => i.signature === "role_only").length,
+      adrUnsigned: adr.filter((i) => i.signature === "unsigned").length,
+      adrMissing: adr.filter((i) => i.display_state === "missing").length,
     },
   };
 }
@@ -180,7 +189,12 @@ function renderKpis(D) {
     { k: "Việc đang mở", v: D.counts.open, s: `trên tổng ${D.counts.total}`, tone: "brand" },
     { k: "Không thể tự bắt đầu", v: D.counts.untouchable, s: "đang chờ một việc khác", tone: "warn" },
     { k: "Quá hạn", v: D.counts.overdue, s: "phải quyết hoặc dời", tone: D.counts.overdue ? "bad" : "ok" },
-    { k: "ADR chờ ký", v: D.counts.adrProposed, s: `trên ${D.counts.adrTotal} ADR`, tone: "warn" },
+    {
+      k: "ADR chưa có người ký",
+      v: D.counts.adrRoleOnly + D.counts.adrUnsigned,
+      s: `${D.counts.adrNamed} đã có tên người · ${D.counts.adrTotal} ADR`,
+      tone: "warn",
+    },
   ];
   for (const x of kpis) {
     const c = el("div", `kpi kpi-${x.tone}`);
@@ -330,7 +344,7 @@ function renderAdr(D) {
   const box = $("#adr-list");
   box.replaceChildren();
   let items = D.adr.slice();
-  if (STATE.adrFilter !== "all") items = items.filter((i) => i.state === STATE.adrFilter);
+  if (STATE.adrFilter !== "all") items = items.filter((i) => (i.signature || i.display_state) === STATE.adrFilter);
   if (!items.length) { box.append(el("p", "muted", "Không có ADR nào trong mục này.")); return; }
   for (const i of items) {
     const card = el(i.file ? "a" : "div", "adr-card");
@@ -341,12 +355,18 @@ function renderAdr(D) {
     }
     const head = el("div", "adr-head");
     head.append(el("span", "id", i.id.replace("ADR-", "")));
-    head.append(chip(i.state, "adr"));
+    // Nhãn trạng thái trên portal KHÔNG phải nhãn trong tệp: dùng display_state.
+    head.append(chip(i.display_state, "adr"));
     card.append(head);
     const title = el("div", "adr-title", i.title.replace(/\*\*/g, "").replace(/`/g, ""));
     card.append(title);
     const foot = el("div", "adr-foot");
     foot.append(el("span", "adr-imp", i.impact || "—"));
+    // Tình trạng chữ ký hiện THÀNH CHỮ, không chỉ bằng màu: một ADR "Accepted"
+    // do chức danh ký vẫn là chưa ký, và người xem phải đọc được điều đó.
+    if (i.file) {
+      foot.append(el("span", `adr-sig sig-${i.signature}`, SIG_LABEL[i.signature] || i.signature));
+    }
     if (i.date) foot.append(el("span", "muted", fmtShort(i.date)));
     if (!i.file) foot.append(el("span", "adr-warn", "chỉ có trong chỉ mục — chưa có tệp trong repo"));
     card.append(foot);

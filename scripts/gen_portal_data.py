@@ -34,10 +34,54 @@ NUM_RE = re.compile(r"ADR-(\d{4})")
 INDEX_ROW_RE = re.compile(r"^\| \[(\d{4})\]\(([^)]+)\) \| (.+?) \| (.+?) \| (.+?) \|")
 
 
+# Ba format header đã gặp thật trong 35 tệp ADR. Không phải "cho chắc" — mỗi
+# dòng dưới đây là một tệp thật đã làm generator đọc ra `None`:
+#   bảng   `| **Trạng thái** | Accepted (chờ ký) |`      ADR-0001..0018
+#   inline `**Trạng thái:** Accepted`                     ADR-0019..0033, 0035, 0036
+#   gạch   `- **Trạng thái:** Proposed`                   ADR-0034
+FIELD_PATTERNS = {
+    "Trạng thái": [
+        r"(?m)^\|\s*\*\*Trạng thái\*\*\s*\|[ \t]*([^|\n]+?)[ \t]*\|",
+        r"(?m)^\*\*Trạng thái:\*\*[ \t]*([^\n]+?)[ \t]*$",
+        r"(?m)^[-*]{0,2}[ \t]*\*\*Trạng thái:\*\*[ \t]*([^\n]+?)[ \t]*$",
+    ],
+    "Ngày": [
+        r"(?m)^\|\s*\*\*Ngày\*\*\s*\|[ \t]*([^|\n]+?)[ \t]*\|",
+        r"(?m)^\*\*Ngày:\*\*[ \t]*([^\n]+?)[ \t]*$",
+        r"(?m)^[-*]{0,2}[ \t]*\*\*Ngày:\*\*[ \t]*([^\n]+?)[ \t]*$",
+    ],
+    "Người đề xuất": [
+        r"(?m)^\|\s*\*\*Người đề xuất\*\*\s*\|[ \t]*([^|\n]+?)[ \t]*\|",
+        r"(?m)^\*\*Người đề xuất:\*\*[ \t]*([^\n]+?)[ \t]*$",
+        r"(?m)^[-*]{0,2}[ \t]*\*\*Người đề xuất:\*\*[ \t]*([^\n]+?)[ \t]*$",
+    ],
+    "Người quyết": [
+        # 1. Bảng meta 2 cột (ADR-0001..0018):  | **Người quyết** | Founder *(chờ ký)* |
+        r"(?m)^\|\s*\*\*Người quyết\*\*\s*\|[ \t]*([^|\n]+?)[ \t]*\|",
+        # 2. Gộp hai vai trên MỘT dòng (ADR-0019..0036):
+        #      **Người đề xuất:** AI agent · **Người quyết:** Project Owner (Lê Xuân Khánh)
+        #      - **Người đề xuất:** ... · **Người quyết:** ...
+        #    Mẫu này phải đứng TRƯỚC mẫu 3 vì `[-*]` khớp cả `*` (in đậm), nên nếu
+        #    đứng sau nó sẽ nuốt mất dòng gộp và trả về chuỗi rỗng.
+        r"(?m)^[-*]{0,2}[ \t]*\*\*Người đề xuất:\*\*[^\n]*?·[^\n]*?\*\*Người quyết:\*\*[ \t]*([^\n]+?)[ \t]*$",
+        # 3. Một mình một dòng, có hay không gạch đầu dòng.
+        r"(?m)^[-*]{0,2}[ \t]*\*\*Người quyết:\*\*[ \t]*([^\n]+?)[ \t]*$",
+    ],
+    "Ảnh hưởng": [
+        r"(?m)^\|\s*\*\*Ảnh hưởng\*\*\s*\|[ \t]*([^|\n]+?)[ \t]*\|",
+        r"(?m)^\*\*Ảnh hưởng:\*\*[ \t]*([^\n]+?)[ \t]*$",
+        r"(?m)^[-*]{0,2}[ \t]*\*\*Ảnh hưởng:\*\*[ \t]*([^\n]+?)[ \t]*$",
+    ],
+}
+
+
 def cell(text: str, label: str) -> str | None:
-    """Đọc một ô trong bảng meta 2 cột ở đầu ADR: `| **Nhãn** | giá trị |`."""
-    m = re.search(r"\| \*\*" + re.escape(label) + r"\*\* \| ([^|\n]+?)\s*\|", text)
-    return m.group(1).strip() if m else None
+    """Đọc một trường header, bất kể nó được viết theo format nào trong ba format."""
+    for pat in FIELD_PATTERNS.get(label, []):
+        m = re.search(pat, text)
+        if m and m.group(1).strip():
+            return m.group(1).strip()
+    return None
 
 
 def classify(status: str) -> str:
@@ -57,6 +101,31 @@ def classify(status: str) -> str:
     if "accepted" in low:
         return "accepted"
     return "unknown"
+
+
+# Vai → người. Ghi TƯỜNG MINH thay vì suy diễn, để khi vai đổi người thì phải
+# sửa đúng một dòng ở đây và cổng sẽ hỏi. `Project Owner` = `Lê Xuân Khánh` là
+# điều 21/35 tệp ADR tự nói ("Project Owner (Lê Xuân Khánh)").
+ROLE_TO_PERSON = {
+    "Project Owner": "Lê Xuân Khánh",
+}
+# Vai KHÔNG có người: chức danh trống, không phân biệt được với một chỗ chưa điền.
+UNFILLED_ROLES = ("Principal Architect", "Tech Lead", "Founder", "Legal", "Security Lead")
+
+
+def person_for(decider: str) -> str:
+    """Người thật đứng sau `Người quyết`, hoặc rỗng nếu đó chỉ là một chức danh.
+
+    Trả rỗng thay vì đoán: "Founder" không phải một cái tên, và một ADR không
+    có tên người thì chưa được ký — dù chữ "Accepted" có ở đó.
+    """
+    d = (decider or "").strip()
+    if not d:
+        return ""
+    for role, who in ROLE_TO_PERSON.items():
+        if role in d:
+            return who
+    return ""
 
 
 def read_adrs() -> tuple[list[dict], dict[str, dict]]:
@@ -92,12 +161,30 @@ def read_adrs() -> tuple[list[dict], dict[str, dict]]:
             "date": cell(text, "Ngày") or "",
             "proposer": cell(text, "Người đề xuất") or "",
             "decider": decider,
+            "decider_person": person_for(decider),
             "impact": cell(text, "Ảnh hưởng") or index.get(num, {}).get("impact", "—"),
             # "chờ ký" là dấu vết của một chữ ký CHƯA có. Nó phải hiện ra.
             "needs_signature": "chờ ký" in decider or "chờ ký" in status,
+            # AI THỰC SỰ KÝ — ba giá trị, không phải boolean, vì có hai cách khác
+            # nhau để chưa ký và chúng cần hai câu trả lời khác nhau:
+            #   named      có tên người trong tệp                     → xong
+            #   role_only  có chức danh ("Principal Architect")      → phải hỏi AI
+            #   unsigned   có chữ "chờ ký" nhưng không có gì khác    → phải ký
+            "signature": ("named" if person_for(decider) else "role_only") if decider else "unsigned",
+            # `display_state`: thứ được PHÉP hiện trên portal. Không bao giờ nói
+            # "đã nhận" cho một ADR chưa có người ký — dù tệp ghi `Accepted`.
+            # Tách khỏi `state` (đọc nguyên văn từ tệp) để không sửa lịch sử:
+            # tệp vẫn nói `Accepted`, portal nói "chờ người ký".
+            "display_state": None,   # điền bên dưới
             "sections": [l.lstrip("# ").strip() for l in text.splitlines() if l.startswith("## ")],
             "bytes": len(text.encode()),
         })
+    for i in items:
+        if i["signature"] in ("role_only", "unsigned"):
+            i["display_state"] = "proposed"
+            i["needs_signature"] = True
+        else:
+            i["display_state"] = i["state"]
     return items, index
 
 
@@ -111,12 +198,14 @@ def missing_rows(items: list[dict], index: dict[str, dict]) -> list[dict]:
             "id": f"ADR-{num}", "num": num, "file": None,
             "title": row["title"].strip("*"),
             "status_raw": row["status_listed"].strip("*"),
-            "state": "missing", "date": "", "proposer": "", "decider": "",
+            "state": "missing", "date": "", "proposer": "", "decider": "", "decider_person": "",
             "impact": row["impact"],
             # Thiếu tệp MÀ chỉ mục còn ghi "chờ ký" là hai thiếu sót chồng lên
             # nhau. Vẫn phải bật cờ — nếu không, cổng 25 bắt được nhưng vì lý do
             # sai (nó tưởng dòng này đã ký).
             "needs_signature": "chờ ký" in row["status_listed"],
+            "signature": "no_file",
+            "display_state": "missing",
             "sections": [], "bytes": 0,
         })
     return out
@@ -145,6 +234,9 @@ def build() -> dict:
                 "proposed": sum(1 for i in items if i["state"] == "proposed"),
                 "accepted": sum(1 for i in items if i["state"] == "accepted"),
                 "needs_signature": sum(1 for i in items if i["needs_signature"]),
+                "signed_by_named_person": sum(1 for i in items if i["signature"] == "named"),
+                "held_by_role_only": sum(1 for i in items if i["signature"] == "role_only"),
+                "unsigned": sum(1 for i in items if i["signature"] == "unsigned"),
             },
         },
         "actions": reg["actions"],
