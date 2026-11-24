@@ -94,6 +94,25 @@ Portal hiện `display_state`. Với 12 ADR `accepted` + `role_only`, portal hi�
 
 **Con số hiện trên portal:** 18 ADR có tên người ký · 17 chỉ có chức danh · 0 hoàn toàn chưa ký · 8 thiếu tệp.
 
+### 2.3. Bốn dòng trên trang, kiểm bằng mắt trên bản thật
+
+`fetch_page https://gamefun9k.vercel.app/?v=5` sau khi merge:
+
+```
+17   ADR chưa có người ký
+     18 đã có tên người · 43 ADR
+```
+
+Và từng thẻ, đọc trên HTML thật:
+
+| ADR | Nhãn trạng thái hiện trên portal | Nhãn chữ ký |
+|---|---|---|
+| 0001, 0009, 0014 | **Chờ ký** | *chỉ có chức danh — chưa ai ký* |
+| 0019, 0020, 0021, 0022 | **Đã nhận** | *có tên người ký* |
+| 0023 … 0036 | **Chờ ký** | *có tên người ký* |
+
+Dòng 0023…0036 là chỗ đáng chú ý: **có tên người ký nhưng vẫn Chờ ký** — vì người đó ghi `Proposed — chờ PO ký`, tức là ADR chờ chính người đã đề xuất nó. Tên người không đồng nghĩa đã ký; hai trường là hai chuyện, và portal nói được cả hai.
+
 ---
 
 ## 3. Cổng đã bắt gì trong vòng này
@@ -135,17 +154,66 @@ Thử phá lại: **FAIL 12 vi phạm** — `ADR-0001 … THẺ VẼ RA "Đã nh
 
 Đây đúng là lỗi `docs/45` §5.4 ghi lần trước, lặp lại ở một cổng khác: **một cổng kiểm dữ liệu sẽ không bao giờ bắt được một lỗi vẽ.** Cùng một sai lầm, hai vòng liên tiếp — nên lần này ghi thành quy tắc: *nếu điều đang bảo vệ là thứ người ta **nhìn thấy**, cổng phải đọc thứ đã vẽ ra.*
 
+### 3.3. Vòng quét của tôi báo xanh sai — và đó là lỗi nặng nhất vòng này
+
+Sau khi sửa cổng 25, tôi chạy vòng quét bằng:
+
+```bash
+out=$(python3 scripts/$s.py 2>&1 | tail -1); case "$out" in *FAIL*) fail=1;; esac
+```
+
+Nó in `FAIL=0`. **Trong khi cổng 23 đang ĐỎ.**
+
+Vì `tail -1` lấy dòng **cuối**, mà dòng cuối của một cổng đỏ là một *dòng chi tiết*:
+
+```
+  - seed_fingerprint lệch tập id — thiếu ['P13'], thừa []
+```
+
+Chữ `FAIL` nằm ở dòng **đầu** của khối lỗi. Phép so khớp không bao giờ chạy.
+
+Đó là lý do CI bắt được còn tôi thì không: CI đọc **mã thoát**, tôi đọc **chữ**.
+
+**Sửa:** `scripts/run_all_gates.sh` — quét theo `rc`, không theo chữ; in 6 dòng cuối khi đỏ; và có bảng `GATE_ARGS` cho cổng cần cờ. Thêm hai cổng mà vòng quét cũ bỏ sót hoàn toàn (`check_sdk_drift`, `check_specs`).
+
+**Và nó bắt ngay một lỗi thứ hai:** `check_specs.py` không có cờ thì in help rồi `return 0`. Chạy trần, nó "xanh" mà không kiểm gì. Vòng quét mới truyền `--tick --self-test`; giờ nó in `SPEC SELF-TEST: PASS — 8 luật, 5 câu hỏi, 4 bất biến`.
+
+Bài học gộp: **một vòng quét báo xanh sai còn tệ hơn không quét**, vì nó biến "tôi chưa kiểm" thành "tôi đã kiểm rồi". Cùng họ với `docs/40` (cổng chưa từng chạy) và với §3.2 (cổng đọc biến thay vì đọc màn hình): cả ba đều là *cổng trả lời một câu hỏi khác câu hỏi được hỏi*.
+
+### 3.4. `seed_fingerprint` không được viết tay — nên P13 phải vào database thật
+
+Thêm P13 vào `pm/action-register.json` làm cổng 23 đỏ, và **đỏ đúng**:
+
+```
+seed_fingerprint lệch tập id — thiếu ['P13'], thừa []
+```
+
+`supabase/VERIFY.json` giữ `md5(title)` của **từng dòng đo từ database thật**. Sổ JSON là nguồn, database là bản chiếu; thêm một việc vào sổ mà không đưa vào database nghĩa là portal/Supabase và repo đã lệch nhau — đúng thứ `docs/44 §3.4` dựng cổng này để bắt.
+
+Nên tôi **không** thêm P13 vào `VERIFY.json` bằng tay. Đã làm theo đúng thứ tự:
+
+1. `gen_supabase_migrations.py --write` → sinh lại `30-pm-seed.sql` (có P13).
+2. Chạy `insert ... on conflict do update` trên project `illulsggtxlseywsuuyg` → `select count(*)` = **13**.
+3. **Đo lại** `md5(title)`, `due`, `status` từ database → ghi vào `VERIFY.json`.
+
+`PM SUPABASE: PASS — 117 kiểm tra · seed khớp 13 việc`.
+
+Đây là điểm khác biệt giữa *bằng chứng* và *lời khai*: nếu tôi gõ `96cb2b5f…` mà không đo, con số đó sẽ đúng cho đến lần ai đó sửa `title` — và không ai biết nó sai.
+
 ---
 
 ## 4. Bằng chứng
 
 ```
-PORTAL: PASS — 209 kiểm tra · 6 bất biến · 12 việc · 43 ADR (35 có tệp, 19 chờ ký, 8 thiếu tệp) · data.json == generator
+TẤT CẢ XANH — 24 cổng (mã thoát, không đọc chữ)          ./scripts/run_all_gates.sh
+PORTAL: PASS — 213 kiểm tra · 6 bất biến · 13 việc · 43 ADR (35 có tệp, 19 chờ ký, 8 thiếu tệp)
 PORTAL SELFTEST: PASS — 6/6 (1 đối chứng + 5 phép phá)
-PORTAL RENDER: PASS — app.js chạy trong DOM tối thiểu · 9 việc vẽ ra · 43 ADR · nhãn khớp dữ liệu
+PORTAL RENDER: PASS — app.js chạy trong DOM tối thiểu · 10 việc vẽ ra · 43 ADR
+PM SUPABASE: PASS — 117 kiểm tra · seed khớp 13 việc
 GATE WIRING: PASS — 45 kiểm tra · 26 cổng trong sổ
-DOCS LINK CHECKS: 218/218 passed
-CONTRADICTIONS: PASS — 7849 kiểm tra · 4 cặp · 49 tệp
+DOCS LINK CHECKS: 221/221 passed
+CONTRADICTIONS: PASS — 7995 kiểm tra · 4 cặp · 50 tệp
+SPEC SELF-TEST: PASS — 1 spec, 8 luật, 5 câu hỏi, 4 bất biến
 ```
 
 Bốn phép phá đã chạy thật trên bản sao, cả bốn đều đỏ đúng chỗ:
@@ -171,7 +239,7 @@ Bốn phép phá đã chạy thật trên bản sao, cả bốn đều đỏ đ�
 
 | | Nợ | Vì sao để lại |
 |---|---|---|
-| **W1** | Chưa có `P*` cho "gán tên người cho 17 ADR do chức danh ký" | Cần biết `Principal Architect` là ai trước. Đã nêu ở §5 câu 1 |
+| ~~**W1**~~ | ~~Chưa có `P*` cho "gán tên người cho 17 ADR do chức danh ký"~~ | **Đã đóng trong cùng vòng:** thành **P13** (`owner: LXK`, hạn 2026-12-15). Không để một phát hiện nằm ngoài sổ việc — `docs/37`: việc không có người và ngày là một mong muốn |
 | **W2** | 8 ADR thiếu tệp | Cần tệp, không cần mã |
 | **W3** | `README.md` của thư mục ADR vẫn ghi `Accepted (chờ ký)` — mâu thuẫn gốc | Sửa nó là sửa tài liệu nguồn của bạn. Portal đã hiện đúng bất kể README nói gì |
 | **W4** | Cổng 25 chưa đọc được format header thứ tư, nếu có | Ba format đã gặp đều xử lý; nếu gặp format mới, cổng 25 sẽ đỏ ở `display_state` rỗng chứ không im lặng |

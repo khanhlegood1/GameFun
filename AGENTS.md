@@ -117,6 +117,14 @@ Thêm vào `scripts/check_pitch_deck.py` trong `FORBIDDEN` (chuỗi đã nghỉ 
 thông điệp nêu rõ kỳ vọng. Một kiểm tra mới phải **thất bại được** — nếu nó luôn đúng thì
 nó không kiểm tra gì.
 
+### Khi quét toàn bộ cổng
+
+Chạy `./scripts/run_all_gates.sh`, **không** tự viết vòng `for` với `tail -1`.
+(`docs/46` §3.3: một vòng quét đọc chữ thay vì đọc **mã thoát** đã báo `FAIL=0` trong khi
+cổng 23 đỏ, vì dòng cuối của khối lỗi là dòng chi tiết chứ không phải dòng `FAIL`.)
+Vòng quét phải: dùng `rc`, in đuôi khi đỏ, và truyền cờ cho cổng cần cờ
+(`check_specs.py` chạy trần thì in help rồi trả 0 — xanh mà không kiểm gì).
+
 ---
 
 ## Quy ước dựng PDF
@@ -166,6 +174,9 @@ Xem `docs/README-PDF.md`.
 | **Cây làm việc tụt về commit cũ** | Sửa xong, commit xong, lần sau mở ra thấy file biến mất | `git status -sb` + `git fetch` **trước khi** kết luận bất cứ điều gì về trạng thái repo |
 | **PDF "tái lập được" giả** | Dựng lại cùng máy → trùng; máy khác → khác | Dựng vào **hai cache khác nhau** rồi so md5 |
 | **Sửa PDF bằng tay** | Lần dựng sau ghi đè, mất công sức | Luôn sửa script, không sửa PDF |
+| **Quét cổng bằng `tail -1`** | Vòng quét in `FAIL=0` trong khi một cổng đỏ — chữ `FAIL` nằm ở dòng *đầu* khối lỗi | Quét theo **mã thoát** (`./scripts/run_all_gates.sh`) |
+| **Cổng chạy trần không làm gì** | `check_specs.py` in help rồi `return 0` ⇒ "xanh" mà không kiểm | Truyền cờ (`--tick --self-test`); cổng không có cờ thì phải trả mã khác 0 |
+| **Cổng kiểm biến thay vì kiểm màn hình** | Bất biến đọc `item.display_state` nên vẫn xanh khi `app.js` vẽ nhãn sai | Nếu điều đang bảo vệ là thứ người ta **nhìn thấy**, đọc thẻ đã vẽ (`docs/46` §3.2) |
 | **Ký tự LaTeX lọt ra bản in** | `\texttt{Stalled}`, `\leftarrow` hiện nguyên văn trong PDF | Sau khi dựng, quét text layer: `pypdf` tìm `texttt`, `leftarrow`, `begin{cases`, `mathrm` |
 
 ---
