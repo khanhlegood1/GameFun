@@ -131,13 +131,25 @@ print(f"… {PASSES} kiểm tra · {len(INVARIANTS)} bất biến · …")
 
 Một con số tự khai thì không kiểm được gì. Cùng họ với `docs/46` §3.3 (vòng quét đọc chữ thay vì đọc mã thoát): **con số mô tả cổng phải do cổng tự tính.**
 
+### 3.4. Tiêu đề P13 ghi "17" trong khi thực tế là 18
+
+Sau khi merge PR #80, đọc lại trang thật thì thấy dòng việc **P13** vẫn ghi:
+
+> Gán tên người thật cho **17** ADR đang do chức danh ký ('Principal Architect' **×14**, …)
+
+Con số đó **đúng lúc viết** (vòng 35, 17 tệp) và **sai ngay khi ADR-0008 vào repo**. Không cổng nào đọc tiêu đề, nên nó đã đi qua: commit → PR → 4 check → merge → trang thật.
+
+Đây là cùng một họ lỗi với §3.3 và `docs/46` §3.3: **một con số gõ tay thì không tự đúng lại**. Và nó đắt hơn hai lỗi kia ở một điểm: tiêu đề P13 là thứ **PO đọc để biết phải làm gì**. Sai một đơn vị nghĩa là PO không biết còn bao nhiêu chữ ký phải xin.
+
+**Đã sửa:** tiêu đề sinh từ dữ liệu, `17 → 18`, `×14 → ×15`. Và thêm **bất biến thứ 8** (`inv_task_numbers_match_data`): đọc số trong tiêu đề P13 rồi so với số dòng `role_only` thật, kể cả số của từng vai. Cổng bắt được ngay lần chạy đầu (`P13 nói 17 … nhưng dữ liệu có 18`).
+
 ---
 
 ## 4. Bằng chứng
 
 ```
 TẤT CẢ XANH — 24 cổng (mã thoát, không đọc chữ)        ./scripts/run_all_gates.sh
-PORTAL: PASS — 235 kiểm tra · 7 bất biến · 13 việc · 43 ADR (43 có tệp, 25 chờ ký, 0 thiếu tệp)
+PORTAL: PASS — 237 kiểm tra · 8 bất biến · 13 việc · 43 ADR (43 có tệp, 25 chờ ký, 0 thiếu tệp)
 PORTAL SELFTEST: PASS — 8/8 (1 đối chứng + 7 phép phá)
 PORTAL RENDER: PASS — app.js chạy trong DOM tối thiểu · 10 việc vẽ ra · 43 ADR
 ```
@@ -181,6 +193,6 @@ Con số "chờ ký" **tăng** một dòng. Đó không phải bước lùi: `AD
 | | Nợ | Vì sao để lại |
 |---|---|---|
 | **W1** | `ROLE_HOLDER` rỗng cho cả 5 vai | Chỉ điền khi bạn xác nhận **từng vai**, không suy ra từ "tôi là PO" (§2.1) |
-| **W2** | 18 ADR vẫn chưa ký | Cần quyết định của bạn ở §5 câu 3. **P13** đang canh việc này, hạn 2026-12-15 |
+| **W2** | 18 ADR vẫn chưa ký | Cần quyết định của bạn ở §5 câu 3. **P13** đang canh việc này, hạn 2026-12-15 — tiêu đề P13 nay tự khớp dữ liệu (bất biến 8, §3.4) |
 | **W3** | `README.md` của ADR vẫn ghi `Accepted (chờ ký)` | Mâu thuẫn gốc vẫn ở tệp nguồn của bạn; portal đã hiện đúng bất kể README nói gì |
 | ~~W4~~ | ~~8 ADR thiếu tệp~~ | **Đóng:** 43/43 |
