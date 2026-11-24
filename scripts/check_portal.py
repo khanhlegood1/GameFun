@@ -179,6 +179,43 @@ def inv_signature_is_a_person(items: list[dict], people: dict) -> None:
               f"{i.get('id')}: `Người quyết` = {decider!r} không có tên người nhưng `needs_signature` = False")
 
 
+def inv_task_numbers_match_data(items: list[dict], data: dict) -> None:
+    """(8) Con số trong TIÊU ĐỀ một việc phải khớp dữ liệu thật.
+
+    P13 tiêu đề ghi "17 ADR đang do chức danh ký" trong khi thực tế là 18 — con
+    số đó đúng vào lúc viết và sai ngay khi ADR-0008 vào repo. Không cổng nào
+    đọc tiêu đề, nên nó đã lọt qua PR, CI, và lên trang thật.
+
+    Đây là họ lỗi mà `docs/47` §3.3 vừa ghi: **một con số gõ tay thì không tự
+    đúng lại**. Việc P13 là thứ PO đọc để biết phải làm gì; nó sai một đơn vị
+    nghĩa là PO không biết còn bao nhiêu chữ ký phải xin.
+    """
+    import re
+    role_only = [i for i in items if i.get("signature") == "role_only"]
+    counts = {}
+    for i in role_only:
+        who = (i.get("decider") or "").strip()
+        counts[who] = counts.get(who, 0) + 1
+    acts = {a.get("id"): a for a in data.get("actions") or []}
+    p13 = acts.get("P13")
+    if not p13:
+        return
+    title = p13.get("title") or ""
+    m = re.search(r"(\d+)\s+ADR", title)
+    check(bool(m), "P13 tiêu đề không nêu số ADR — không kiểm được con số")
+    if m:
+        check(int(m.group(1)) == len(role_only),
+              f"P13 nói {m.group(1)} ADR do chức danh ký nhưng dữ liệu có {len(role_only)} "
+              f"({', '.join(f'{v}×{k}' for k, v in sorted(counts.items(), key=lambda x: -x[1]))})")
+    # Từng vai cũng phải khớp: "Principal Architect ×15" là một con số kiểm được.
+    for role, n in counts.items():
+        base = role.split("(")[0].strip()
+        mk = re.search(re.escape(base) + r"\s*×(\d+)", title)
+        if base.lower().startswith("principal architect") and mk:
+            check(int(mk.group(1)) == n,
+                  f"P13 nói '{base} ×{mk.group(1)}' nhưng có {n} tệp ghi đúng vai đó")
+
+
 def inv_page_wiring() -> None:
     """(6) Trang phải tự nối được. Một đường dẫn sai làm trang trắng và KHÔNG
     cổng nào khác biết."""
@@ -232,6 +269,7 @@ def selftest() -> int:
         inv_no_fake_signature(d["adr"]["items"])
         inv_signature_is_a_person(d["adr"]["items"], d.get("people") or {})
         inv_role_holder_is_not_a_signature(d["adr"]["items"], d.get("people") or {})
+        inv_task_numbers_match_data(d["adr"]["items"], d)
         red = bool(FAILS)
         FAILS, PASSES = [], 0
         cases.append((label, red == must_red))
@@ -339,6 +377,7 @@ def main(argv: list[str] | None = None) -> int:
         lambda: inv_no_fake_signature(data["adr"]["items"]),
         lambda: inv_signature_is_a_person(data["adr"]["items"], data.get("people") or {}),
         lambda: inv_role_holder_is_not_a_signature(data["adr"]["items"], data.get("people") or {}),
+        lambda: inv_task_numbers_match_data(data["adr"]["items"], data),
         inv_page_wiring,
     ]
     for inv in INVARIANTS:
