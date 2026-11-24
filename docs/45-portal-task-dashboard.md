@@ -131,6 +131,29 @@ Trang là tĩnh, nhưng project hiện **chưa có** `outputDirectory` trong c�
 
 ---
 
+## 5.4. Đã live, và đã kiểm bằng mắt trên bản thật
+
+Deploy production `READY` ở commit `30306e8` (sau merge). Đọc trang thật qua HTTPS trả về: **4 KPI** (`9` việc đang mở / `4` không thể tự bắt đầu / `0` quá hạn / `4` ADR chờ ký), **9 dòng việc** đúng nhãn `Đang chờ`, và **36 thẻ ADR** với 20 thẻ đỏ "chỉ có trong chỉ mục".
+
+Ba thứ chỉ thấy khi nhìn bản thật:
+
+| Hiện tượng | Nguyên nhân | Sửa |
+|---|---|---|
+| Người phụ trách hiện `LKLXK` | avatar chứa chữ `LK` **và** tên `LXK` — chữ trong avatar là trang trí nhưng vẫn bị đọc | `aria-hidden="true"` trên avatar |
+| Chữ "Đang đọc `data.json`…" vẫn nằm trong DOM sau khi tải | `hidden` ẩn khỏi màn hình, **không** xoá khỏi cây | đặt `textContent = ""` sau khi nạp |
+
+Không có lỗi nào trong hai lỗi này làm cổng 25/26 đỏ — đó là lý do phải **mở trang thật**, không chỉ chạy cổng.
+
+### 5.5. Bản deploy có lộ tài liệu riêng tư không?
+
+Repo là **private**; trang thì công khai. Đã kiểm: `docs/`, `pm/`, `supabase/`, `scripts/` đều trả **404** trên tên miền production — chúng không nằm trong artefact.
+
+Nhưng một lỗ **có thật**: `outputDirectory: "portal"` chỉ định nghĩa **thư mục phục vụ**, không thu hẹp **phạm vi upload**. `README.md`, `AGENTS.md`, `llms.txt`, `vercel.json` nằm ở gốc nên vẫn được upload (không truy cập được qua URL, nhưng có trong build output). `.vercelignore` hiện chỉ loại `docs/ pm/ supabase/ scripts/ sdk/ assets/ receipts/`.
+
+**Chưa đóng** vì hai lý do: (a) đó là thay đổi phạm vi upload, không phải hiển thị — cần deploy lại và kiểm lại; (b) cách chắc chắn nhất là đổi `outputDirectory` sang một thư mục **chỉ chứa** `portal/`, việc đó đổi cấu trúc repo. Ghi thành **W5**.
+
+---
+
 ## 6. Bằng chứng
 
 Chạy được, không phải tuyên bố:
@@ -168,3 +191,4 @@ Và cổng 25 bắt được một lỗi thật trong generator của chính nó
 | **W2** | Portal chưa đọc Supabase | Xem §7 câu 3. Thêm nguồn thứ hai là thêm chỗ để lệch |
 | **W3** | Không có ảnh chụp màn hình trong tài liệu | Không có trình duyệt trong sandbox (tải Chromium bị chặn). Cổng 26 kiểm bằng DOM thay vì bằng mắt — hẹp hơn, nhưng tất định và chạy được trong CI |
 | **W4** | Chưa có nút "tải `.md`" cho từng ADR | Chỉ là `href` tới tệp; làm khi có người thật sự cần |
+| **W5** | `.vercelignore` chưa loại `README.md`, `AGENTS.md`, `llms.txt` ở gốc | Xem §5.5 — không truy cập được qua URL, nhưng vẫn nằm trong build output. Sửa là thay đổi phạm vi upload, phải deploy lại và kiểm lại |

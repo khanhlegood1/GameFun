@@ -137,8 +137,12 @@ function chip(state, kind) {
 }
 
 function ownerBadge(code) {
+  // Chữ trong avatar là trang trí. Nếu không đánh dấu aria-hidden, trình đọc
+  // màn hình (và mọi bộ trích văn bản) đọc thành "LKLXK" — tên người hai lần.
   const b = el("span", "owner");
-  b.append(el("span", "avatar", code === "AGENT" ? "🤖" : "LK"));
+  const av = el("span", "avatar", code === "AGENT" ? "🤖" : "LK");
+  av.setAttribute("aria-hidden", "true");
+  b.append(av);
   b.append(el("span", "owner-name", code === "AGENT" ? "Tác nhân" : code));
   return b;
 }
@@ -436,6 +440,7 @@ async function boot() {
     renderAdr(D);
     wire(D);
     $("#boot").hidden = true;
+    $("#boot").textContent = "";   // ẩn thôi thì chữ "Đang đọc…" vẫn nằm trong DOM
     $("#app").hidden = false;
   } catch (err) {
     const box = $("#boot");
