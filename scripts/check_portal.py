@@ -189,6 +189,54 @@ def inv_signature_is_a_person(items: list[dict], people: dict) -> None:
               f"{i.get('id')}: `Người quyết` = {decider!r} không có tên người nhưng `needs_signature` = False")
 
 
+def inv_ratification_is_not_a_signature(items: list[dict], data: dict) -> None:
+    """(9) Phê chuẩn KHÔNG phải chữ ký.
+
+    ADR-0044 cho 14 ADR một câu trả lời thứ hai cho "ai chịu trách nhiệm", có số
+    hiệu + ngày. Cám dỗ ngay sau đó là để nó đổi luôn `signature` thành `named`
+    — khi đó `needs_signature` về 0, portal hiện "có tên người ký" cho 14 tệp,
+    và **không tệp nào đổi một byte**.
+
+    Đó là ký khống qua đường vòng, cùng họ với `ROLE_HOLDER` (docs/47 §2.2) và
+    với sửa 14 tệp (docs/48 §3). Ba đường vòng, một cái đích sai.
+    """
+    for i in items:
+        alts = i.get("signer_alternatives") or []
+        if not alts:
+            check(i.get("decided_by") in ("", None),
+                  f"{i.get('id')}: có `decided_by` = {i.get('decided_by')!r} nhưng không có "
+                  "`signer_alternatives` — căn cứ phải đi kèm nguồn")
+            continue
+        # (a) phê chuẩn không được làm chữ ký "có tên"
+        waiting = "chờ ký" in (i.get("decider") or "").lower()
+        check(not (waiting and i.get("signature") == "named"),
+              f"{i.get('id')}: có phê chuẩn ⇒ bị coi là đã ký — nhưng tệp vẫn ghi "
+              f"{i.get('decider')!r}. Phê chuẩn là một quyết định khác, không phải chữ ký")
+        # (b) vẫn phải khai là còn thiếu chữ ký
+        check(i.get("needs_signature") is True,
+              f"{i.get('id')}: có phê chuẩn nên `needs_signature` bị đặt false — "
+              "phê chuẩn không xoá việc tệp chưa có người ký")
+        # (c) phải có ngày + số hiệu, nếu không thì không kiểm được
+        for a in alts:
+            check(bool(a.get("by")), f"{i.get('id')}: `signer_alternatives` thiếu `by`")
+            check(bool(a.get("date")), f"{i.get('id')}: `signer_alternatives` thiếu `date` — "
+                                       "một phê chuẩn không có ngày là một phê chuẩn không kiểm được")
+            check(bool(a.get("person")), f"{i.get('id')}: `signer_alternatives` thiếu `person`")
+
+    # (d) chính ADR phê chuẩn không được tự phê chuẩn mình (§7 của ADR-0044)
+    ratifiers = {i["id"] for i in items if i.get("num") and i.get("file", "").startswith("ADR-00")
+                 and "phe-chuan" in (i.get("file") or "")}
+    for i in items:
+        for a in (i.get("signer_alternatives") or []):
+            check(a.get("by") != i.get("id"),
+                  f"{i.get('id')}: tự phê chuẩn chính nó — một ADR tự ký là vòng tròn")
+    # (e) phê chuẩn chỉ áp cho ADR ĐANG Accepted hoặc Proposed, không cho ADR lạ
+    for i in items:
+        if i.get("signer_alternatives"):
+            check(bool(i.get("file")),
+                  f"{i.get('id')}: được phê chuẩn nhưng không có tệp — không phê chuẩn được thứ không đọc được")
+
+
 def inv_task_numbers_match_data(items: list[dict], data: dict) -> None:
     """(8) Con số trong TIÊU ĐỀ một việc phải khớp dữ liệu thật.
 
@@ -201,6 +249,10 @@ def inv_task_numbers_match_data(items: list[dict], data: dict) -> None:
     nghĩa là PO không biết còn bao nhiêu chữ ký phải xin.
     """
     import re
+    # Đếm theo ĐÚNG thứ tiêu đề P13 nói. Trước đây chỉ có một con số (role_only);
+    # nay có hai nhóm khác nhau và lẫn chúng là lỗi thật (docs/49 §1):
+    #   · role_only đã Accepted mà chưa phê chuẩn  ← "đang có hiệu lực mà không ai ký"
+    #   · role_only toàn bộ                        ← "do chức danh ký, chưa ký"
     role_only = [i for i in items if i.get("signature") == "role_only"]
     counts = {}
     for i in role_only:
@@ -214,9 +266,18 @@ def inv_task_numbers_match_data(items: list[dict], data: dict) -> None:
     m = re.search(r"(\d+)\s+ADR", title)
     check(bool(m), "P13 tiêu đề không nêu số ADR — không kiểm được con số")
     if m:
-        check(int(m.group(1)) == len(role_only),
-              f"P13 nói {m.group(1)} ADR do chức danh ký nhưng dữ liệu có {len(role_only)} "
-              f"({', '.join(f'{v}×{k}' for k, v in sorted(counts.items(), key=lambda x: -x[1]))})")
+        # Nếu tiêu đề nói "đã Accepted" thì so với nhóm Accepted; nếu nói
+        # "do chức danh ký" thì so với toàn bộ role_only. Hai con số, hai câu.
+        if "đã accepted" in title.lower():
+            group = [i for i in role_only if "accepted" in (i.get("status_raw") or "").lower()]
+            label = "đã Accepted mà chưa ai ký"
+        else:
+            group = role_only
+            label = "do chức danh ký"
+        check(int(m.group(1)) == len(group),
+              f"P13 nói {m.group(1)} ADR {label} nhưng dữ liệu có {len(group)} "
+              f"(tổng role_only = {len(role_only)}: "
+              f"{', '.join(f'{v}×{k}' for k, v in sorted(counts.items(), key=lambda x: -x[1]))})")
     # Từng vai cũng phải khớp: "Principal Architect ×15" là một con số kiểm được.
     for role, n in counts.items():
         base = role.split("(")[0].strip()
@@ -280,6 +341,7 @@ def selftest() -> int:
         inv_signature_is_a_person(d["adr"]["items"], d.get("people") or {})
         inv_role_holder_is_not_a_signature(d["adr"]["items"], d.get("people") or {})
         inv_task_numbers_match_data(d["adr"]["items"], d)
+        inv_ratification_is_not_a_signature(d["adr"]["items"], d)
         red = bool(FAILS)
         FAILS, PASSES = [], 0
         cases.append((label, red == must_red))
@@ -362,6 +424,26 @@ def selftest() -> int:
 
     run(role_holder_without_basis,
         "P7 khai 'vai này có người' mà không có căn cứ → đỏ", True)
+    def ratification_used_as_signature(d):
+        # Đường vòng thứ ba: có phê chuẩn ⇒ khai luôn là đã ký, cho `needs_signature`
+        # về 0. Không tệp ADR nào đổi một byte, nhưng portal hết báo "chưa ký".
+        for i in d["adr"]["items"]:
+            if i.get("signer_alternatives"):
+                i.update(signature="named", needs_signature=False, display_state="accepted")
+                return
+        raise AssertionError("corpus không còn dòng nào được phê chuẩn — P8 vô nghĩa")
+
+    run(ratification_used_as_signature,
+        "P8 phê chuẩn bị dùng làm chữ ký (needs_signature về 0) → đỏ", True)
+
+    def ratification_without_date(d):
+        for i in d["adr"]["items"]:
+            if i.get("signer_alternatives"):
+                i["signer_alternatives"][0]["date"] = ""
+                return
+
+    run(ratification_without_date,
+        "P9 phê chuẩn không có ngày → đỏ", True)
     run(phantom_file, "P4 ADR trỏ tới tệp không tồn tại → đỏ", True)
     run(lambda d: None, "P0 đối chứng: data.json gốc → xanh", False)
 
@@ -371,13 +453,13 @@ def selftest() -> int:
     if ok != len(cases):
         print(f"PORTAL SELFTEST: FAIL — {ok}/{len(cases)}")
         return 1
-    print(f"PORTAL SELFTEST: PASS — {len(cases)}/{len(cases)} (1 đối chứng + 7 phép phá)")
+    print(f"PORTAL SELFTEST: PASS — {len(cases)}/{len(cases)} (1 đối chứng + 9 phép phá)")
     return 0
 
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="portal/ phải khớp repo, và không được ký khống.")
-    ap.add_argument("--selftest", action="store_true", help="7 phép phá + đối chứng (CI)")
+    ap.add_argument("--selftest", action="store_true", help="9 phép phá + đối chứng (CI)")
     ap.add_argument("--audit", action="store_true", help="in bảng chiếu")
     args = ap.parse_args(argv)
 
@@ -403,6 +485,7 @@ def main(argv: list[str] | None = None) -> int:
         lambda: inv_signature_is_a_person(data["adr"]["items"], data.get("people") or {}),
         lambda: inv_role_holder_is_not_a_signature(data["adr"]["items"], data.get("people") or {}),
         lambda: inv_task_numbers_match_data(data["adr"]["items"], data),
+        lambda: inv_ratification_is_not_a_signature(data["adr"]["items"], data),
         inv_page_wiring,
     ]
     for inv in INVARIANTS:

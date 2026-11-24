@@ -160,6 +160,35 @@ def person_for(decider: str) -> str:
     return ""
 
 
+# Số hiệu ADR phê chuẩn (docs/49). Đọc từ CHÍNH tệp ADR đó, không từ một bảng
+# viết tay: thêm một ADR vào phạm vi phê chuẩn = sửa tệp ADR, không sửa mã.
+RATIFIER_RE = re.compile(r"^ADR-(\d{4})-phe-chuan.*\.md$")
+
+
+def read_ratifications() -> dict[str, dict]:
+    """{số ADR bị phê chuẩn: {by, date, person}} đọc từ khối mã trong ADR phê chuẩn.
+
+    Vì sao đọc từ ADR chứ không từ `pm/`: câu trả lời cho "quyết định nào có hiệu
+    lực" phải nằm ở cùng một chỗ với quyết định. Hai nguồn là hai chỗ để lệch.
+    """
+    out: dict[str, dict] = {}
+    for path in sorted(ADR_DIR.glob("ADR-*.md")):
+        if not RATIFIER_RE.match(path.name):
+            continue
+        text = path.read_text(encoding="utf-8")
+        num = NUM_RE.search(path.name).group(1)
+        date = cell(text, "Ngày") or ""
+        # Chỉ đọc khối ``` … ``` ĐẦU TIÊN chứa >= 2 mã ADR: đó là danh sách tường
+        # minh. Quét cả tệp sẽ nuốt các mã ADR nhắc trong phần bối cảnh.
+        for block in re.findall(r"```[a-z]*\n(.*?)```", text, re.S):
+            ids = re.findall(r"ADR-(\d{4})", block)
+            if len(ids) >= 2:
+                for i in ids:
+                    out[i] = {"by": f"ADR-{num}", "date": date}
+                break
+    return out
+
+
 def read_adrs() -> tuple[list[dict], dict[str, dict]]:
     index: dict[str, dict] = {}
     readme = ADR_DIR / "README.md"
@@ -229,9 +258,22 @@ def read_adrs() -> tuple[list[dict], dict[str, dict]]:
             "sections": [l.lstrip("# ").strip() for l in text.splitlines() if l.startswith("## ")],
             "bytes": len(text.encode()),
         })
+    ratifs = read_ratifications()
+    for i in items:
+        num = i["num"]
+        r = ratifs.get(num)
+        # `signer_alternatives`: một câu trả lời THỨ HAI cho "ai chịu trách nhiệm",
+        # có số hiệu + ngày. Nó KHÔNG đổi `signature`: tệp vẫn ghi chờ ký thì vẫn
+        # là chưa ký. Nó chỉ cho phép `display_state` nói "có hiệu lực".
+        i["signer_alternatives"] = ([{**r, "person": person_for(i["decider"]) or "PO"}]
+                                    if r else [])
+        i["decided_by"] = r["by"] if r else ""
+
     for i in items:
         if i["signature"] in ("role_only", "unsigned"):
-            i["display_state"] = "proposed"
+            # Có phê chuẩn ⇒ quyết định ĐANG có hiệu lực, nhưng chữ ký trong tệp
+            # vẫn thiếu. Hai sự thật, hiện cả hai.
+            i["display_state"] = "accepted" if i["signer_alternatives"] else "proposed"
             i["needs_signature"] = True
         else:
             i["display_state"] = i["state"]

@@ -49,6 +49,7 @@
 | [0042](ADR-0042-v0-task-manager-va-supabase.md) | **Không áp** `v0-task-manager` (license `null` ở cả fork và gốc · **0 dữ liệu** — task là hằng số trong `useState` · **0 test**) và **không dùng Supabase** (đã loại ở ADR-0015 + 4 tệp). `portal/` **đã có** board Kanban + drawer + `issues`/`issue_events`/`branches` trong Postgres | Proposed — chờ PO ký | Kiến trúc, license |
 | [0043](ADR-0043-hoc-tu-fde-roadmap.md) | **Học từ `Awesome-FDE-Roadmap`** (MIT — lần đầu dùng được): áp **eval nội bộ cho bộ phân loại** (chỗ trống thật — `test-strategy` §5 có 9 chỉ số, **0** về AI), **MVA 1 sprint**, **ai có thể chặn cổng**, **ADR này KHÔNG bao gồm**. Từ chối **Pairwise/AI-judge** (`ADR-0038` §5.2 cấm) và **stack GCP** | Proposed — chờ PO ký | Quy trình, eval |
 
+| [0044](ADR-0044-phe-chuan-14-adr-da-accepted.md) | ADR-0044 — Phê chuẩn 14 ADR đã `Accepted` nhưng chưa ai ký, bằng một quyết định mới | Proposed — chờ PO ký | — |
 ## Cách thêm ADR
 
 1. Copy [`_TEMPLATE.md`](_TEMPLATE.md) — **không** copy một ADR cũ. Mẫu bắt buộc bốn mục:

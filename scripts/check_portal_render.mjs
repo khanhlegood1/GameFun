@@ -155,8 +155,21 @@ const run = async () => {
     const card = adrCards.find((c) => c.all((n) => n.className === "id")[0]?.textContent === item.id.replace("ADR-", ""));
     if (!card) { fails.push(`ADR ${item.id} không được vẽ ra`); continue; }
     const chip = card.all((n) => n.className && n.className.includes("chip"))[0]?.textContent || "";
-    ok(!chip.includes("Đã nhận") || item.state === "accepted",
-      `${item.id} còn 'chờ ký' nhưng hiện ra là "${chip.trim()}"`);
+    // `Đã nhận` hợp lệ trong ĐÚNG HAI trường hợp: tệp ghi Accepted, hoặc có một
+    // ADR phê chuẩn nó (docs/49). Nhưng ở trường hợp thứ hai, thẻ PHẢI nói thêm
+    // rằng tệp vẫn chờ ký — nếu không, người xem chỉ đọc được một nửa sự thật.
+    const ratified = (item.signer_alternatives || []).length > 0;
+    const drawn = card.all((n) => n.className && n.className.includes("adr-"));
+    const allText = drawn.map((n) => n.textContent).join(" ");
+    ok(!chip.includes("Đã nhận") || item.state === "accepted" || ratified,
+      `${item.id} còn 'chờ ký' nhưng hiện ra là "${chip.trim()}" và KHÔNG có phê chuẩn`);
+    if (ratified && chip.includes("Đã nhận")) {
+      ok(allText.includes("có hiệu lực theo"),
+        `${item.id}: hiện "Đã nhận" nhờ phê chuẩn nhưng thẻ KHÔNG nói có hiệu lực theo ADR nào`);
+      ok(allText.includes("chờ ký"),
+        `${item.id}: hiện "Đã nhận" nhưng tệp vẫn ghi chờ ký — thẻ phải nói cả hai, `
+        + `đang hiện "${allText.slice(0, 90)}"`);
+    }
   }
 
   /* 5. Không nhãn người nào được đọc thành "LKLXK".
@@ -209,8 +222,10 @@ const run = async () => {
     if (!card) { fails.push(`ADR ${item.id} không được vẽ ra`); continue; }
     const stateChip = card.all((n) => n.className && /chip-(accepted|proposed|missing)/.test(n.className))[0];
     const drawn = stateChip ? stateChip.textContent.trim() : "(không có nhãn)";
-    ok(!drawn.includes("Đã nhận"),
-      `${item.id} do chức danh "${item.decider}" ký nhưng THẺ VẼ RA "${drawn}" — phải là "Chờ ký"`);
+    const ratified2 = (item.signer_alternatives || []).length > 0;
+    ok(!drawn.includes("Đã nhận") || ratified2,
+      `${item.id} do chức danh "${item.decider}" ký nhưng THẺ VẼ RA "${drawn}" — phải là "Chờ ký" `
+      + `(trừ khi có ADR phê chuẩn; đây ${ratified2 ? "có" : "KHÔNG có"})`);
   }
   ok(roleOnly.length > 0, "không có ADR nào 'role_only' — dữ liệu đổi thì kiểm này vô nghĩa");
   for (const item of roleOnly) {

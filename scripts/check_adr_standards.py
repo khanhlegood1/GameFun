@@ -233,11 +233,24 @@ def inv_supersede_is_bidirectional(adrs: list[dict]) -> None:
     # Bỏ cả hai dạng trước khi quét: dòng template, và cụm trong ngoặc đơn liệt kê
     # trạng thái.
     def strip_template(text: str) -> str:
+        """Bỏ những chỗ `supersede` được NHẮC TÊN, không phải được DÙNG.
+
+        Đo được trên 44 tệp thật — ba dạng, cả ba đều từng cho dương tính giả:
+          1. footer template copy-paste ở mọi ADR (`Template AI-Agile …`);
+          2. cụm enum trong ngoặc (`(Proposed/Accepted/Deprecated/Superseded)`);
+          3. TRÍCH DẪN một chuẩn — ADR-0044 trích GP-16 nguyên văn, và câu trích
+             có chữ `supersede`. Đó là đang nói VỀ chuẩn, không phải đang nói
+             ADR này thay thế ADR nào.
+        Dạng 3 là dạng khó: một ADR viết về chuẩn ADR sẽ luôn nhắc chữ này.
+        """
         lines = []
         for line in text.splitlines():
             if re.search(r"Proposed\s*/\s*Accepted\s*/\s*Deprecated\s*/\s*Superseded", line):
                 continue
             if "Template AI-Agile" in line:
+                continue
+            # (3) dòng trích dẫn: bắt đầu bằng `>` hoặc nằm trong khối trích dẫn.
+            if line.lstrip().startswith(">"):
                 continue
             lines.append(line)
         out = "\n".join(lines)
