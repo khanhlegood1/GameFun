@@ -105,19 +105,36 @@ def classify(status: str) -> str:
 
 # Vai → người. Ghi TƯỜNG MINH thay vì suy diễn, để khi vai đổi người thì phải
 # sửa đúng một dòng ở đây và cổng sẽ hỏi. `Project Owner` = `Lê Xuân Khánh` là
-# điều 21/35 tệp ADR tự nói ("Project Owner (Lê Xuân Khánh)").
+# điều 25 tệp ADR tự nói ("Project Owner (Lê Xuân Khánh)").
 ROLE_TO_PERSON = {
     "Project Owner": "Lê Xuân Khánh",
 }
 # Vai KHÔNG có người: chức danh trống, không phân biệt được với một chỗ chưa điền.
 UNFILLED_ROLES = ("Principal Architect", "Tech Lead", "Founder", "Legal", "Security Lead")
 
+# ─────────────────────────────────────────────────────────────────────────────
+# HAI câu hỏi khác nhau, và tôi từng trả lời gộp chúng thành một (docs/47 §2):
+#
+#   (A) "Ai giữ vai này?"        → ROLE_HOLDER        (một khẳng định về con người)
+#   (B) "ADR này đã được ký chưa?" → signature       (một khẳng định về quyết định)
+#
+# Biết (A) KHÔNG suy ra (B). Người giữ vai vẫn có thể chưa ký một ADR cụ thể.
+# Gộp hai câu này lại là cách một dòng `Principal Architect *(chờ ký)*` biến thành
+# một chữ ký không tồn tại — đúng lỗi docs/46 §2 đi bắt.
+#
+# ⚠ `ROLE_HOLDER` CHỈ được điền khi PO xác nhận TƯỜNG MINH, và mỗi mục phải có
+# căn cứ. Thêm một dòng ở đây KHÔNG làm ADR nào được ký: `signature` chỉ đổi khi
+# chính tệp ADR đổi. Đây là chốt chặn để không ai (kể cả tôi) "sửa" 18 chữ ký
+# bằng cách sửa bảng tra cứu.
+# ─────────────────────────────────────────────────────────────────────────────
+ROLE_HOLDER: dict[str, dict] = {}   # {"Principal Architect": {"person": "...", "basis": "..."}}
+
 
 def person_for(decider: str) -> str:
     """Người thật đứng sau `Người quyết`, hoặc rỗng nếu đó chỉ là một chức danh.
 
-    Trả rỗng thay vì đoán: "Founder" không phải một cái tên, và một ADR không
-    có tên người thì chưa được ký — dù chữ "Accepted" có ở đó.
+    Tra theo thứ tự: tên ghi ngay trong tệp → `ROLE_HOLDER` (chỉ khi PO đã xác
+    nhận). Không đoán bừa: "Founder" không phải một cái tên.
     """
     d = (decider or "").strip()
     if not d:
@@ -125,6 +142,9 @@ def person_for(decider: str) -> str:
     for role, who in ROLE_TO_PERSON.items():
         if role in d:
             return who
+    for role, info in ROLE_HOLDER.items():
+        if role in d:
+            return info["person"]
     return ""
 
 
@@ -162,6 +182,12 @@ def read_adrs() -> tuple[list[dict], dict[str, dict]]:
             "proposer": cell(text, "Người đề xuất") or "",
             "decider": decider,
             "decider_person": person_for(decider),
+            # Vai này có người giữ (do PO xác nhận), và căn cứ là gì. Tách khỏi
+            # `signature`: biết ai giữ vai không có nghĩa ADR này đã được ký.
+            "role_holder": next(
+                ({**info, "role": r} for r, info in ROLE_HOLDER.items() if r in decider),
+                None,
+            ),
             "impact": cell(text, "Ảnh hưởng") or index.get(num, {}).get("impact", "—"),
             # "chờ ký" là dấu vết của một chữ ký CHƯA có. Nó phải hiện ra.
             "needs_signature": "chờ ký" in decider or "chờ ký" in status,

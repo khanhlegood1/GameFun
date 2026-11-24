@@ -367,6 +367,12 @@ function renderAdr(D) {
     if (i.file) {
       foot.append(el("span", `adr-sig sig-${i.signature}`, SIG_LABEL[i.signature] || i.signature));
     }
+    // "Ai giữ vai" KHÁC "ai đã ký". Vai có người giữ nhưng ADR chưa ký thì phải
+    // hiện cả hai vế — nếu chỉ hiện tên, người đọc sẽ tưởng ADR đã được ký.
+    if (i.role_holder && i.signature !== "named") {
+      foot.append(el("span", "adr-role",
+        `${i.role_holder.role}: ${i.role_holder.person} · ADR chưa ký`));
+    }
     if (i.date) foot.append(el("span", "muted", fmtShort(i.date)));
     if (!i.file) foot.append(el("span", "adr-warn", "chỉ có trong chỉ mục — chưa có tệp trong repo"));
     card.append(foot);

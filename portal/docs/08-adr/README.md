@@ -30,6 +30,13 @@
 | [0023](ADR-0023-chinh-sach-tuyen-bo-dau-tien.md) | **Chính sách tuyên bố "đầu tiên":** ba loại `PROVEN`/`NO_COUNTEREXAMPLE`/`NEEDS_DATA`; CI chặn khẳng định thiếu bằng chứng | Proposed — chờ PO ký | Nội dung, pháp lý |
 | [0024](ADR-0024-san-pham-loi-suat-tach-roi.md) | **Sản phẩm lợi suất là dòng riêng, tách hẳn launchpad** (R1 không chung kho tiền · R2 không chung điểm · R3 không chung quyền quản trị) | Proposed — chờ PO ký | Kiến trúc, pháp lý, KVU |
 | [0025](ADR-0025-game9k-foundation-san-pham-loi-suat.md) | **Không dùng tên "Foundation" cho thực thể thương mại**; đề xuất phương án A (phân phối, không tự vận hành) | Proposed — chờ PO ký | Pháp lý, cấu trúc công ty |
+| [0026](ADR-0026-agent-sdk-preact-quy-trinh-dev.md) | ADR-0026 — `nccasia/agent-sdk` (PreAct) áp dụng vào quy trình Dev: **một phần, có điều kiện** | Proposed — chờ PO ký | — |
+| [0027](ADR-0027-starter-kit-game-mau-dua-khung-long.md) | ADR-0027 — Game mẫu đầu tiên của Starter Kit: đua khủng long **tất định** | Proposed — chờ PO ký | — |
+| [0028](ADR-0028-hoc-co-che-cham-tu-arena-open-source.md) | ADR-0028 — Học cơ chế chấm từ mã nguồn mở của Arena: **hai việc làm ngay, hai việc phải hỏi PO** | Proposed — chờ PO ký | — |
+| [0029](ADR-0029-gemini-decisions-api-cho-gate.md) | ADR-0029 — Dùng Gemini Decisions API cho gate P0x: **một công cụ đọc, không phải người ký** | Proposed — chờ PO ký | — |
+| [0030](ADR-0030-proactive-co-creator-cho-muc-con-mo.md) | ADR-0030 — Học `Proactive-Co-Creator`: biến mục còn mở thành **câu hỏi đóng** | Proposed — chờ PO ký | — |
+| [0031](ADR-0031-portal-hien-thi-cau-hoi-mo.md) | ADR-0031 — Portal hiển thị câu hỏi mở: **sinh dữ liệu lúc build, chỉ đọc lúc chạy** | Proposed — chờ PO ký | — |
+| [0032](ADR-0032-nhung-game-ngoai-vao-playground.md) | ADR-0032 — Nhúng game **ngoài** vào Playground: học từ xa, không chép một dòng | Proposed — chờ PO ký | — |
 | [0033](ADR-0033-play-sdk-va-xsolla-sandbox.md) | **Play SDK giống TÊN Poki nhưng không giả vờ tương thích**; Xsolla Pay Station chỉ ở sandbox, cấm live theo REQ-M5-009 | Proposed — chờ PO ký | Kiến trúc, pháp lý |
 | [0034](ADR-0034-ho-so-sandbox-cho-game-ben-thu-ba.md) | **Hồ sơ sandbox khai báo trước** cho game bên thứ ba: danh sách đóng, mặc định từ chối, `Permissions-Policy` tường minh (lấy nguyên tắc của e2b, không lấy mã) | Proposed — chờ PO ký | Kiến trúc, bảo mật |
 | [0035](ADR-0035-openrouter-cho-decisions-api.md) | **OpenRouter là seam thứ hai, không phải quan toà:** cùng bộ primitive `noul`/`choice`/`score`, không chọn ngầm nhà cung cấp, không tự tick; `bandForScore` đọc phân bố (lệch 41,4% so cách vị trí trộn — **chưa biết cách nào đúng**) | Proposed — chờ PO ký | Kiến trúc |

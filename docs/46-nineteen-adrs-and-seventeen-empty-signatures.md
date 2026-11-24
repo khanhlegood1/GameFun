@@ -229,6 +229,11 @@ Bốn phép phá đã chạy thật trên bản sao, cả bốn đều đỏ đ�
 
 ## 5. Ba câu hỏi
 
+> **CẬP NHẬT vòng 36 (`docs/47`):** PO đã xác nhận *"Tôi Lê Xuân Khánh là PO"* ⇒
+> vai `Project Owner` có người giữ. Điều đó KHÔNG ký 18 ADR nào — xem `docs/47` §2
+> về việc hai câu hỏi "ai giữ vai" và "ADR đã ký chưa" bị gộp thành một.
+> Trạng thái hiện tại: **18 ADR vẫn chờ chữ ký**, nay có thêm ADR-0008.
+
 1. **17 ADR do chức danh ký — `Principal Architect` là ai?** Nếu là bạn, sửa 17 dòng `Người quyết` thành tên bạn và cổng tự xanh. Nếu là một vai sẽ do người khác giữ, cần biết ai — vì hiện tại **không ai** chịu trách nhiệm cho 14 quyết định đã `Accepted`. Đây là câu hỏi cho **P8** và nên thành một việc riêng.
 2. **Sửa 17 tệp ADR, hay để `display_state` làm việc đó?** Tôi chọn cách thứ hai vì sửa lịch sử là việc của người, không phải của tôi. Nhưng nếu bạn muốn tệp tự đúng, đó là 17 dòng và một lần chạy.
 3. **8 ADR còn thiếu (0008, 0037–0043) có tệp không?** `README` liệt kê chúng; thư mục không có. Nếu bạn có, thả vào là xong — không cần sửa mã.

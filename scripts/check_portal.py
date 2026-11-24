@@ -112,6 +112,40 @@ def inv_no_fake_signature(items: list[dict]) -> None:
                   f"{i.get('id')}: có 'chờ ký' nhưng `needs_signature` không phải true")
 
 
+def inv_role_holder_is_not_a_signature(items: list[dict], people: dict) -> None:
+    """(7) Biết AI GIỮ MỘT VAI không có nghĩa ADR đó đã được ký.
+
+    PO xác nhận "tôi là Lê Xuân Khánh, PO" — điều đó trả lời câu hỏi *ai giữ vai
+    `Project Owner`*. Nó KHÔNG trả lời *ADR-0017 (`Tech Lead On-chain`) đã được ký
+    chưa*. Hai câu hỏi khác nhau, và gộp chúng là cách một dòng
+    `Principal Architect *(chờ ký)*` biến thành một chữ ký không tồn tại.
+
+    Rủi ro cụ thể mà bất biến này chặn: ai đó (kể cả agent) điền `ROLE_HOLDER`
+    cho `Principal Architect` rồi tưởng đã sửa xong 18 ADR. Bảng tra cứu đó chỉ
+    nói ai giữ vai; chữ ký chỉ đổi khi **chính tệp ADR** đổi.
+    """
+    for i in items:
+        if i.get("state") == "missing":
+            continue
+        holder = i.get("role_holder") or {}
+        if not holder:
+            continue
+        signed = i.get("signature") == "named"
+        # Tên đó có THẬT trong tệp không? Phải so với `decider` — nguyên văn đọc từ
+        # tệp — chứ không phải với `decider_person`, vì chính trường đó là thứ có
+        # thể bị điền từ ROLE_HOLDER. (Lần đầu tôi so với `decider_person` nên phép
+        # phá P6 vẫn xanh: kẻ phá đặt cả hai trường.)
+        name_in_file = bool(holder.get("person")) and holder["person"] in (i.get("decider") or "")
+        check(not signed or name_in_file,
+              f"{i.get('id')}: khai đã ký nhưng tên người ký KHÔNG có trong tệp — `Người quyết` "
+              f"là {i.get('decider')!r}. Biết ai giữ vai {holder.get('role')!r} "
+              f"({holder.get('person')}) không làm ADR này được ký")
+        # Chính điều nguy hiểm: `role_holder` có mặt ⇒ phải có căn cứ.
+        check(bool((holder.get("basis") or "").strip()),
+              f"{i.get('id')}: `role_holder` cho vai {holder.get('role')!r} thiếu `basis` — "
+              "một khẳng định về con người phải có nguồn")
+
+
 def inv_signature_is_a_person(items: list[dict], people: dict) -> None:
     """(6) Người quyết phải là NGƯỜI CÓ TÊN, không phải một chức danh.
 
@@ -197,6 +231,7 @@ def selftest() -> int:
         inv_adr_files_exist(d["adr"]["items"])
         inv_no_fake_signature(d["adr"]["items"])
         inv_signature_is_a_person(d["adr"]["items"], d.get("people") or {})
+        inv_role_holder_is_not_a_signature(d["adr"]["items"], d.get("people") or {})
         red = bool(FAILS)
         FAILS, PASSES = [], 0
         cases.append((label, red == must_red))
@@ -218,10 +253,14 @@ def selftest() -> int:
         raise AssertionError("corpus không có dòng nào 'chờ ký' — phép thử P3 vô nghĩa")
 
     def phantom_file(d):
+        # Nhắm dòng ĐANG CÓ TỆP, không nhắm dòng `missing`: sau khi đủ 43/43 tệp thì
+        # không còn dòng `missing` nào, và phép thử cũ sẽ xanh vì không làm gì cả
+        # — đúng lỗi "cổng chạy trần" của docs/40.
         for i in d["adr"]["items"]:
-            if i["state"] == "missing":
-                i.update(file="ADR-9999-khong-co.md", state="accepted")
-                break
+            if i.get("file") and i["state"] != "missing":
+                i["file"] = "ADR-9999-khong-co.md"
+                return
+        raise AssertionError("corpus không còn dòng nào có tệp — P4 vô nghĩa")
 
     run(drop_action, "P1 bỏ mất một việc khỏi portal → đỏ", True)
     run(bump_owner, "P2 đổi người sở hữu trong portal → đỏ", True)
@@ -236,6 +275,30 @@ def selftest() -> int:
                 return
 
     run(phantom_signature, "P5 ADR do chức danh ký nhưng khai là đã nhận → đỏ", True)
+    def role_holder_used_as_signature(d):
+        # PO xác nhận "tôi là PO". Ai đó điền ROLE_HOLDER cho `Principal Architect`
+        # rồi khai 18 ADR đã được ký — chữ ký mà không tệp nào chứa tên.
+        for i in d["adr"]["items"]:
+            if i["signature"] == "role_only":
+                i.update(role_holder={"role": "Principal Architect",
+                                      "person": "Lê Xuân Khánh", "basis": "PO xác nhận"},
+                         decider_person="Lê Xuân Khánh", signature="named",
+                         needs_signature=False)
+                return
+        raise AssertionError("corpus không còn dòng 'role_only' — P6 vô nghĩa")
+
+    run(role_holder_used_as_signature,
+        "P6 điền ROLE_HOLDER rồi coi 18 ADR là đã ký → đỏ", True)
+
+    def role_holder_without_basis(d):
+        for i in d["adr"]["items"]:
+            if i["signature"] == "role_only":
+                i.update(role_holder={"role": "Principal Architect",
+                                      "person": "", "basis": ""})
+                return
+
+    run(role_holder_without_basis,
+        "P7 khai 'vai này có người' mà không có căn cứ → đỏ", True)
     run(phantom_file, "P4 ADR trỏ tới tệp không tồn tại → đỏ", True)
     run(lambda d: None, "P0 đối chứng: data.json gốc → xanh", False)
 
@@ -245,13 +308,13 @@ def selftest() -> int:
     if ok != len(cases):
         print(f"PORTAL SELFTEST: FAIL — {ok}/{len(cases)}")
         return 1
-    print(f"PORTAL SELFTEST: PASS — {len(cases)}/{len(cases)} (1 đối chứng + 5 phép phá)")
+    print(f"PORTAL SELFTEST: PASS — {len(cases)}/{len(cases)} (1 đối chứng + 7 phép phá)")
     return 0
 
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="portal/ phải khớp repo, và không được ký khống.")
-    ap.add_argument("--selftest", action="store_true", help="5 phép phá + đối chứng (CI)")
+    ap.add_argument("--selftest", action="store_true", help="7 phép phá + đối chứng (CI)")
     ap.add_argument("--audit", action="store_true", help="in bảng chiếu")
     args = ap.parse_args(argv)
 
@@ -266,12 +329,20 @@ def main(argv: list[str] | None = None) -> int:
     if args.audit:
         return audit(data)
 
-    inv_matches_generator()
-    inv_no_action_lost(data)
-    inv_adr_files_exist(data["adr"]["items"])
-    inv_no_fake_signature(data["adr"]["items"])
-    inv_signature_is_a_person(data["adr"]["items"], data.get("people") or {})
-    inv_page_wiring()
+    # Đếm bất biến bằng cách CHẠY chúng, không đếm bằng số gõ tay: con số "6 bất
+    # biến" từng đứng im khi tôi thêm bất biến thứ 7 (docs/47 §3). Một con số tự
+    # khai thì không kiểm được gì.
+    INVARIANTS = [
+        inv_matches_generator,
+        lambda: inv_no_action_lost(data),
+        lambda: inv_adr_files_exist(data["adr"]["items"]),
+        lambda: inv_no_fake_signature(data["adr"]["items"]),
+        lambda: inv_signature_is_a_person(data["adr"]["items"], data.get("people") or {}),
+        lambda: inv_role_holder_is_not_a_signature(data["adr"]["items"], data.get("people") or {}),
+        inv_page_wiring,
+    ]
+    for inv in INVARIANTS:
+        inv()
 
     if FAILS:
         print(f"PORTAL: FAIL — {len(FAILS)} vi phạm / {PASSES + len(FAILS)} kiểm tra")
@@ -279,7 +350,7 @@ def main(argv: list[str] | None = None) -> int:
             print("  -", f)
         return 1
     c = data["adr"]["counts"]
-    print(f"PORTAL: PASS — {PASSES} kiểm tra · 6 bất biến · "
+    print(f"PORTAL: PASS — {PASSES} kiểm tra · {len(INVARIANTS)} bất biến · "
           f"{len(data['actions'])} việc · {c['total']} ADR ({c['on_disk']} có tệp, "
           f"{c['proposed']} chờ ký, {c['listed_but_absent']} thiếu tệp) · data.json == generator")
     return 0
