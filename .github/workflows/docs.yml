@@ -169,6 +169,13 @@ jobs:
       - name: Sổ dự án Supabase (4 bất biến · RLS chỉ-đọc, DONE⇒evidence)
         run: python3 scripts/check_pm_supabase.py --selftest && python3 scripts/check_pm_supabase.py
 
+      # Cổng thứ hai mươi bốn: quyết định phải có MÃ VIỆC, không chỉ có tên người
+      # (docs/44 §3.3). docs/41 §7 giao R1–R4 cho LXK và cả bốn đều không có mã
+      # việc trong pm/action-register.json — quyết định trong văn xuôi là quyết
+      # định không có hạn. Cổng này bắt đúng hình dạng lỗi đó ở MỌI tài liệu.
+      - name: Quyết định có mã việc (3 bất biến · R* phải có P* kèm hạn)
+        run: python3 scripts/check_decisions.py --selftest && python3 scripts/check_decisions.py
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04

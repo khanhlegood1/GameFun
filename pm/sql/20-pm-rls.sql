@@ -23,6 +23,8 @@ alter table pm_action_projects  enable row level security;
 alter table pm_documents        enable row level security;
 alter table pm_notes            enable row level security;
 alter table pm_audit            enable row level security;
+alter table pm_action_deps      enable row level security;
+alter table pm_action_stakeholders enable row level security;
 
 -- Chỉ đọc. `using (true)` ở đây là chấp nhận được vì dữ liệu này KHÔNG phải dữ
 -- liệu người chơi: không PII, không ví, không điểm số. Nếu một ngày có PII, phải
@@ -41,6 +43,10 @@ create policy pm_notes_read on pm_notes
   for select to anon, authenticated using (true);
 create policy pm_audit_read on pm_audit
   for select to anon, authenticated using (true);
+create policy pm_action_deps_read on pm_action_deps
+  for select to anon, authenticated using (true);
+create policy pm_action_stakeholders_read on pm_action_stakeholders
+  for select to anon, authenticated using (true);
 
 -- Nhật ký là APPEND-ONLY: không ai được sửa hay xoá, kể cả service_role.
 revoke update, delete on pm_audit from public;
@@ -48,12 +54,14 @@ revoke update, delete on pm_audit from public;
 -- `service_role` cần ghi để chạy migration/kéo dữ liệu từ pm/*.json.
 grant usage on schema public to service_role;
 grant select, insert, update, delete on
-  pm_people, pm_actions, pm_projects, pm_action_projects, pm_documents, pm_notes
+  pm_people, pm_actions, pm_projects, pm_action_projects, pm_documents, pm_notes,
+  pm_action_deps, pm_action_stakeholders
   to service_role;
 grant select, insert on pm_audit to service_role;
 grant usage, select on sequence pm_audit_id_seq to service_role;
 
 -- Chốt chặn cuối: kể cả khi ai cấp quyền rộng, client vẫn không ghi được.
 revoke insert, update, delete, truncate on
-  pm_people, pm_actions, pm_projects, pm_action_projects, pm_documents, pm_notes, pm_audit
+  pm_people, pm_actions, pm_projects, pm_action_projects, pm_documents, pm_notes, pm_audit,
+  pm_action_deps, pm_action_stakeholders
   from anon, authenticated;

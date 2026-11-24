@@ -95,7 +95,7 @@ def inv_read_only(table: str, meta: dict) -> None:
 
 def inv_verify_evidence(vf: dict) -> None:
     tables = vf.get("tables") or {}
-    check(len(tables) >= 7, f"VERIFY.json chỉ có {len(tables)} bảng, cần ≥ 7")
+    check(len(tables) >= 9, f"VERIFY.json chỉ có {len(tables)} bảng, cần ≥ 9")
     for table, meta in sorted(tables.items()):
         inv_read_only(table, meta)
 
@@ -107,6 +107,8 @@ def inv_verify_evidence(vf: dict) -> None:
     for name, needle in (
         ("DONE mà không có evidence", "evidence"),
         ("đóng sớm trước not_before", "not_before"),
+        ("việc tự chặn chính nó (P1 → P1)", "pm_action_deps_no_self"),
+        ("blocked_by trỏ tới P-id không tồn tại (P3 → P999)", "pm_action_deps_blocked_by_fkey"),
     ):
         p = probes.get(name)
         check(p is not None, f"VERIFY.json thiếu phép thử `{name}`")
@@ -120,12 +122,41 @@ def inv_verify_evidence(vf: dict) -> None:
     check(bool(proj.get("ref")), "VERIFY.json thiếu `project.ref` — không biết đo trên project nào")
     check(bool(re.match(r"\d{4}-\d{2}-\d{2}$", str(proj.get("measured_at", "")))),
           "VERIFY.json thiếu `measured_at` dạng YYYY-MM-DD")
-    check(len(vf.get("migrations_applied") or []) >= 3,
-          "VERIFY.json ghi ít hơn 3 migration đã chạy")
+    check(len(vf.get("migrations_applied") or []) >= 4,
+          "VERIFY.json ghi ít hơn 4 migration đã chạy")
+
+
+def inv_db_matches_register(vf: dict) -> None:
+    """Bằng chứng phải KHỚP sổ: sửa JSON mà không đo lại database là ĐỎ.
+
+    Bài học docs/44 §3.4: một ô `verified: true` viết tay là một lời tuyên bố.
+    Dấu vân tay md5(title)+due+status đo từ `pg_class` mới là bằng chứng — và nó
+    bắt được đúng lỗi đã xảy ra: seed sinh lại nhưng database vẫn giữ bản cũ.
+    """
+    import hashlib
+
+    fp = vf.get("seed_fingerprint") or {}
+    check(bool(fp), "VERIFY.json thiếu `seed_fingerprint` — không có bằng chứng dòng nào thật sự ở trong DB")
+    if not fp or not REG.exists():
+        return
+    acts = {a["id"]: a for a in json.loads(REG.read_text(encoding="utf-8"))["actions"]}
+    check(set(fp) == set(acts),
+          f"seed_fingerprint lệch tập id — thiếu {sorted(set(acts) - set(fp))}, thừa {sorted(set(fp) - set(acts))}")
+    for aid, row in sorted(fp.items()):
+        a = acts.get(aid)
+        if not a:
+            continue
+        want = hashlib.md5(a["title"].encode()).hexdigest()
+        check(row.get("md5_title") == want,
+              f"{aid}: md5(title) trong DB ({row.get('md5_title')}) ≠ sổ JSON ({want}) — DB đang giữ bản cũ")
+        check(str(row.get("due")) == str(a.get("due")),
+              f"{aid}: `due` trong DB ({row.get('due')}) ≠ sổ JSON ({a.get('due')})")
+        check(row.get("status") == a.get("status"),
+              f"{aid}: `status` trong DB ({row.get('status')}) ≠ sổ JSON ({a.get('status')})")
 
 
 def selftest() -> int:
-    """Bốn phép phá trên bản sao TẠM — không sửa tệp thật."""
+    """Năm phép phá + một đối chứng, trên bản sao TẠM — không sửa tệp thật."""
     global VERIFY, FAILS, PASSES
     import tempfile
 
@@ -142,7 +173,9 @@ def selftest() -> int:
             p.write_text(json.dumps(data), encoding="utf-8")
             VERIFY = p
             FAILS, PASSES = [], 0
-            inv_verify_evidence(json.loads(p.read_text(encoding="utf-8")))
+            payload = json.loads(p.read_text(encoding="utf-8"))
+            inv_verify_evidence(payload)
+            inv_db_matches_register(payload)
             red = bool(FAILS)
         VERIFY = real
         FAILS, PASSES = [], 0
@@ -155,6 +188,13 @@ def selftest() -> int:
     run(lambda d: d["constraint_probes"].__setitem__(
             0, {**d["constraint_probes"][0], "blocked": False}),
         "P3 ràng buộc DONE không chặn → đỏ", True)
+    # P4: dấu vân tay KHÔNG khớp DB (đúng lỗi thật đã xảy ra ở P5/P6: sổ đổi
+    # due, seed sinh lại, nhưng database vẫn giữ bản cũ).
+    run(lambda d: d["seed_fingerprint"]["P5"].update(due="2099-01-01"),
+        "P4 dấu vân tay DB lệch sổ (due) → đỏ", True)
+    # P5: md5(title) lệch ⇒ DÒNG ĐÃ ĐỔI mà không đo lại.
+    run(lambda d: d["seed_fingerprint"]["P9"].update(md5_title="0" * 32),
+        "P5 md5(title) DB lệch sổ → đỏ", True)
     run(lambda d: None, "P0 đối chứng: VERIFY.json gốc → xanh", False)
 
     ok = sum(1 for _, o in cases if o)
@@ -163,13 +203,13 @@ def selftest() -> int:
     if ok != len(cases):
         print(f"PM SUPABASE SELFTEST: FAIL — {ok}/{len(cases)}")
         return 1
-    print(f"PM SUPABASE SELFTEST: PASS — {len(cases)}/{len(cases)} (1 đối chứng + 3 phép phá)")
+    print(f"PM SUPABASE SELFTEST: PASS — {len(cases)}/{len(cases)} (1 đối chứng + 5 phép phá)")
     return 0
 
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Sổ dự án trên Supabase khớp docs + pm/*.json.")
-    ap.add_argument("--selftest", action="store_true", help="4 phép thử (CI)")
+    ap.add_argument("--selftest", action="store_true", help="5 phép phá + đối chứng (CI)")
     args = ap.parse_args(argv)
 
     if args.selftest:
@@ -179,6 +219,7 @@ def main(argv: list[str] | None = None) -> int:
     if VERIFY.exists():
         vf = json.loads(VERIFY.read_text(encoding="utf-8"))
         inv_verify_evidence(vf)
+        inv_db_matches_register(vf)
         inv_migrations_match_source()
         inv_seed_covers_register()
 
@@ -190,7 +231,7 @@ def main(argv: list[str] | None = None) -> int:
     vf = json.loads(VERIFY.read_text(encoding="utf-8"))
     print(
         f"PM SUPABASE: PASS — {PASSES} kiểm tra · 4 bất biến · "
-        f"7 bảng RLS chỉ-đọc · {len(vf['constraint_probes'])} phép thử ràng buộc bị chặn · "
+        f"{len(vf['tables'])} bảng RLS chỉ-đọc · {len(vf['constraint_probes'])} phép thử ràng buộc bị chặn · "
         f"seed khớp {len(json.loads(REG.read_text(encoding='utf-8'))['actions'])} việc"
     )
     return 0

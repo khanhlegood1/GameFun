@@ -19,7 +19,14 @@
       "block_if_unmet": "revert",
       "block_if_unmet_note": "Quá hạn ⇒ DÙNG số biên rút gọn và ghi rõ spec chưa chặn; hoặc gỡ câu 'escrow ≥ 0 được bảo đảm trước launch' khỏi mọi tài liệu.",
       "evidence_required": "docs/YELLOWPAPER.md §5.1 hoặc §6.1 có câu ràng buộc biên, VÀ scripts/kvu_invariants.py lemma3 vẫn xanh",
-      "status": "OPEN"
+      "status": "OPEN",
+      "blocked_by": [
+        "P8"
+      ],
+      "stakeholder": [
+        "LXK"
+      ],
+      "blocked_by_note": "Ràng buộc biên S_LP thuộc hồ sơ đường cong; nếu P8 chọn dịch-vụ-kiểm-định-first thì thứ tự sửa spec đổi"
     },
     {
       "id": "P2",
@@ -35,7 +42,11 @@
       "block_if_unmet": "revert",
       "block_if_unmet_note": "Quá hạn ⇒ gỡ con số '11 SOL/giờ' khỏi mọi tài liệu trình bày và chỉ nói 'gộp theo giờ'.",
       "evidence_required": "docs/YELLOWPAPER.md §4.3 chứa một câu về rent/gộp",
-      "status": "OPEN"
+      "status": "OPEN",
+      "blocked_by": [],
+      "stakeholder": [
+        "LXK"
+      ]
     },
     {
       "id": "P3",
@@ -51,7 +62,11 @@
       "block_if_unmet": "remove",
       "block_if_unmet_note": "Quá hạn ⇒ gỡ dòng 'md5 khớp' khỏi docs/README-PDF.md vì nó không còn đúng.",
       "evidence_required": "requirements.txt có reportlab/fonttools/pypdf/pypdfium2, và docs/README-PDF.md trỏ tới nó",
-      "status": "OPEN"
+      "status": "OPEN",
+      "blocked_by": [],
+      "stakeholder": [
+        "AGENT"
+      ]
     },
     {
       "id": "P4",
@@ -69,7 +84,11 @@
       "evidence_required": "scripts/check_actions.py --selftest xanh trong .github/workflows/docs.yml",
       "status": "DONE",
       "done_on": "2026-11-23",
-      "evidence": "scripts/check_actions.py --selftest → 'ACTION LOCK SELFTEST: PASS — 7/7 phép thử đúng chiều' (tệp: scripts/check_actions.py)"
+      "evidence": "scripts/check_actions.py --selftest → 'ACTION LOCK SELFTEST: PASS — 7/7 phép thử đúng chiều' (tệp: scripts/check_actions.py)",
+      "blocked_by": [],
+      "stakeholder": [
+        "AGENT"
+      ]
     },
     {
       "id": "P5",
@@ -87,7 +106,11 @@
       "evidence_required": "verify_protocol_math.py có assert biên cho cả VBOND-LV và VGBC-4T; chạy lại vẫn 100%",
       "status": "DONE",
       "done_on": "2026-11-23",
-      "evidence": "scripts/verify_protocol_math.py in 'margin (★) = 1.251170x / 4.790421x' và assert đúng hai giá trị đó (tệp: scripts/verify_protocol_math.py)"
+      "evidence": "scripts/verify_protocol_math.py in 'margin (★) = 1.251170x / 4.790421x' và assert đúng hai giá trị đó (tệp: scripts/verify_protocol_math.py)",
+      "blocked_by": [],
+      "stakeholder": [
+        "AGENT"
+      ]
     },
     {
       "id": "P6",
@@ -105,7 +128,11 @@
       "evidence_required": "scripts/check_invariants_coverage.py --audit cho 12/12 asserted, HOẶC danh mục YP §8.1 còn 8 mã và không tài liệu nào nói '12'",
       "status": "DONE",
       "done_on": "2026-11-23",
-      "evidence": "python3 scripts/verify_invariants.py → 'INVARIANTS: PASS — 66 kiểm tra · 4 bất biến (INV-05, 07, 11, 12)' và check_invariants_coverage.py --audit → 12/12 asserted (tệp: scripts/verify_invariants.py)"
+      "evidence": "python3 scripts/verify_invariants.py → 'INVARIANTS: PASS — 66 kiểm tra · 4 bất biến (INV-05, 07, 11, 12)' và check_invariants_coverage.py --audit → 12/12 asserted (tệp: scripts/verify_invariants.py)",
+      "blocked_by": [],
+      "stakeholder": [
+        "AGENT"
+      ]
     },
     {
       "id": "P7",
@@ -121,7 +148,11 @@
       "block_if_unmet": "accept",
       "block_if_unmet_note": "Quá hạn ⇒ chấp nhận hai tên cờ, nhưng phải ghi vào AGENTS.md rằng tên cờ KHÁC NHAU giữa các cổng — để người chép workflow biết mà tra.",
       "evidence_required": "mọi cổng trong scripts/ nhận cùng một tên cờ, và check_gate_wiring.py vẫn xanh",
-      "status": "OPEN"
+      "status": "OPEN",
+      "blocked_by": [],
+      "stakeholder": [
+        "AGENT"
+      ]
     },
     {
       "id": "P8",
@@ -137,7 +168,100 @@
       "block_if_unmet": "accept",
       "block_if_unmet_note": "Quá hạn ⇒ giữ nguyên launchpad-first và ghi vào whitepaper rằng dịch vụ kiểm định là nguồn thu giai đoạn 2 — tức chấp nhận rủi ro Cold-Start 3 bên đã nêu ở §8.",
       "evidence_required": "docs/WHITEPAPER.md §3 hoặc §5.4 có câu trả lời rõ cho thứ tự sản phẩm, HOẶC docs/41 được đánh dấu ACCEPTED với lý do giữ nguyên",
-      "status": "OPEN"
+      "status": "OPEN",
+      "blocked_by": [],
+      "stakeholder": [
+        "LXK"
+      ]
+    },
+    {
+      "id": "P9",
+      "title": "Tách `Trust Stamp` (miễn phí) khỏi báo cáo chẩn đoán (bán) thành HAI mục doanh thu riêng",
+      "source": "docs/41-testing-is-the-product.md §2 + §7 (R2)",
+      "source_doc": "docs/41-testing-is-the-product.md",
+      "why": "§5.4 nguồn thu #5 ('gói phân tích playtest cho studio') ĐÃ là issuer-pays nhưng chưa gọi tên. Không tách thì điểm Arena là thứ mua được, và mô hình chết về uy tín (Moody's 2008).",
+      "owner": "LXK",
+      "agent_allowed": false,
+      "owner_reason": "Tách hai sản phẩm ⇒ đổi §5.4 whitepaper ⇒ rebuild PDF + deck. Cần người quyết nội dung.",
+      "not_before": "2026-11-23",
+      "due": "2026-12-15",
+      "block_if_unmet": "revert",
+      "block_if_unmet_note": "Quá hạn ⇒ giữ nguyên một nguồn thu và ghi rõ trong whitepaper rằng điểm công khai LÀ thứ studio trả tiền để có.",
+      "evidence_required": "docs/WHITEPAPER.md §5.4 có hai mục riêng, một mục ghi rõ 'không bán'",
+      "status": "OPEN",
+      "blocked_by": [
+        "P8"
+      ],
+      "stakeholder": [
+        "LXK"
+      ],
+      "blocked_by_note": "Không tách được trước khi P8 chọn thứ tự sản phẩm"
+    },
+    {
+      "id": "P10",
+      "title": "Cổng canh 'điểm công khai không phải thứ mua được'",
+      "source": "docs/41-testing-is-the-product.md §7 (R3)",
+      "source_doc": "docs/41-testing-is-the-product.md",
+      "why": "Ràng buộc đạo đức của mô hình (§2) chỉ có giá trị nếu máy làm nó ĐỎ được. Hiện chỉ là văn xuôi.",
+      "owner": "AGENT",
+      "agent_allowed": true,
+      "owner_reason": "Kiểm được bằng máy: nếu §5.4 tách hai mục (P9), cổng đọc được chúng; trước đó chưa có gì để canh.",
+      "not_before": "2026-12-15",
+      "due": "2026-12-22",
+      "block_if_unmet": "remove",
+      "block_if_unmet_note": "Quá hạn ⇒ gỡ câu 'điểm công khai không mua được' khỏi docs/41 — câu không có cổng là câu hứa.",
+      "evidence_required": "một script trong scripts/ đỏ khi nguồn thu có doanh thu gắn với điểm công khai",
+      "status": "OPEN",
+      "blocked_by": [
+        "P9"
+      ],
+      "stakeholder": [
+        "AGENT"
+      ],
+      "blocked_by_note": "Viết cổng trước khi tách hai sản phẩm là canh một thứ không tồn tại (docs/41 §7)"
+    },
+    {
+      "id": "P11",
+      "title": "Kiểm lại điều kiện dừng `500 người chơi thật/tuần` theo kết luận docs/41 §5",
+      "source": "docs/41-testing-is-the-product.md §5 + §7 (R4)",
+      "source_doc": "docs/41-testing-is-the-product.md",
+      "why": "§5 chỉ ra 30 người chấm ĐÚNG đã đủ cho một phán quyết thống kê. Con số 500 đúng nếu launchpad là sản phẩm đầu, sai nếu sản phẩm đầu là dịch vụ kiểm định.",
+      "owner": "LXK",
+      "agent_allowed": false,
+      "owner_reason": "Đây là điều kiện dừng ĐÃ CÔNG BỐ trong whitepaper §4/§8. Agent không được tự đổi điều kiện dừng của người.",
+      "not_before": "2026-11-23",
+      "due": "2026-12-15",
+      "block_if_unmet": "accept",
+      "block_if_unmet_note": "Quá hạn ⇒ giữ 500 và ghi rõ nó là điều kiện cho LAUNCHPAD, không phải cho dịch vụ kiểm định.",
+      "evidence_required": "docs/WHITEPAPER.md §4 hoặc §8 có câu nói rõ 500 áp cho sản phẩm nào",
+      "status": "OPEN",
+      "blocked_by": [
+        "P8"
+      ],
+      "stakeholder": [
+        "LXK"
+      ],
+      "blocked_by_note": "Không trả lời được khi chưa chọn thứ tự sản phẩm"
+    },
+    {
+      "id": "P12",
+      "title": "Cam kết ngày cho 6 việc docs/23 §9 (KOL wave) — chúng có lý do chặn nhưng KHÔNG có hạn",
+      "source": "docs/23-dino-race-starter-kit.md §9",
+      "source_doc": "docs/23-dino-race-starter-kit.md",
+      "why": "Sáu việc đã được viết là 'phải làm trước làn sóng KOL' nhưng không có người và ngày — đúng định nghĩa 'một mong muốn' của docs/37. docs/23 §9 tự nói cả sáu đã có trong docs/17.",
+      "owner": "LXK",
+      "agent_allowed": false,
+      "owner_reason": "Cần người chọn ngày và thứ tự; agent không được tự đặt hạn cho việc của người.",
+      "not_before": "2026-11-23",
+      "due": "2026-12-20",
+      "block_if_unmet": "accept",
+      "block_if_unmet_note": "Quá hạn ⇒ gỡ câu 'phải làm trước làn sóng KOL' khỏi docs/23 §9 vì không có ngày thì không có 'trước'.",
+      "evidence_required": "mỗi việc trong 6 việc có một mục P-id riêng với due, hoặc câu 'trước làn sóng KOL' bị gỡ",
+      "status": "OPEN",
+      "blocked_by": [],
+      "stakeholder": [
+        "LXK"
+      ]
     }
   ],
   "people": {

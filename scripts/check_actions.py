@@ -172,6 +172,52 @@ def violations(reg: dict) -> int:
         check(a.get("block_if_unmet") in BLOCK_OK,
               f"[{tag}]: `block_if_unmet` phải là {sorted(BLOCK_OK)}")
 
+    # 6. Đồ thị `blocked_by` phải là DAG và trỏ tới việc có thật.
+    #    Không có bước này, "P1 chờ P8, P8 chờ P1" là một vòng lặp im lặng: cả hai
+    #    đều OPEN, cả hai đều có hạn, và không cổng nào đỏ. Một cái chết mềm.
+    by_id = {a.get("id"): a for a in actions}
+    for a in actions:
+        tag = a.get("id", "?")
+        deps = a.get("blocked_by") or []
+        check(isinstance(deps, list), f"[{tag}]: `blocked_by` phải là mảng")
+        for dep in deps:
+            check(dep in by_id, f"[{tag}]: `blocked_by` trỏ tới {dep!r} không có trong sổ")
+            check(dep != tag, f"[{tag}]: tự chặn chính mình")
+        # Người/tác nhân phải hành động — học từ mẫu WES của FDE (docs/44 §2).
+        for who in a.get("stakeholder") or []:
+            check(who in PEOPLE_OK, f"[{tag}]: `stakeholder` = {who!r} không hợp lệ")
+        check(bool(a.get("stakeholder")),
+              f"[{tag}]: thiếu `stakeholder` — việc không có ai phải hành động là việc sẽ đứng im")
+
+    # Chu trình trên đồ thị phụ thuộc.
+    state: dict[str, int] = {}  # 1 = đang thăm, 2 = xong
+
+    def visit(node: str, path: list[str]) -> None:
+        if state.get(node) == 1:
+            cyc = " → ".join(path + [node])
+            FAILS.append(f"`blocked_by` có CHU TRÌNH: {cyc} — không mục nào trong vòng này có thể bắt đầu")
+            return
+        if state.get(node) == 2:
+            return
+        state[node] = 1
+        for dep in (by_id.get(node) or {}).get("blocked_by") or []:
+            if dep in by_id:
+                visit(dep, path + [node])
+        state[node] = 2
+
+    for a in actions:
+        if a.get("id") in by_id and state.get(a.get("id")) != 2:
+            visit(a["id"], [])
+
+    # 7. Việc OPEN mà bị chặn bởi một việc ĐÃ DROPPED là việc không bao giờ mở.
+    for a in actions:
+        for dep in a.get("blocked_by") or []:
+            d = by_id.get(dep) or {}
+            if d.get("status") == "DROPPED" and a.get("status") == "OPEN":
+                FAILS.append(
+                    f"[{a.get('id')}]: OPEN nhưng chờ {dep!r} đã DROPPED — việc này không bao giờ mở được"
+                )
+
     return len(actions)
 
 

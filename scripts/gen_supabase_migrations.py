@@ -109,6 +109,23 @@ def seed_sql() -> str:
         "status = excluded.status, done_on = excluded.done_on, evidence = excluded.evidence;"
     )
     out.append("")
+
+    # --- phụ thuộc + người phải hành động (docs/44 §2.2)
+    deps = [(a["id"], d, a.get("blocked_by_note", "")) for a in reg["actions"] for d in a.get("blocked_by") or []]
+    if deps:
+        out.append("insert into pm_action_deps (action_id, blocked_by, note) values")
+        out.append(",\n".join(f"  ({q(a)}, {q(b)}, {q(n)})" for a, b, n in deps))
+        out.append("on conflict (action_id, blocked_by) do update set note = excluded.note;")
+    else:
+        out.append("-- không có phụ thuộc nào")
+    out.append("")
+
+    stakes = [(a["id"], who) for a in reg["actions"] for who in a.get("stakeholder") or []]
+    if stakes:
+        out.append("insert into pm_action_stakeholders (action_id, person_code) values")
+        out.append(",\n".join(f"  ({q(a)}, {q(w)})" for a, w in stakes))
+        out.append("on conflict do nothing;")
+    out.append("")
     out.append("commit;")
     out.append("")
     return "\n".join(out)

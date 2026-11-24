@@ -68,6 +68,7 @@ GameFun/
     ├── check_gate_wiring.py     # mỗi cổng phải được CI gọi cả chế độ kiểm repo (docs/40)
     ├── verify_kit_bundle.py     # bundle Starter Kit: 6 cổng xanh, hash khớp docs/23 (docs/42)
     ├── check_pm_supabase.py     # sổ dự án Supabase: RLS chỉ-đọc, seed khớp pm/*.json (docs/43)
+    ├── check_decisions.py       # quyết định R* phải có mã việc P* kèm hạn + stakeholder (docs/44)
     └── gen_supabase_migrations.py # sinh supabase/migrations/ từ pm/sql + pm/*.json (docs/43)
     └── verify_protocol_math.py  # S1–S9 + fuzz, in dòng PASS 100%
 ```

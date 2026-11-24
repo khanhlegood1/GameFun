@@ -137,3 +137,28 @@ create table if not exists pm_audit (
   diff        jsonb not null default '{}'::jsonb
 );
 create index if not exists pm_audit_at_idx on pm_audit (at desc);
+
+-- ---------------------------------------------------------------- 7. phụ thuộc
+-- Học từ mẫu "WES" của FDE (docs/44 §2.2): *"Action Required: Need [Executive
+-- Sponsor] to approve"*. Không có bảng này, một việc chờ NGƯỜI trông giống một
+-- việc chờ MÁY — và `docs/37` không phân biệt được hai thứ đó.
+--
+-- Vì sao là BẢNG chứ không phải `blocked_by text[]`: một mảng tự trỏ vào bảng
+-- cha **không có khoá ngoại**, nên database không chặn được `blocked_by` trỏ tới
+-- một P-id không tồn tại. Bảng nối thì chặn được.
+create table if not exists pm_action_deps (
+  action_id   text not null references pm_actions (id) on delete cascade,
+  blocked_by  text not null references pm_actions (id) on delete cascade,
+  note        text not null default '',
+  primary key (action_id, blocked_by),
+  -- Tự chặn mình là vòng lặp độ dài 1.
+  constraint pm_action_deps_no_self check (action_id <> blocked_by)
+);
+
+-- Ai phải HÀNH ĐỘNG, khác với ai SỞ HỮU. Một việc có thể chờ quyết định của LXK
+-- trong khi owner là AGENT — chính xác là P9/P10/P11.
+create table if not exists pm_action_stakeholders (
+  action_id   text not null references pm_actions (id) on delete cascade,
+  person_code text not null references pm_people (code) on update cascade,
+  primary key (action_id, person_code)
+);
