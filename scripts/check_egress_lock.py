@@ -103,6 +103,10 @@ DATA_GLOBS = (
     ".github/workflows/*.yaml",
     ".github/*.yml",
     "receipts/*.json",
+    # docs/43: bằng chứng đo trên Supabase. Không chứa URL, nhưng phải được
+    # canh — một tệp "bằng chứng" không ai quét là một chỗ để lén thêm endpoint.
+    "supabase/*.json",
+    "pm/sql/*.sql",
 )
 URL_RE = re.compile(r"https?://[^\s'\"<>)\]]+", re.I)
 CALL_RE = re.compile(r"\b(?:fetch\s*\(|XMLHttpRequest|new\s+WebSocket|curl\s|wget\s)", re.I)

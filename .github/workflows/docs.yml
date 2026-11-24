@@ -162,6 +162,13 @@ jobs:
       - name: Bundle Starter Kit (4 bất biến · hash khớp docs/23, 6 cổng kit)
         run: python3 scripts/verify_kit_bundle.py --selftest && python3 scripts/verify_kit_bundle.py
 
+      # Cổng thứ hai mươi ba: sổ dự án trên Supabase (docs/43). docs/02 §4 nói
+      # "cấm client ghi trực tiếp" — cổng này kiểm nó là SỰ THẬT của database,
+      # không phải một câu trong tài liệu. Chạy offline: so pm/*.json ↔ migration
+      # ↔ supabase/VERIFY.json (bằng chứng đo thật, có ref + ngày).
+      - name: Sổ dự án Supabase (4 bất biến · RLS chỉ-đọc, DONE⇒evidence)
+        run: python3 scripts/check_pm_supabase.py --selftest && python3 scripts/check_pm_supabase.py
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04

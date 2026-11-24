@@ -1,0 +1,33 @@
+{
+  "$comment": "Bằng chứng ĐO ĐƯỢC của database thật — sinh bằng cách chạy SQL trên project Supabase, không viết tay. scripts/check_pm_supabase.py đối chiếu tệp này với migration: nếu migration cho phép ghi mà bằng chứng ghi 'không', cổng ĐỎ.",
+  "project": {
+    "name": "game9k-pm",
+    "ref": "illulsggtxlseywsuuyg",
+    "region": "ap-southeast-1",
+    "plan": "free",
+    "server_version": "PostgreSQL 17.12",
+    "measured_at": "2026-11-24"
+  },
+  "migrations_applied": [
+    "pm_core_schema_v1",
+    "pm_rls_readonly_v1",
+    "pm_seed_from_registers_v1"
+  ],
+  "tables": {
+    "pm_action_projects": { "rls": true, "anon_read": true, "anon_write": false, "auth_update": false, "auth_delete": false, "policies": 1, "write_policies": 0 },
+    "pm_actions":         { "rls": true, "anon_read": true, "anon_write": false, "auth_update": false, "auth_delete": false, "policies": 1, "write_policies": 0 },
+    "pm_audit":           { "rls": true, "anon_read": true, "anon_write": false, "auth_update": false, "auth_delete": false, "policies": 1, "write_policies": 0 },
+    "pm_documents":       { "rls": true, "anon_read": true, "anon_write": false, "auth_update": false, "auth_delete": false, "policies": 1, "write_policies": 0 },
+    "pm_notes":           { "rls": true, "anon_read": true, "anon_write": false, "auth_update": false, "auth_delete": false, "policies": 1, "write_policies": 0 },
+    "pm_people":          { "rls": true, "anon_read": true, "anon_write": false, "auth_update": false, "auth_delete": false, "policies": 1, "write_policies": 0 },
+    "pm_projects":        { "rls": true, "anon_read": true, "anon_write": false, "auth_update": false, "auth_delete": false, "policies": 1, "write_policies": 0 }
+  },
+  "row_counts": { "pm_people": 2, "pm_actions": 8, "pm_actions_open": 5, "pm_actions_done": 3 },
+  "constraint_probes": [
+    { "name": "DONE mà không có evidence", "sql": "update pm_actions set status='DONE', done_on=null, evidence=null where id='P1'", "blocked": true, "by": "pm_actions_done_needs_evidence" },
+    { "name": "đóng sớm trước not_before", "sql": "update pm_actions set status='DONE', done_on='2026-11-01', evidence='x' where id='P3'", "blocked": true, "by": "pm_actions_done_after_not_before" },
+    { "name": "anon INSERT pm_actions", "blocked": true, "by": "privilege" },
+    { "name": "authenticated UPDATE pm_actions", "blocked": true, "by": "privilege" },
+    { "name": "anon DELETE pm_audit", "blocked": true, "by": "privilege" }
+  ]
+}
