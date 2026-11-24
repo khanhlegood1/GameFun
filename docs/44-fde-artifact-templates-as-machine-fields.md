@@ -216,7 +216,10 @@ Bất biến thứ hai là lý do phải có nó: một chuỗi phụ thuộc d�
 
 ```
 ACTION LOCK: PASS — 195 kiểm tra · 5 bất biến · 12 việc (9 OPEN)
+ACTION LOCK SELFTEST: PASS — 12/12 phép thử đúng chiều (11 phép phá + 1 đối chứng)
 ```
+
+**Và cổng này đã bắt oan chính nó.** Hai đối chứng `P6`/`P8` bị báo `thiếu stakeholder`, vì fixture tổng hợp của chúng được viết **trước** khi `stakeholder` thành trường bắt buộc. Đó là hình dạng lỗi đáng sợ nhất của một cổng: *đúng luật, sai dữ liệu*. Đã sửa fixture (thêm `stakeholder` + `blocked_by`) và thêm 4 phép phá cho hai bất biến mới.
 
 ---
 

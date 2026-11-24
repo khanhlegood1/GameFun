@@ -241,7 +241,7 @@ def audit(reg: dict) -> int:
 
 
 def selftest() -> int:
-    """6 phép phá + 2 đối chứng, trên corpus tạm."""
+    """10 phép phá + 2 đối chứng, trên corpus tạm."""
     global REGISTRY, FAILS, PASSES
 
     def item(**over) -> dict:
@@ -257,6 +257,11 @@ def selftest() -> int:
             "block_if_unmet": "revert",
             "evidence_required": "tệp nào đó",
             "status": "OPEN",
+            # Hai trường dưới là BẮT BUỘC từ vòng 32. Đối chứng phải có đủ, nếu
+            # không thì "phép thử đúng chiều" chỉ là fixture cũ chưa cập nhật —
+            # và cổng báo BẮT OAN đúng như nó vừa làm.
+            "stakeholder": ["LXK"],
+            "blocked_by": [],
         }
         base.update(over)
         return base
@@ -276,6 +281,14 @@ def selftest() -> int:
         # Bằng chứng ghi bằng TÊN TỆP TRẦN là cách viết thật của con người
         # ("chạy check_invariants_coverage.py") — cổng phải giải được, không đỏ
         # vì cách viết. Xem `evidence_paths`.
+        # --- hai bất biến của vòng 32 (docs/44 §3.3)
+        ("P9 chờ chính mình", [item(blocked_by=["T1"])], "tự chặn"),
+        ("P10 chờ việc không tồn tại", [item(blocked_by=["ZZ"])], "không có trong sổ"),
+        ("P11 vòng phụ thuộc", [
+            item(id="T1", blocked_by=["T2"]),
+            item(id="T2", blocked_by=["T1"]),
+        ], "CHU TRÌNH"),
+        ("P12 thiếu stakeholder", [item(stakeholder=[])], "thiếu `stakeholder`"),
         ("P8 đối chứng: evidence là tên tệp trần", [
             item(status="DONE", evidence="check_invariants_coverage.py --audit cho 12/12"),
         ], None),
