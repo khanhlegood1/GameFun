@@ -117,6 +117,21 @@ Thêm vào `scripts/check_pitch_deck.py` trong `FORBIDDEN` (chuỗi đã nghỉ 
 thông điệp nêu rõ kỳ vọng. Một kiểm tra mới phải **thất bại được** — nếu nó luôn đúng thì
 nó không kiểm tra gì.
 
+### Sổ việc ghi TÊN, ADR ghi VAI
+
+Hai loại bản ghi, hai quy tắc khác nhau. Áp lẫn là lỗi đã xảy ra thật (`docs/48` §2.2):
+
+| | Sổ việc (`pm/action-register.json`) | ADR (`portal/docs/08-adr/`) |
+|---|---|---|
+| Câu hỏi | *Ai phải làm việc này?* | *Vai nào đã quyết điều này?* |
+| Ghi gì | **tên người** (`LXK`) — `docs/34` §3 | **vai** + người giữ vai — GP-16 §Personas, Not People |
+| Vì sao | quá hạn phải gọi được một người | bản ghi phải còn đúng khi người đổi vai |
+
+Ghi vai **không** miễn cho ADR khỏi có người chịu trách nhiệm: một vai không có
+người giữ và không ai xác nhận vẫn là chưa ký. `ROLE_HOLDER` trong
+`scripts/gen_portal_data.py` phải có `basis` cho từng vai, và điền nó **không**
+ký ADR nào.
+
 ### Khi quét toàn bộ cổng
 
 Chạy `./scripts/run_all_gates.sh`, **không** tự viết vòng `for` với `tail -1`.

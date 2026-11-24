@@ -369,9 +369,14 @@ function renderAdr(D) {
     }
     // "Ai giữ vai" KHÁC "ai đã ký". Vai có người giữ nhưng ADR chưa ký thì phải
     // hiện cả hai vế — nếu chỉ hiện tên, người đọc sẽ tưởng ADR đã được ký.
+    // Ba trạng thái, không phải hai — và chúng KHÔNG được gộp:
+    //   đã ký (vai có người giữ, tệp không chờ ai) · có người giữ vai nhưng tệp
+    //   vẫn đang chờ · không ai giữ vai. Câu giữa là câu dễ nói dối nhất.
     if (i.role_holder && i.signature !== "named") {
       foot.append(el("span", "adr-role",
-        `${i.role_holder.role}: ${i.role_holder.person} · ADR chưa ký`));
+        `${i.role_holder.role} → ${i.role_holder.person} · tệp vẫn ghi "chờ ký"`));
+    } else if (!i.role_holder && i.signature !== "named" && i.file) {
+      foot.append(el("span", "adr-role", "chưa ai xác nhận giữ vai này"));
     }
     if (i.date) foot.append(el("span", "muted", fmtShort(i.date)));
     if (!i.file) foot.append(el("span", "adr-warn", "chỉ có trong chỉ mục — chưa có tệp trong repo"));

@@ -221,6 +221,22 @@ const run = async () => {
       `${item.id} do chức danh "${item.decider}" ký nhưng thẻ hiện "${sigText}" — phải nói rõ chưa có người ký`);
   }
 
+  /* 5d. Có NGƯỜI GIỮ VAI không có nghĩa ADR đã ký. PO xác nhận giữ 4 vai
+   * (docs/48 §2) ⇒ 18 ADR nay có `role_holder`, nhưng chính tệp vẫn ghi
+   * `*(chờ ký)*`. Nếu portal gộp hai chuyện đó, nó ký khống 18 quyết định.
+   */
+  const roleHeld = data.adr.items.filter((i) => i.role_holder && i.signature !== "named");
+  ok(roleHeld.length > 0, "không còn ADR nào 'có người giữ vai nhưng chưa ký' — kiểm này vô nghĩa");
+  for (const item of roleHeld) {
+    const card = adrCards.find((c) => c.all((n) => n.className === "id")[0]?.textContent === item.id.replace("ADR-", ""));
+    if (!card) { fails.push(`ADR ${item.id} không được vẽ ra`); continue; }
+    const roleEl = card.all((n) => n.className && n.className.includes("adr-role"))[0];
+    const txt = roleEl ? roleEl.textContent : "(không có nhãn người giữ vai)";
+    ok(txt.includes("chờ ký"),
+      `${item.id}: vai "${item.role_holder.role}" nay có người giữ (${item.role_holder.person}) `
+      + `nhưng tệp vẫn chờ ký — thẻ phải nói rõ, đang hiện "${txt}"`);
+  }
+
   /* 6. Hàng đợi quyết định phải có, và đúng là những việc đang chặn việc khác */
   const queue = byId("queue").all((n) => n.className === "queue-card");
   const blockers = new Set(open.flatMap((a) => a.blocked_by || []));

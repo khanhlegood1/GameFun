@@ -131,15 +131,25 @@ def inv_role_holder_is_not_a_signature(items: list[dict], people: dict) -> None:
         if not holder:
             continue
         signed = i.get("signature") == "named"
-        # Tên đó có THẬT trong tệp không? Phải so với `decider` — nguyên văn đọc từ
-        # tệp — chứ không phải với `decider_person`, vì chính trường đó là thứ có
-        # thể bị điền từ ROLE_HOLDER. (Lần đầu tôi so với `decider_person` nên phép
-        # phá P6 vẫn xanh: kẻ phá đặt cả hai trường.)
-        name_in_file = bool(holder.get("person")) and holder["person"] in (i.get("decider") or "")
-        check(not signed or name_in_file,
-              f"{i.get('id')}: khai đã ký nhưng tên người ký KHÔNG có trong tệp — `Người quyết` "
-              f"là {i.get('decider')!r}. Biết ai giữ vai {holder.get('role')!r} "
-              f"({holder.get('person')}) không làm ADR này được ký")
+        decider = i.get("decider") or ""
+        # Ba điều phải cùng đúng để một ADR được coi là ĐÃ KÝ, và chúng khác với
+        # "có ghi tên riêng":
+        #   (a) tệp không tự nói nó đang chờ ai (`chờ ký`) — chính tệp là nguồn;
+        #   (b) vai đó có người giữ đã xác nhận, hoặc tệp ghi tên người trực tiếp;
+        #   (c) nếu tệp KHÔNG ghi tên, người giữ vai phải đến từ ROLE_HOLDER có basis.
+        #
+        # Sửa hướng này (docs/48 §2.2) sau khi đọc `hve-core` adr-standards mục
+        # "Personas, Not People": ghi NGƯỜI GIỮ VAI là cách ĐƯỢC ƯU TIÊN, nên
+        # `Project Owner` + người giữ đã xác nhận LÀ một chữ ký hợp lệ. Bản trước
+        # của bất biến này đòi tên riêng trong tệp ⇒ bắt oan ADR-0019..0022.
+        waiting = "chờ ký" in decider.lower()
+        has_holder = bool((holder.get("person") or "").strip()) and bool((holder.get("basis") or "").strip())
+        check(not signed or not waiting,
+              f"{i.get('id')}: coi là đã ký nhưng chính tệp ghi {decider!r} — "
+              "biết ai giữ vai không xoá chữ 'chờ ký' khỏi tệp")
+        check(not signed or has_holder or bool((i.get("decider_person") or "").strip()),
+              f"{i.get('id')}: coi là đã ký nhưng không có người giữ vai nào được xác nhận "
+              f"(`Người quyết` = {decider!r})")
         # Chính điều nguy hiểm: `role_holder` có mặt ⇒ phải có căn cứ.
         check(bool((holder.get("basis") or "").strip()),
               f"{i.get('id')}: `role_holder` cho vai {holder.get('role')!r} thiếu `basis` — "
@@ -305,17 +315,29 @@ def selftest() -> int:
     run(fake_signature, "P3 ADR chờ ký hiện ra như đã ký → đỏ", True)
     def phantom_signature(d):
         # ADR do một CHỨC DANH ký, được khai là đã nhận ⇒ tuyên bố một chữ ký
-        # không tồn tại. Đây đúng là trạng thái của ADR-0001..0014.
+        # không tồn tại. Đây đúng là trạng thái của ADR-0001..0018.
+        #
+        # Nhắm `display_state` VÀ `needs_signature` — hai trường mà portal thật sự
+        # đọc. Bản trước chỉ đặt `state` nên phép phá xanh vì lý do sai (docs/48
+        # §3.1).
+        # `display_state` LÀ thứ portal vẽ ra, nên phép phá phải nhắm nó — không
+        # phải `state` (nguyên văn trong tệp). Trước vòng này P5 chỉ đặt `state`,
+        # nên nó xanh vì lý do sai: bất biến đọc `display_state`, và trường đó
+        # không bị đụng tới. Cùng họ với docs/46 §3.2 và docs/47 §3.1.
         for i in d["adr"]["items"]:
             if i["file"]:
-                i.update(state="accepted", needs_signature=False,
+                # Phải đặt CẢ `signature="named"` — nếu không thì phép phá không
+                # thật sự KHAI là đã ký, và cổng xanh vì kẻ phá chưa phá gì.
+                i.update(state="accepted", display_state="accepted",
+                         signature="named", needs_signature=False,
                          decider="Principal Architect *(chờ ký)*")
                 return
 
     run(phantom_signature, "P5 ADR do chức danh ký nhưng khai là đã nhận → đỏ", True)
     def role_holder_used_as_signature(d):
-        # PO xác nhận "tôi là PO". Ai đó điền ROLE_HOLDER cho `Principal Architect`
-        # rồi khai 18 ADR đã được ký — chữ ký mà không tệp nào chứa tên.
+        # Biết ai giữ vai KHÔNG xoá chữ "chờ ký" khỏi tệp. Kẻ phá điền ROLE_HOLDER
+        # rồi khai 18 ADR role_only là đã ký — trong khi `Người quyết` vẫn ghi
+        # `Principal Architect *(chờ ký)*`. Đây đúng là cám dỗ của cả vòng này.
         for i in d["adr"]["items"]:
             if i["signature"] == "role_only":
                 i.update(role_holder={"role": "Principal Architect",
@@ -329,10 +351,13 @@ def selftest() -> int:
         "P6 điền ROLE_HOLDER rồi coi 18 ADR là đã ký → đỏ", True)
 
     def role_holder_without_basis(d):
+        # Khai "vai này có người" mà không có căn cứ, rồi coi là đã ký.
         for i in d["adr"]["items"]:
             if i["signature"] == "role_only":
                 i.update(role_holder={"role": "Principal Architect",
-                                      "person": "", "basis": ""})
+                                      "person": "Lê Xuân Khánh", "basis": ""},
+                         signature="named", needs_signature=False,
+                         decider="Principal Architect")
                 return
 
     run(role_holder_without_basis,

@@ -188,6 +188,15 @@ jobs:
       - name: Portal vẽ được (app.js chạy trong DOM tối thiểu)
         run: node scripts/check_portal_render.mjs
 
+      # Cổng thứ hai mươi bảy: cấu trúc ADR (docs/48). Cổng 25 kiểm bản CHIẾU khớp
+      # repo và kiểm chữ ký; nó không kiểm một ADR có đúng chuẩn hay không. 35 tệp
+      # từng dùng ba format header khác nhau mà không cổng nào bắt (docs/46 §1).
+      # Chuẩn lấy từ hai repo của PO: factory-x-contributions/architecture-decisions
+      # (Apache-2.0, lint-adrs.js) và microsoft/hve-core (MIT, adr-standards GP-16).
+      # Không gọi mạng: chỉ đọc tệp.
+      - name: Cấu trúc ADR (7 bất biến · GP-16 · tham chiếu chéo · supersede hai phía)
+        run: python3 scripts/check_adr_standards.py --selftest && python3 scripts/check_adr_standards.py
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04
