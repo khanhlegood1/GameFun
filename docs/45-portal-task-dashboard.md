@@ -146,6 +146,8 @@ Không có lỗi nào trong hai lỗi này làm cổng 25/26 đỏ — đó là 
 
 Riêng lỗi `LKLXK` mất **hai lần sửa**, và lần đầu sai: `aria-hidden="true"` chỉ tác động tới **trình đọc màn hình**. Bộ trích văn bản, ảnh chụp màn hình gửi nhà đầu tư, và bản in PDF đều **đọc hết**. Sửa đúng là cho cột Người hiện **tên thật** lấy từ `data.people`, không hiện mã hai lần. Cổng 26 nay có bất biến thứ 5: mọi người trong `data.people` phải xuất hiện **bằng tên** ở cột Người — đã thử phá bằng cách quay lại nhãn mã, cổng báo `tên "Lê Xuân Khánh" không xuất hiện ở cột Người`.
 
+**Lỗi thứ ba, cùng một chỗ:** chữ trong avatar ra `XK` cho "Lê Xuân Khánh" — công thức viết ngược (từ **áp chót** + từ cuối thay vì từ **đầu** + từ cuối). Cổng cũ không thấy vì nó chỉ kiểm **tên**, mà hai chữ cái nào cũng hợp lệ với một cổng chỉ đếm. Cổng 26 nay so **chữ viết tắt tính từ tên** — thử phá bằng cách trả lại công thức cũ: `avatar hiện "XK" nhưng chữ viết tắt đúng của "Lê Xuân Khánh" là "LK"`.
+
 **Bài học chung:** "đã sửa" không phải "đã đúng". Phải đọc lại **bản đã deploy**, không phải bản trong đầu.
 
 ### 5.5. Bản deploy có lộ tài liệu riêng tư không?
