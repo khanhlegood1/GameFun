@@ -372,6 +372,13 @@ function renderAdr(D) {
     // Ba trạng thái, không phải hai — và chúng KHÔNG được gộp:
     //   đã ký (vai có người giữ, tệp không chờ ai) · có người giữ vai nhưng tệp
     //   vẫn đang chờ · không ai giữ vai. Câu giữa là câu dễ nói dối nhất.
+    // Có phê chuẩn ⇒ hiện CẢ HAI sự thật trên cùng một thẻ: quyết định đang có
+    // hiệu lực (theo ADR nào, ngày nào), và chữ ký trong tệp vẫn thiếu. Một chữ
+    // "Accepted" duy nhất không nói được cả hai, và luôn có một bên bị bỏ.
+    if (i.decided_by) {
+      foot.append(el("span", "adr-rat",
+        `có hiệu lực theo ${i.decided_by} · ${fmtShort(i.signer_alternatives[0].date)}`));
+    }
     if (i.role_holder && i.signature !== "named") {
       foot.append(el("span", "adr-role",
         `${i.role_holder.role} → ${i.role_holder.person} · tệp vẫn ghi "chờ ký"`));

@@ -27,13 +27,21 @@
     "impact": "Toàn hệ thống",
     "needs_signature": true,
     "signature": "role_only",
-    "display_state": "proposed",
+    "display_state": "accepted",
     "sections": [
      "Bối cảnh & vấn đề",
      "Hệ quả & rủi ro còn lại",
      "Tài liệu tham chiếu"
     ],
-    "bytes": 2550
+    "bytes": 2550,
+    "signer_alternatives": [
+     {
+      "by": "ADR-0044",
+      "date": "2026-11-24",
+      "person": "Lê Xuân Khánh"
+     }
+    ],
+    "decided_by": "ADR-0044"
    },
    {
     "id": "ADR-0002",
@@ -54,13 +62,21 @@
     "impact": "Toàn hệ thống",
     "needs_signature": true,
     "signature": "role_only",
-    "display_state": "proposed",
+    "display_state": "accepted",
     "sections": [
      "Bối cảnh & vấn đề",
      "Hệ quả & rủi ro còn lại",
      "Tài liệu tham chiếu"
     ],
-    "bytes": 2189
+    "bytes": 2189,
+    "signer_alternatives": [
+     {
+      "by": "ADR-0044",
+      "date": "2026-11-24",
+      "person": "Lê Xuân Khánh"
+     }
+    ],
+    "decided_by": "ADR-0044"
    },
    {
     "id": "ADR-0003",
@@ -81,13 +97,21 @@
     "impact": "Toàn hệ thống",
     "needs_signature": true,
     "signature": "role_only",
-    "display_state": "proposed",
+    "display_state": "accepted",
     "sections": [
      "Bối cảnh & vấn đề",
      "Hệ quả & rủi ro còn lại",
      "Tài liệu tham chiếu"
     ],
-    "bytes": 2020
+    "bytes": 2020,
+    "signer_alternatives": [
+     {
+      "by": "ADR-0044",
+      "date": "2026-11-24",
+      "person": "Lê Xuân Khánh"
+     }
+    ],
+    "decided_by": "ADR-0044"
    },
    {
     "id": "ADR-0004",
@@ -108,13 +132,21 @@
     "impact": "Toàn hệ thống",
     "needs_signature": true,
     "signature": "role_only",
-    "display_state": "proposed",
+    "display_state": "accepted",
     "sections": [
      "Bối cảnh & vấn đề",
      "Hệ quả & rủi ro còn lại",
      "Tài liệu tham chiếu"
     ],
-    "bytes": 1900
+    "bytes": 1900,
+    "signer_alternatives": [
+     {
+      "by": "ADR-0044",
+      "date": "2026-11-24",
+      "person": "Lê Xuân Khánh"
+     }
+    ],
+    "decided_by": "ADR-0044"
    },
    {
     "id": "ADR-0005",
@@ -135,13 +167,21 @@
     "impact": "Toàn hệ thống",
     "needs_signature": true,
     "signature": "role_only",
-    "display_state": "proposed",
+    "display_state": "accepted",
     "sections": [
      "Bối cảnh & vấn đề",
      "Hệ quả & rủi ro còn lại",
      "Tài liệu tham chiếu"
     ],
-    "bytes": 2024
+    "bytes": 2024,
+    "signer_alternatives": [
+     {
+      "by": "ADR-0044",
+      "date": "2026-11-24",
+      "person": "Lê Xuân Khánh"
+     }
+    ],
+    "decided_by": "ADR-0044"
    },
    {
     "id": "ADR-0006",
@@ -162,13 +202,21 @@
     "impact": "Toàn hệ thống",
     "needs_signature": true,
     "signature": "role_only",
-    "display_state": "proposed",
+    "display_state": "accepted",
     "sections": [
      "Bối cảnh & vấn đề",
      "Hệ quả & rủi ro còn lại",
      "Tài liệu tham chiếu"
     ],
-    "bytes": 2322
+    "bytes": 2322,
+    "signer_alternatives": [
+     {
+      "by": "ADR-0044",
+      "date": "2026-11-24",
+      "person": "Lê Xuân Khánh"
+     }
+    ],
+    "decided_by": "ADR-0044"
    },
    {
     "id": "ADR-0007",
@@ -189,13 +237,21 @@
     "impact": "Toàn hệ thống",
     "needs_signature": true,
     "signature": "role_only",
-    "display_state": "proposed",
+    "display_state": "accepted",
     "sections": [
      "Bối cảnh & vấn đề",
      "Hệ quả & rủi ro còn lại",
      "Tài liệu tham chiếu"
     ],
-    "bytes": 2217
+    "bytes": 2217,
+    "signer_alternatives": [
+     {
+      "by": "ADR-0044",
+      "date": "2026-11-24",
+      "person": "Lê Xuân Khánh"
+     }
+    ],
+    "decided_by": "ADR-0044"
    },
    {
     "id": "ADR-0008",
@@ -216,13 +272,21 @@
     "impact": "Toàn hệ thống",
     "needs_signature": true,
     "signature": "role_only",
-    "display_state": "proposed",
+    "display_state": "accepted",
     "sections": [
      "Bối cảnh & vấn đề",
      "Hệ quả & rủi ro còn lại",
      "Tài liệu tham chiếu"
     ],
-    "bytes": 2220
+    "bytes": 2220,
+    "signer_alternatives": [
+     {
+      "by": "ADR-0044",
+      "date": "2026-11-24",
+      "person": "Lê Xuân Khánh"
+     }
+    ],
+    "decided_by": "ADR-0044"
    },
    {
     "id": "ADR-0009",
@@ -243,13 +307,21 @@
     "impact": "Toàn hệ thống",
     "needs_signature": true,
     "signature": "role_only",
-    "display_state": "proposed",
+    "display_state": "accepted",
     "sections": [
      "Bối cảnh & vấn đề",
      "Hệ quả & rủi ro còn lại",
      "Tài liệu tham chiếu"
     ],
-    "bytes": 1870
+    "bytes": 1870,
+    "signer_alternatives": [
+     {
+      "by": "ADR-0044",
+      "date": "2026-11-24",
+      "person": "Lê Xuân Khánh"
+     }
+    ],
+    "decided_by": "ADR-0044"
    },
    {
     "id": "ADR-0010",
@@ -270,13 +342,21 @@
     "impact": "Toàn hệ thống",
     "needs_signature": true,
     "signature": "role_only",
-    "display_state": "proposed",
+    "display_state": "accepted",
     "sections": [
      "Bối cảnh & vấn đề",
      "Hệ quả & rủi ro còn lại",
      "Tài liệu tham chiếu"
     ],
-    "bytes": 1604
+    "bytes": 1604,
+    "signer_alternatives": [
+     {
+      "by": "ADR-0044",
+      "date": "2026-11-24",
+      "person": "Lê Xuân Khánh"
+     }
+    ],
+    "decided_by": "ADR-0044"
    },
    {
     "id": "ADR-0011",
@@ -303,7 +383,9 @@
      "Hệ quả & rủi ro còn lại",
      "Tài liệu tham chiếu"
     ],
-    "bytes": 2410
+    "bytes": 2410,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0012",
@@ -324,13 +406,21 @@
     "impact": "Toàn hệ thống",
     "needs_signature": true,
     "signature": "role_only",
-    "display_state": "proposed",
+    "display_state": "accepted",
     "sections": [
      "Bối cảnh & vấn đề",
      "Hệ quả & rủi ro còn lại",
      "Tài liệu tham chiếu"
     ],
-    "bytes": 1912
+    "bytes": 1912,
+    "signer_alternatives": [
+     {
+      "by": "ADR-0044",
+      "date": "2026-11-24",
+      "person": "Lê Xuân Khánh"
+     }
+    ],
+    "decided_by": "ADR-0044"
    },
    {
     "id": "ADR-0013",
@@ -351,13 +441,21 @@
     "impact": "Toàn hệ thống",
     "needs_signature": true,
     "signature": "role_only",
-    "display_state": "proposed",
+    "display_state": "accepted",
     "sections": [
      "Bối cảnh & vấn đề",
      "Hệ quả & rủi ro còn lại",
      "Tài liệu tham chiếu"
     ],
-    "bytes": 1659
+    "bytes": 1659,
+    "signer_alternatives": [
+     {
+      "by": "ADR-0044",
+      "date": "2026-11-24",
+      "person": "Lê Xuân Khánh"
+     }
+    ],
+    "decided_by": "ADR-0044"
    },
    {
     "id": "ADR-0014",
@@ -378,13 +476,21 @@
     "impact": "Toàn hệ thống",
     "needs_signature": true,
     "signature": "role_only",
-    "display_state": "proposed",
+    "display_state": "accepted",
     "sections": [
      "Bối cảnh & vấn đề",
      "Hệ quả & rủi ro còn lại",
      "Tài liệu tham chiếu"
     ],
-    "bytes": 1667
+    "bytes": 1667,
+    "signer_alternatives": [
+     {
+      "by": "ADR-0044",
+      "date": "2026-11-24",
+      "person": "Lê Xuân Khánh"
+     }
+    ],
+    "decided_by": "ADR-0044"
    },
    {
     "id": "ADR-0015",
@@ -405,7 +511,7 @@
     "impact": "Toàn bộ delivery, pháp lý license, ngân sách",
     "needs_signature": true,
     "signature": "role_only",
-    "display_state": "proposed",
+    "display_state": "accepted",
     "sections": [
      "Bối cảnh",
      "Quyết định",
@@ -416,7 +522,15 @@
      "Điều KHÔNG chọn (và vì sao)",
      "Rủi ro còn lại"
     ],
-    "bytes": 9261
+    "bytes": 9261,
+    "signer_alternatives": [
+     {
+      "by": "ADR-0044",
+      "date": "2026-11-24",
+      "person": "Lê Xuân Khánh"
+     }
+    ],
+    "decided_by": "ADR-0044"
    },
    {
     "id": "ADR-0016",
@@ -449,7 +563,9 @@
      "Hệ quả",
      "Việc phải làm"
     ],
-    "bytes": 9279
+    "bytes": 9279,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0017",
@@ -479,7 +595,9 @@
      "Hệ quả",
      "Việc phải làm nếu approve"
     ],
-    "bytes": 4868
+    "bytes": 4868,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0018",
@@ -509,7 +627,9 @@
      "Rủi ro còn lại",
      "Tài liệu tham chiếu"
     ],
-    "bytes": 6754
+    "bytes": 6754,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0019",
@@ -540,7 +660,9 @@
      "6. Phương án đã cân nhắc và loại",
      "7. Tự kiểm"
     ],
-    "bytes": 6798
+    "bytes": 6798,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0020",
@@ -570,7 +692,9 @@
      "5. Phương án đã cân nhắc và loại",
      "6. Tự kiểm"
     ],
-    "bytes": 7255
+    "bytes": 7255,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0021",
@@ -601,7 +725,9 @@
      "6. Hệ quả",
      "7. Tự kiểm"
     ],
-    "bytes": 8447
+    "bytes": 8447,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0022",
@@ -630,7 +756,9 @@
      "4. Hệ quả",
      "5. Điều ADR này KHÔNG nói"
     ],
-    "bytes": 4699
+    "bytes": 4699,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0023",
@@ -661,7 +789,9 @@
      "6. Hệ quả",
      "7. Điều ADR này KHÔNG nói"
     ],
-    "bytes": 10629
+    "bytes": 10629,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0024",
@@ -692,7 +822,9 @@
      "6. Điều ADR này KHÔNG nói",
      "7. Tự kiểm — ADR này sai ở đâu?"
     ],
-    "bytes": 9159
+    "bytes": 9159,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0025",
@@ -722,7 +854,9 @@
      "5. Điều ADR này KHÔNG nói",
      "6. Tự kiểm — ADR này sai ở đâu?"
     ],
-    "bytes": 11363
+    "bytes": 11363,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0026",
@@ -755,7 +889,9 @@
      "7. Quyết định cần PO",
      "8. Tự phê bình"
     ],
-    "bytes": 12108
+    "bytes": 12108,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0027",
@@ -788,7 +924,9 @@
      "7. Hai câu hỏi đã tự giải, và phần còn cần PO",
      "8. Tự phê bình"
     ],
-    "bytes": 11291
+    "bytes": 11291,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0028",
@@ -819,7 +957,9 @@
      "5. Hệ quả nếu nhận",
      "6. Tự phê bình"
     ],
-    "bytes": 8539
+    "bytes": 8539,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0029",
@@ -851,7 +991,9 @@
      "6. Tự phê bình",
      "7. License — đọc kỹ trước khi ai đó muốn chép"
     ],
-    "bytes": 11241
+    "bytes": 11241,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0030",
@@ -883,7 +1025,9 @@
      "6. License — repo nguồn **không có LICENSE**",
      "7. Tự phê bình"
     ],
-    "bytes": 9492
+    "bytes": 9492,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0031",
@@ -915,7 +1059,9 @@
      "6. Điều ADR này **KHÔNG** bao gồm",
      "7. Ranh giới trung thực"
     ],
-    "bytes": 10004
+    "bytes": 10004,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0032",
@@ -947,7 +1093,9 @@
      "Ranh giới trung thực",
      "Điều ADR này **KHÔNG** bao gồm"
     ],
-    "bytes": 9338
+    "bytes": 9338,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0033",
@@ -982,7 +1130,9 @@
      "Ranh giới trung thực",
      "Điều ADR này **KHÔNG** bao gồm"
     ],
-    "bytes": 15859
+    "bytes": 15859,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0034",
@@ -1015,7 +1165,9 @@
      "Ranh giới trung thực",
      "Điều ADR này **KHÔNG** bao gồm"
     ],
-    "bytes": 8323
+    "bytes": 8323,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0035",
@@ -1048,7 +1200,9 @@
      "7. Ranh giới trung thực",
      "8. Câu hỏi mở"
     ],
-    "bytes": 13339
+    "bytes": 13339,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0036",
@@ -1080,7 +1234,9 @@
      "6. Ranh giới trung thực",
      "7. Câu hỏi mở"
     ],
-    "bytes": 12400
+    "bytes": 12400,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0037",
@@ -1110,7 +1266,9 @@
      "4. Ranh giới trung thực",
      "5. Câu hỏi mở"
     ],
-    "bytes": 10823
+    "bytes": 10823,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0038",
@@ -1144,7 +1302,9 @@
      "9. Đã hiện thực (2026-11-23) — sau khi PO trả lời Q-ADR38-b",
      "8. Câu hỏi mở"
     ],
-    "bytes": 18723
+    "bytes": 18723,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0039",
@@ -1176,7 +1336,9 @@
      "6. Bảy điều cần PO quyết",
      "7. Ranh giới trung thực"
     ],
-    "bytes": 12419
+    "bytes": 12419,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0040",
@@ -1209,7 +1371,9 @@
      "7. Tám câu cần PO quyết",
      "8. Ranh giới trung thực"
     ],
-    "bytes": 21266
+    "bytes": 21266,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0041",
@@ -1242,7 +1406,9 @@
      "7. Sáu câu cần PO quyết",
      "8. Ranh giới trung thực"
     ],
-    "bytes": 19452
+    "bytes": 19452,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0042",
@@ -1275,7 +1441,9 @@
      "7. Năm câu cần PO quyết",
      "8. Ranh giới trung thực"
     ],
-    "bytes": 15531
+    "bytes": 15531,
+    "signer_alternatives": [],
+    "decided_by": ""
    },
    {
     "id": "ADR-0043",
@@ -1308,17 +1476,53 @@
      "7. Năm câu cần PO quyết",
      "8. Ranh giới trung thực"
     ],
-    "bytes": 15573
+    "bytes": 15573,
+    "signer_alternatives": [],
+    "decided_by": ""
+   },
+   {
+    "id": "ADR-0044",
+    "num": "0044",
+    "file": "ADR-0044-phe-chuan-14-adr-da-accepted.md",
+    "title": "ADR-0044 — Phê chuẩn 14 ADR đã `Accepted` nhưng chưa ai ký, bằng một quyết định mới",
+    "status_raw": "Proposed — chờ PO ký",
+    "state": "proposed",
+    "date": "2026-11-24",
+    "proposer": "AI agent · **Người quyết:** Project Owner (Lê Xuân Khánh)",
+    "decider": "Project Owner (Lê Xuân Khánh)",
+    "decider_person": "Lê Xuân Khánh",
+    "role_holder": {
+     "person": "Lê Xuân Khánh",
+     "basis": "PO xác nhận 2026-11-24 · trùng với 25 tệp ADR ghi 'Project Owner (Lê Xuân Khánh)'",
+     "role": "Project Owner"
+    },
+    "impact": "—",
+    "needs_signature": false,
+    "signature": "named",
+    "display_state": "proposed",
+    "sections": [
+     "0. Trả lời ngắn",
+     "1. Vì sao 14, không phải 18",
+     "2. Quyết định",
+     "3. Vì sao đây là đường đúng, không chỉ là đường dễ",
+     "4. Cơ chế: `signer_alternatives` — một trường mới, không phải một ngoại lệ",
+     "5. Ranh giới trung thực",
+     "6. Hệ quả",
+     "7. Điều ADR này KHÔNG bao gồm"
+    ],
+    "bytes": 10404,
+    "signer_alternatives": [],
+    "decided_by": ""
    }
   ],
   "counts": {
-   "total": 43,
-   "on_disk": 43,
+   "total": 44,
+   "on_disk": 44,
    "listed_but_absent": 0,
-   "proposed": 25,
+   "proposed": 26,
    "accepted": 18,
    "needs_signature": 18,
-   "signed_by_named_person": 25,
+   "signed_by_named_person": 26,
    "held_by_role_only": 18,
    "unsigned": 0
   }
@@ -1584,10 +1788,10 @@
   },
   {
    "id": "P13",
-   "title": "Gán tên người thật cho 18 ADR đang do chức danh ký ('Principal Architect' ×15, '+ Legal', 'Tech Lead On-chain', 'Founder')",
-   "source": "docs/46-nineteen-adrs-and-seventeen-empty-signatures.md §2",
-   "source_doc": "docs/46-nineteen-adrs-and-seventeen-empty-signatures.md",
-   "why": "README của docs/08-adr yêu cầu 'mỗi ADR phải có người quyết có tên' và 'ADR chưa ký KHÔNG được dùng để justify code đã merge'. 18/43 ADR vi phạm; 12 trong số đó đã ở trạng thái Accepted và đã được dùng đúng như điều bị cấm. Một chức danh không phải một người: 'Principal Architect *(chờ ký)*' trông như đã có người đồng ý, và đó là lý do 14 quyết định hiện không có ai chịu trách nhiệm.\n\nSỬA HƯỚNG ĐIỀU KIỆN NGHIỆM THU (docs/48 §2) — vì `hve-core` adr-standards.instructions.md, mục 'Personas, Not People', nói ngược lại trực giác ban đầu của tôi: ADR nên ghi NGƯỜI GIỮ VAI, không ghi tên riêng, để bản ghi còn đúng khi người đổi vai hoặc rời tổ chức; ngoại lệ duy nhất là khi người dùng yêu cầu đích danh một người chịu trách nhiệm. Vậy 'Principal Architect' KHÔNG sai vì là một vai — nó sai vì KHÔNG AI GIỮ vai đó và không ai xác nhận. Điều kiện nghiệm thu không còn là 'phải có tên riêng', mà là 'vai đó phải có người giữ ĐÃ XÁC NHẬN, và tệp phải ghi người giữ vai'. PO đã xác nhận giữ cả bốn vai (Founder, PO, TL, PA) ngày 2026-11-24.",
+   "title": "Ký ADR-0044 (phê chuẩn 14 ADR đã Accepted mà chưa ai ký) và quyết 4 ADR còn lại (0011, 0016, 0017, 0018) đang Proposed",
+   "source": "portal/docs/08-adr/ADR-0044-phe-chuan-14-adr-da-accepted.md §2 · docs/49",
+   "source_doc": "docs/49-adr-0044-ratification.md",
+   "why": "README của docs/08-adr yêu cầu 'mỗi ADR phải có người quyết có tên' và 'ADR chưa ký KHÔNG được dùng để justify code đã merge'. 18/43 ADR vi phạm; 12 trong số đó đã ở trạng thái Accepted và đã được dùng đúng như điều bị cấm. Một chức danh không phải một người: 'Principal Architect *(chờ ký)*' trông như đã có người đồng ý, và đó là lý do 14 quyết định hiện không có ai chịu trách nhiệm.\n\nSỬA HƯỚNG ĐIỀU KIỆN NGHIỆM THU (docs/48 §2) — vì `hve-core` adr-standards.instructions.md, mục 'Personas, Not People', nói ngược lại trực giác ban đầu của tôi: ADR nên ghi NGƯỜI GIỮ VAI, không ghi tên riêng, để bản ghi còn đúng khi người đổi vai hoặc rời tổ chức; ngoại lệ duy nhất là khi người dùng yêu cầu đích danh một người chịu trách nhiệm. Vậy 'Principal Architect' KHÔNG sai vì là một vai — nó sai vì KHÔNG AI GIỮ vai đó và không ai xác nhận. Điều kiện nghiệm thu không còn là 'phải có tên riêng', mà là 'vai đó phải có người giữ ĐÃ XÁC NHẬN, và tệp phải ghi người giữ vai'. PO đã xác nhận giữ cả bốn vai (Founder, PO, TL, PA) ngày 2026-11-24.\n\nTHU HẸP PHẠM VI (docs/49 §1): trước đây P13 đòi gán tên cho 18 ADR. Nay ADR-0044 phê chuẩn 14 ADR đã Accepted (chúng đang CÓ HIỆU LỰC mà chưa ai ký — đó là lỗ hổng thật). 4 ADR còn lại (0011, 0016, 0017, 0018) đang `Proposed` nên chưa có gì để phê chuẩn — chúng cần PO quyết từng cái. Và ADR-0044 tự nó đang `Proposed`: chính PO phải ký nó thì hiệu lực mới bắt đầu.",
    "owner": "LXK",
    "agent_allowed": false,
    "owner_reason": "Agent không biết 'Principal Architect' là ai, và không được tự gán tên một người vào một chữ ký.",
@@ -1595,7 +1799,7 @@
    "due": "2026-12-15",
    "block_if_unmet": "accept",
    "block_if_unmet_note": "Quá hạn ⇒ portal tiếp tục hiện 17 ADR là 'Chờ ký' và P13 được nêu đích danh trong mục câu hỏi mở của docs/46; cổng 25 giữ đỏ nếu ai đó khai display_state='accepted' cho chúng.",
-   "evidence_required": "0) `ROLE_HOLDER` trong scripts/gen_portal_data.py điền đủ 4 vai, mỗi vai có `basis` trỏ về xác nhận của PO; cổng 25 bất biến 7 không đỏ. VÀ 1) mỗi tệp trong 18 ADR ghi người giữ vai ở `Người quyết` (chức danh + người giữ), hoặc 2) một ADR mới ghi rõ vai nào chịu trách nhiệm, ai giữ vai đó, và ngày xác nhận — theo GP-16 §Supersession (không sửa ADR đã Accepted).",
+   "evidence_required": "ADR-0044 chuyển sang `Accepted` với `Người quyết` là chính PO (một chữ ký THẬT, không phải phê chuẩn vòng tròn); VÀ mỗi ADR trong 0011/0016/0017/0018 hoặc được ký, hoặc bị `Rejected` có lý do.",
    "status": "OPEN",
    "blocked_by": [],
    "blocked_by_note": "",
