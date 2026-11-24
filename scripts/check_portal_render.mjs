@@ -6,7 +6,7 @@
  * DOM tối thiểu trong Node, nạp `app.js` NGUYÊN VĂN (không sửa), rồi khẳng định
  * những con số đã vẽ ra khớp với `data.json`.
  *
- * Bốn bất biến:
+ * Sáu bất biến:
  *   1. `derive()` chạy không ném, và các con số khớp dữ liệu.
  *   2. Mỗi việc trong sổ đều vẽ ra được một dòng (hoặc bị lọc có lý do).
  *   3. Việc bị chặn phải mang nhãn "Đang chờ", KHÔNG phải "Đang mở".
@@ -159,7 +159,24 @@ const run = async () => {
       `${item.id} còn 'chờ ký' nhưng hiện ra là "${chip.trim()}"`);
   }
 
-  /* 5. Hàng đợi quyết định phải có, và đúng là những việc đang chặn việc khác */
+  /* 5. Không nhãn người nào được đọc thành "LKLXK".
+   * `aria-hidden` chỉ ảnh hưởng trình đọc màn hình — bộ trích văn bản, ảnh chụp
+   * màn hình cho nhà đầu tư, và bản in PDF đều đọc hết. Nên phần CHỮ phải là tên
+   * người thật, không phải hai lần mã ghép lại.
+   */
+  for (const code of Object.keys(data.people || {})) {
+    const shown = byId("task-body").all((n) => n.className === "owner-name");
+    const texts = shown.map((n) => n.textContent);
+    const dup = texts.filter((x) => x === code + code || (x.length === 4 && x.slice(2) === code));
+    ok(dup.length === 0, `mã người "${code}" bị lặp thành "${dup[0]}" — phải hiện TÊN, không hiện mã hai lần`);
+  }
+  const nameShown = byId("task-body").all((n) => n.className === "owner-name").map((n) => n.textContent);
+  const expected = Object.values(data.people || {}).map((p) => p.name);
+  for (const nm of expected) {
+    ok(nameShown.includes(nm), `tên "${nm}" không xuất hiện ở cột Người — cột này đang hiện mã, không hiện tên`);
+  }
+
+  /* 6. Hàng đợi quyết định phải có, và đúng là những việc đang chặn việc khác */
   const queue = byId("queue").all((n) => n.className === "queue-card");
   const blockers = new Set(open.flatMap((a) => a.blocked_by || []));
   for (const b of blockers) {

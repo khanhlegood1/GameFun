@@ -139,10 +139,14 @@ Ba thứ chỉ thấy khi nhìn bản thật:
 
 | Hiện tượng | Nguyên nhân | Sửa |
 |---|---|---|
-| Người phụ trách hiện `LKLXK` | avatar chứa chữ `LK` **và** tên `LXK` — chữ trong avatar là trang trí nhưng vẫn bị đọc | `aria-hidden="true"` trên avatar |
+| Người phụ trách hiện `LKLXK` | avatar chứa chữ `LK` **và** tên `LXK` — chữ trong avatar là trang trí nhưng vẫn bị đọc | lần 1: `aria-hidden` — **không đủ**; lần 2: cột Người hiện **tên thật** (`Lê Xuân Khánh`) lấy từ `data.people`, không hiện mã |
 | Chữ "Đang đọc `data.json`…" vẫn nằm trong DOM sau khi tải | `hidden` ẩn khỏi màn hình, **không** xoá khỏi cây | đặt `textContent = ""` sau khi nạp |
 
 Không có lỗi nào trong hai lỗi này làm cổng 25/26 đỏ — đó là lý do phải **mở trang thật**, không chỉ chạy cổng.
+
+Riêng lỗi `LKLXK` mất **hai lần sửa**, và lần đầu sai: `aria-hidden="true"` chỉ tác động tới **trình đọc màn hình**. Bộ trích văn bản, ảnh chụp màn hình gửi nhà đầu tư, và bản in PDF đều **đọc hết**. Sửa đúng là cho cột Người hiện **tên thật** lấy từ `data.people`, không hiện mã hai lần. Cổng 26 nay có bất biến thứ 5: mọi người trong `data.people` phải xuất hiện **bằng tên** ở cột Người — đã thử phá bằng cách quay lại nhãn mã, cổng báo `tên "Lê Xuân Khánh" không xuất hiện ở cột Người`.
+
+**Bài học chung:** "đã sửa" không phải "đã đúng". Phải đọc lại **bản đã deploy**, không phải bản trong đầu.
 
 ### 5.5. Bản deploy có lộ tài liệu riêng tư không?
 

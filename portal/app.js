@@ -136,14 +136,28 @@ function chip(state, kind) {
   return c;
 }
 
+// Tên hiển thị đọc từ data.people — không gõ lại trong tệp này.
+let PEOPLE = {};
+function displayName(code) {
+  if (code === "AGENT") return "Tác nhân";
+  const p = PEOPLE[code];
+  return (p && p.name) || code;
+}
+function initials(code) {
+  if (code === "AGENT") return "🤖";
+  const n = displayName(code).trim().split(/\s+/);
+  return (n[n.length - 2]?.[0] || n[0]?.[0] || "?").toUpperCase() + (n[n.length - 1]?.[0] || "").toUpperCase();
+}
 function ownerBadge(code) {
-  // Chữ trong avatar là trang trí. Nếu không đánh dấu aria-hidden, trình đọc
-  // màn hình (và mọi bộ trích văn bản) đọc thành "LKLXK" — tên người hai lần.
+  // Avatar là trang trí: `aria-hidden` để trình đọc màn hình không đọc "LKLXK".
+  // Nhưng `aria-hidden` KHÔNG ngăn bộ trích văn bản — nên phần chữ phải là tên
+  // thật ("Lê Xuân Khánh"), không phải mã lặp lại mã ("LK" + "LXK").
   const b = el("span", "owner");
-  const av = el("span", "avatar", code === "AGENT" ? "🤖" : "LK");
+  const av = el("span", "avatar", initials(code));
   av.setAttribute("aria-hidden", "true");
+  av.title = displayName(code);
   b.append(av);
-  b.append(el("span", "owner-name", code === "AGENT" ? "Tác nhân" : code));
+  b.append(el("span", "owner-name", displayName(code)));
   return b;
 }
 
@@ -432,6 +446,7 @@ async function boot() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const d = await res.json();
     STATE.data = d;
+    PEOPLE = d.people || {};
     const D = derive(d);
     renderHeader(D, d);
     renderKpis(D);
