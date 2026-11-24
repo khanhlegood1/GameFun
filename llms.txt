@@ -61,6 +61,7 @@ câu mô tả, để tác nhân AI đọc đúng file thay vì đoán. Nội dun
 - [docs/40-gates-that-never-ran.md](docs/40-gates-that-never-ran.md): bảy cổng CI chỉ chạy --selftest, ba cổng thoát sớm nên chưa từng kiểm repo; check_claims đỏ trên main; cổng 21 đọc AST để canh việc nối cổng (scripts/check_gate_wiring.py, offline)
 - [docs/41-testing-is-the-product.md](docs/41-testing-is-the-product.md): mạnh ở kiểm định chứ không phải chơi game — bán Trust Stamp miễn phí cho người chơi, bán báo cáo chẩn đoán cho studio; cảnh báo bẫy issuer-pays; 4 quyết định cần người (R1–R4)
 - [docs/42-marble-skin-and-announced-obstacles.md](docs/42-marble-skin-and-announced-obstacles.md): skin bi là lớp vẽ (avatar không đổi x/y/r), chướng ngại công bố trước 0,8 s, từ chối PK-bằng-gift; kit v1.1.0, 6 cổng
+- [docs/43-pm-supabase-from-v0-task-manager.md](docs/43-pm-supabase-from-v0-task-manager.md): schema pm 7 bảng trên Supabase thật, RLS chỉ-đọc, DONE⇒evidence là ràng buộc DB; v0-task-manager là fork không giấy phép, không backend (scripts/check_pm_supabase.py, offline)
 - [docs/07-docs-as-code-model.md](docs/07-docs-as-code-model.md): mô hình tài liệu & kiểm chứng (AGENTS.md, llms.txt, link check, cổng PDF tái lập)
 - [docs/08-legal-brief-vn-licensing.md](docs/08-legal-brief-vn-licensing.md): nguồn Markdown của legal brief — mô hình Game9K + 4 câu hỏi cho luật sư
 

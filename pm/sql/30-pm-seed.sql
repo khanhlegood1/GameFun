@@ -1,0 +1,5 @@
+-- ---------------------------------------------------------------------------
+-- pm/sql/30-pm-seed.sql — nạp sổ hiện tại. Được SINH từ pm/*.json, đừng sửa tay.
+--   scripts/gen_supabase_migrations.py
+-- Tính idempotent: chạy lại nhiều lần không nhân đôi dòng, bằng `on conflict`.
+-- ---------------------------------------------------------------------------
