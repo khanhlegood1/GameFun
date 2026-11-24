@@ -127,7 +127,19 @@ UNFILLED_ROLES = ("Principal Architect", "Tech Lead", "Founder", "Legal", "Secur
 # chính tệp ADR đổi. Đây là chốt chặn để không ai (kể cả tôi) "sửa" 18 chữ ký
 # bằng cách sửa bảng tra cứu.
 # ─────────────────────────────────────────────────────────────────────────────
-ROLE_HOLDER: dict[str, dict] = {}   # {"Principal Architect": {"person": "...", "basis": "..."}}
+ROLE_HOLDER: dict[str, dict] = {
+    # PO xác nhận đích danh ngày 2026-11-24: "Tôi cũng là Founder, PO, TL, PA."
+    # Đây là SỰ THẬT ĐƯỢC XÁC NHẬN, không phải suy đoán từ một câu nói về vai khác.
+    # Và — quan trọng — nó KHÔNG ký ADR nào. Xem docs/48 §2.2.
+    "Founder": {"person": "Lê Xuân Khánh",
+                "basis": "PO xác nhận 2026-11-24 (4 vai: Founder · PO · TL · PA)"},
+    "Project Owner": {"person": "Lê Xuân Khánh",
+                      "basis": "PO xác nhận 2026-11-24 · trùng với 25 tệp ADR ghi 'Project Owner (Lê Xuân Khánh)'"},
+    "Tech Lead": {"person": "Lê Xuân Khánh",
+                  "basis": "PO xác nhận 2026-11-24 (4 vai: Founder · PO · TL · PA)"},
+    "Principal Architect": {"person": "Lê Xuân Khánh",
+                            "basis": "PO xác nhận 2026-11-24 (4 vai: Founder · PO · TL · PA)"},
+}
 
 
 def person_for(decider: str) -> str:
@@ -196,7 +208,19 @@ def read_adrs() -> tuple[list[dict], dict[str, dict]]:
             #   named      có tên người trong tệp                     → xong
             #   role_only  có chức danh ("Principal Architect")      → phải hỏi AI
             #   unsigned   có chữ "chờ ký" nhưng không có gì khác    → phải ký
-            "signature": ("named" if person_for(decider) else "role_only") if decider else "unsigned",
+            # CHỮ KÝ = "tệp có nói nó ĐANG CHỜ ai ký hay không", không phải
+            # "có tên riêng hay không". Sửa hướng này là kết quả của việc đọc
+            # `hve-core` adr-standards §"Personas, Not People" (docs/48 §2.2):
+            # ghi NGƯỜI GIỮ VAI là cách ĐƯỢC ƯU TIÊN, nên `Project Owner` có người
+            # giữ ĐÃ XÁC NHẬN là một chữ ký hợp lệ — dù tệp không ghi tên riêng.
+            #   · `Project Owner`              (có người giữ)  → named
+            #   · `Principal Architect *(chờ ký)*` (có người giữ) → VẪN chưa ký,
+            #     vì chính tệp nói nó đang chờ. Biết ai giữ vai không xoá chữ "chờ ký".
+            "signature": (
+                "unsigned" if not decider
+                else ("role_only" if ("chờ ký" in decider.lower()) or not person_for(decider)
+                      else "named")
+            ),
             # `display_state`: thứ được PHÉP hiện trên portal. Không bao giờ nói
             # "đã nhận" cho một ADR chưa có người ký — dù tệp ghi `Accepted`.
             # Tách khỏi `state` (đọc nguyên văn từ tệp) để không sửa lịch sử:

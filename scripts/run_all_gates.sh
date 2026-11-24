@@ -14,7 +14,7 @@ set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 
 PY_GATES=(
-  check_portal check_decisions check_actions check_pm_supabase check_gate_wiring
+  check_portal check_adr_standards check_decisions check_actions check_pm_supabase check_gate_wiring
   check_claims check_docs_links find_contradictions check_agent_rules
   check_egress_lock verify_kit_bundle verify_invariants check_invariants_coverage
   kvu_invariants check_sdk check_sdk_errors check_sdk_manifest check_gate_ladder

@@ -60,6 +60,7 @@ CONTENT_MODE = {
     "check_pm_supabase.py": "--selftest",
     "check_decisions.py": "--selftest",
     "check_portal.py": "--selftest",
+    "check_adr_standards.py": "--selftest",
     "check_portal_render.mjs": None,
 }
 

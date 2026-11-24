@@ -44,6 +44,13 @@ Sau khi sửa: **35/35 tệp đọc được đủ `trạng thái` + `ngày`**, 
 
 ## 2. Phát hiện: 17 chữ ký không có người
 
+> **ĐÍNH CHÍNH vòng 37 (`docs/48` §2.3):** mục này nói hơi quá tay. `hve-core`
+> adr-standards §"Personas, Not People" nói ADR nên ghi **vai**, không ghi tên
+> riêng — nên `Principal Architect` **không** sai vì là một vai. Câu đúng là:
+> 18 ADR do một vai **không có người giữ và không ai xác nhận**, và chính tệp nói
+> nó đang chờ ký. Vấn đề là *không ai chịu trách nhiệm*, không phải *thiếu tên riêng*.
+> Số chữ ký còn thiếu không đổi: **18**.
+
 Kiểm từng tệp, đếm bằng máy:
 
 | Người quyết ghi trong tệp | Số tệp |
