@@ -112,6 +112,39 @@ def inv_no_fake_signature(items: list[dict]) -> None:
                   f"{i.get('id')}: có 'chờ ký' nhưng `needs_signature` không phải true")
 
 
+def inv_signature_is_a_person(items: list[dict], people: dict) -> None:
+    """(6) Người quyết phải là NGƯỜI CÓ TÊN, không phải một chức danh.
+
+    `README.md` của thư mục ADR tuyên bố: *"Mỗi ADR phải có người quyết có tên.
+    ADR chưa ký = `Proposed` và **không** được dùng để justify code đã merge."*
+
+    Nhưng 17/35 tệp ghi `Người quyết: Principal Architect *(chờ ký)*` — một **vai**,
+    không phải một con người, và nó không phân biệt được với một chỗ trống. Kiểm
+    35 dòng bằng mắt là việc không ai làm; kiểm bằng máy thì rẻ.
+
+    Bất biến này KHÔNG bắt phải ký. Nó chỉ bắt **không được coi là đã ký** khi
+    người ký không có tên — nếu không, `Accepted (chờ ký)` biến thành `accepted`
+    và portal tuyên bố một chữ ký chưa tồn tại.
+    """
+    for i in items:
+        if i.get("state") == "missing":
+            continue
+        decider = (i.get("decider") or "").strip()
+        # `decider_person` do generator suy ra từ chính tệp ADR (bảng vai → người
+        # khai tường minh trong gen_portal_data.py). Rỗng = chưa có ai.
+        has_person = bool((i.get("decider_person") or "").strip())
+        # Cái được kiểm là `display_state` — thứ THẬT SỰ hiện trên portal — chứ
+        # không phải `state` (nguyên văn trong tệp). Tệp lịch sử ghi `Accepted`
+        # thì để nguyên; portal không được lặp lại lời đó khi chưa có người ký.
+        check(i.get("display_state") != "accepted" or has_person,
+              f"{i.get('id')}: `Người quyết` = {decider!r} — không có tên người, "
+              "nhưng portal hiển thị 'accepted' (README: ADR chưa ký không được dùng để biện minh)")
+        check(bool(i.get("display_state")),
+              f"{i.get('id')}: thiếu `display_state` — portal không có trạng thái nào để hiện")
+        check(i.get("needs_signature") is True or has_person,
+              f"{i.get('id')}: `Người quyết` = {decider!r} không có tên người nhưng `needs_signature` = False")
+
+
 def inv_page_wiring() -> None:
     """(6) Trang phải tự nối được. Một đường dẫn sai làm trang trắng và KHÔNG
     cổng nào khác biết."""
@@ -163,6 +196,7 @@ def selftest() -> int:
         inv_no_action_lost(d)
         inv_adr_files_exist(d["adr"]["items"])
         inv_no_fake_signature(d["adr"]["items"])
+        inv_signature_is_a_person(d["adr"]["items"], d.get("people") or {})
         red = bool(FAILS)
         FAILS, PASSES = [], 0
         cases.append((label, red == must_red))
@@ -192,6 +226,16 @@ def selftest() -> int:
     run(drop_action, "P1 bỏ mất một việc khỏi portal → đỏ", True)
     run(bump_owner, "P2 đổi người sở hữu trong portal → đỏ", True)
     run(fake_signature, "P3 ADR chờ ký hiện ra như đã ký → đỏ", True)
+    def phantom_signature(d):
+        # ADR do một CHỨC DANH ký, được khai là đã nhận ⇒ tuyên bố một chữ ký
+        # không tồn tại. Đây đúng là trạng thái của ADR-0001..0014.
+        for i in d["adr"]["items"]:
+            if i["file"]:
+                i.update(state="accepted", needs_signature=False,
+                         decider="Principal Architect *(chờ ký)*")
+                return
+
+    run(phantom_signature, "P5 ADR do chức danh ký nhưng khai là đã nhận → đỏ", True)
     run(phantom_file, "P4 ADR trỏ tới tệp không tồn tại → đỏ", True)
     run(lambda d: None, "P0 đối chứng: data.json gốc → xanh", False)
 
@@ -201,13 +245,13 @@ def selftest() -> int:
     if ok != len(cases):
         print(f"PORTAL SELFTEST: FAIL — {ok}/{len(cases)}")
         return 1
-    print(f"PORTAL SELFTEST: PASS — {len(cases)}/{len(cases)} (1 đối chứng + 4 phép phá)")
+    print(f"PORTAL SELFTEST: PASS — {len(cases)}/{len(cases)} (1 đối chứng + 5 phép phá)")
     return 0
 
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="portal/ phải khớp repo, và không được ký khống.")
-    ap.add_argument("--selftest", action="store_true", help="4 phép phá + đối chứng (CI)")
+    ap.add_argument("--selftest", action="store_true", help="5 phép phá + đối chứng (CI)")
     ap.add_argument("--audit", action="store_true", help="in bảng chiếu")
     args = ap.parse_args(argv)
 
@@ -226,6 +270,7 @@ def main(argv: list[str] | None = None) -> int:
     inv_no_action_lost(data)
     inv_adr_files_exist(data["adr"]["items"])
     inv_no_fake_signature(data["adr"]["items"])
+    inv_signature_is_a_person(data["adr"]["items"], data.get("people") or {})
     inv_page_wiring()
 
     if FAILS:

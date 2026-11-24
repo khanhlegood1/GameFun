@@ -132,6 +132,10 @@
   .adr-foot{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:9px;font-size:11.5px;color:var(--ink3)}
   .adr-imp{background:#0e1520;border:1px solid var(--line);border-radius:5px;padding:1px 7px}
   .adr-warn{color:var(--bad)}
+  .adr-sig{font-size:11px;border-radius:5px;padding:1px 7px;border:1px solid var(--line)}
+  .sig-named{color:var(--ok);border-color:#3ddc9744}
+  .sig-role_only{color:var(--warn);border-color:#f7c94844}
+  .sig-unsigned{color:var(--bad);border-color:#ff6b6b44}
 
   /* ---- drawer ---- */
   .drawer-back{position:fixed;inset:0;background:#04070bcc;backdrop-filter:blur(2px);z-index:40}
@@ -237,9 +241,12 @@
               <button class="afilter" data-f="proposed">Chờ ký</button>
               <button class="afilter" data-f="accepted">Đã nhận</button>
               <button class="afilter" data-f="missing">Thiếu tệp</button>
+              <button class="afilter" data-f="role_only">Chỉ chức danh</button>
             </div>
           </div>
-          <p class="panel-note">“Chờ ký” nghĩa là người quyết chưa ký. Theo quy ước của repo, ADR chưa ký <b>không</b> được dùng để biện minh cho mã đã merge.</p>
+          <p class="panel-note">“Chờ ký” nghĩa là người quyết chưa ký. Theo quy ước của repo, ADR chưa ký <b>không</b> được dùng để biện minh cho mã đã merge.
+            <br><b>Chỉ chức danh</b> là trường hợp nặng hơn: tệp ghi <code>Accepted</code> nhưng người quyết là
+            <code>Principal Architect</code> — một vai, không phải một con người. Chữ “Accepted” ở đó không chứng minh được ai đã đồng ý.</p>
           <div class="adr-list" id="adr-list"></div>
         </div>
       </div>

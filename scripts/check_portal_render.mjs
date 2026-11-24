@@ -195,6 +195,32 @@ const run = async () => {
     }
   }
 
+  /* 5c. Bẫy chức danh: ADR `Accepted` mà người quyết là một VAI ("Principal
+   * Architect") phải hiện "chỉ có chức danh — chưa ai ký", không được hiện
+   * "Đã nhận" trơn. Đây là 12 ADR thật trong bộ tài liệu (0001..0014 bỏ 0008/0011).
+   */
+  const roleOnly = data.adr.items.filter((i) => i.signature === "role_only");
+  // Dòng dưới kiểm qua ĐƯỜNG VẼ THẬT (`renderAdr`), không chỉ qua biến `sigText`:
+  // Kiểm cái ĐÃ VẼ, không kiểm biến. Lần đầu tôi viết kiểm này trên `item`
+  // (dữ liệu) nên nó vẫn xanh khi app.js vẽ nhãn sai — đúng lỗi cũ: cổng đọc
+  // dữ liệu, không đọc màn hình.
+  for (const item of roleOnly) {
+    const card = adrCards.find((c) => c.all((n) => n.className === "id")[0]?.textContent === item.id.replace("ADR-", ""));
+    if (!card) { fails.push(`ADR ${item.id} không được vẽ ra`); continue; }
+    const stateChip = card.all((n) => n.className && /chip-(accepted|proposed|missing)/.test(n.className))[0];
+    const drawn = stateChip ? stateChip.textContent.trim() : "(không có nhãn)";
+    ok(!drawn.includes("Đã nhận"),
+      `${item.id} do chức danh "${item.decider}" ký nhưng THẺ VẼ RA "${drawn}" — phải là "Chờ ký"`);
+  }
+  ok(roleOnly.length > 0, "không có ADR nào 'role_only' — dữ liệu đổi thì kiểm này vô nghĩa");
+  for (const item of roleOnly) {
+    const card = adrCards.find((c) => c.all((n) => n.className === "id")[0]?.textContent === item.id.replace("ADR-", ""));
+    if (!card) { fails.push(`ADR ${item.id} không được vẽ ra`); continue; }
+    const sigText = card.all((n) => n.className && n.className.includes("adr-sig"))[0]?.textContent || "";
+    ok(sigText.includes("chưa ai ký"),
+      `${item.id} do chức danh "${item.decider}" ký nhưng thẻ hiện "${sigText}" — phải nói rõ chưa có người ký`);
+  }
+
   /* 6. Hàng đợi quyết định phải có, và đúng là những việc đang chặn việc khác */
   const queue = byId("queue").all((n) => n.className === "queue-card");
   const blockers = new Set(open.flatMap((a) => a.blocked_by || []));
