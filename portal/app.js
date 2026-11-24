@@ -143,10 +143,16 @@ function displayName(code) {
   const p = PEOPLE[code];
   return (p && p.name) || code;
 }
+// "Lê Xuân Khánh" → "LK": chữ đầu của từ ĐẦU + chữ đầu của từ CUỐI.
+// Lần đầu tôi viết ngược (từ áp chót + từ cuối) ⇒ ra "XK", và nó chỉ lộ ra khi
+// nhìn bản deploy thật — trong DOM thì hai chữ cái nào cũng hợp lệ.
 function initials(code) {
   if (code === "AGENT") return "🤖";
-  const n = displayName(code).trim().split(/\s+/);
-  return (n[n.length - 2]?.[0] || n[0]?.[0] || "?").toUpperCase() + (n[n.length - 1]?.[0] || "").toUpperCase();
+  const n = displayName(code).trim().split(/\s+/).filter(Boolean);
+  if (!n.length) return "?";
+  const a = n[0][0] || "?";
+  const b = n.length > 1 ? n[n.length - 1][0] : "";
+  return (a + b).toUpperCase();
 }
 function ownerBadge(code) {
   // Avatar là trang trí: `aria-hidden` để trình đọc màn hình không đọc "LKLXK".

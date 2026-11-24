@@ -176,6 +176,25 @@ const run = async () => {
     ok(nameShown.includes(nm), `tên "${nm}" không xuất hiện ở cột Người — cột này đang hiện mã, không hiện tên`);
   }
 
+  /* 5b. Chữ trong avatar phải đúng là chữ đầu của từ ĐẦU + từ CUỐI.
+   * "Lê Xuân Khánh" → "LK". Lần đầu tôi viết ngược ra "XK", và cổng cũ không
+   * thấy vì nó chỉ kiểm TÊN. Hai chữ cái nào cũng hợp lệ với một cổng chỉ đếm.
+   */
+  const initialsOf = (name) => {
+    const n = String(name).trim().split(/\s+/).filter(Boolean);
+    if (!n.length) return "?";
+    return (n[0][0] + (n.length > 1 ? n[n.length - 1][0] : "")).toUpperCase();
+  };
+  for (const [code, p] of Object.entries(data.people || {})) {
+    if (code === "AGENT") continue;
+    const avatars = byId("task-body").all((n) => n.className === "avatar").map((n) => n.textContent);
+    const want = initialsOf(p.name);
+    for (const got of new Set(avatars)) {
+      ok(got === want || got === "🤖",
+        `avatar hiện "${got}" nhưng chữ viết tắt đúng của "${p.name}" là "${want}"`);
+    }
+  }
+
   /* 6. Hàng đợi quyết định phải có, và đúng là những việc đang chặn việc khác */
   const queue = byId("queue").all((n) => n.className === "queue-card");
   const blockers = new Set(open.flatMap((a) => a.blocked_by || []));
