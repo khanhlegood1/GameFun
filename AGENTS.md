@@ -69,6 +69,9 @@ GameFun/
     ├── verify_kit_bundle.py     # bundle Starter Kit: 6 cổng xanh, hash khớp docs/23 (docs/42)
     ├── check_pm_supabase.py     # sổ dự án Supabase: RLS chỉ-đọc, seed khớp pm/*.json (docs/43)
     ├── check_decisions.py       # quyết định R* phải có mã việc P* kèm hạn + stakeholder (docs/44)
+    ├── check_portal.py          # portal/ khớp repo, cấm ký khống ADR chờ ký (docs/45)
+    ├── check_portal_render.mjs  # app.js phải VẼ được trong DOM tối thiểu (docs/45, node)
+    ├── gen_portal_data.py       # sinh portal/data.json từ pm/*.json + portal/docs/08-adr (docs/45)
     └── gen_supabase_migrations.py # sinh supabase/migrations/ từ pm/sql + pm/*.json (docs/43)
     └── verify_protocol_math.py  # S1–S9 + fuzz, in dòng PASS 100%
 ```

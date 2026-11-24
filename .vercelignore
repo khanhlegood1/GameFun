@@ -1,0 +1,13 @@
+# Vercel chỉ phục vụ `portal/` (xem vercel.json › outputDirectory).
+# Phần còn lại của repo là tài liệu + cổng kiểm chứng, không được lên web.
+/.git
+/docs
+/pm
+/supabase
+/scripts
+/sdk
+/assets
+/receipts
+/tmp
+*.pdf
+*.bundle

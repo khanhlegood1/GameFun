@@ -63,6 +63,7 @@ câu mô tả, để tác nhân AI đọc đúng file thay vì đoán. Nội dun
 - [docs/42-marble-skin-and-announced-obstacles.md](docs/42-marble-skin-and-announced-obstacles.md): skin bi là lớp vẽ (avatar không đổi x/y/r), chướng ngại công bố trước 0,8 s, từ chối PK-bằng-gift; kit v1.1.0, 6 cổng
 - [docs/43-pm-supabase-from-v0-task-manager.md](docs/43-pm-supabase-from-v0-task-manager.md): schema pm 7 bảng trên Supabase thật, RLS chỉ-đọc, DONE⇒evidence là ràng buộc DB; v0-task-manager là fork không giấy phép, không backend (scripts/check_pm_supabase.py, offline)
 - [docs/44-fde-artifact-templates-as-machine-fields.md](docs/44-fde-artifact-templates-as-machine-fields.md): bốn mẫu bàn giao FDE (Site Survey, Scoping, sơ đồ, WES) — chỉ ba chuyển được; blocked_by + stakeholder thành cột DB; cổng 24 bắt quyết định R* phải có mã việc P* kèm hạn (scripts/check_decisions.py, offline)
+- [docs/45-portal-task-dashboard.md](docs/45-portal-task-dashboard.md): portal/task là bản chiếu một chiều của pm/action-register.json + docs/08-adr; data.json sinh bằng máy, cổng 25 cấm ký khống ADR chờ ký, cổng 26 nạp app.js vào DOM tối thiểu; 20/36 ADR thiếu tệp (scripts/check_portal.py, offline)
 - [docs/07-docs-as-code-model.md](docs/07-docs-as-code-model.md): mô hình tài liệu & kiểm chứng (AGENTS.md, llms.txt, link check, cổng PDF tái lập)
 - [docs/08-legal-brief-vn-licensing.md](docs/08-legal-brief-vn-licensing.md): nguồn Markdown của legal brief — mô hình Game9K + 4 câu hỏi cho luật sư
 

@@ -176,6 +176,18 @@ jobs:
       - name: Quyết định có mã việc (3 bất biến · R* phải có P* kèm hạn)
         run: python3 scripts/check_decisions.py --selftest && python3 scripts/check_decisions.py
 
+      # Cổng thứ hai mươi lăm: portal/task là bản chiếu của repo (docs/45).
+      # Một bảng điều khiển đọc từ bản sao tự nhập là bảng điều khiển có thể nói
+      # dối mà không ai biết — cổng này buộc data.json == bản sinh từ repo, và
+      # ADR "chờ ký" không được hiện ra như đã ký.
+      - name: Portal khớp repo, không ký khống (6 bất biến · data.json == generator)
+        run: python3 scripts/check_portal.py --selftest && python3 scripts/check_portal.py
+
+      # Cổng thứ hai mươi sáu: trang phải THỰC SỰ vẽ được. HTTP 200 trên index.html
+      # vẫn xanh khi app.js ném lỗi và người xem thấy trang trắng.
+      - name: Portal vẽ được (app.js chạy trong DOM tối thiểu)
+        run: node scripts/check_portal_render.mjs
+
   reproducible-pdf:
     name: PDF dựng lại phải trùng byte đã commit
     runs-on: ubuntu-24.04
