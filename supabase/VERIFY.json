@@ -1,33 +1,208 @@
 {
-  "$comment": "Bằng chứng ĐO ĐƯỢC của database thật — sinh bằng cách chạy SQL trên project Supabase, không viết tay. scripts/check_pm_supabase.py đối chiếu tệp này với migration: nếu migration cho phép ghi mà bằng chứng ghi 'không', cổng ĐỎ.",
+  "$comment": "Bằng chứng ĐO ĐƯỢC của database thật — sinh bằng cách chạy SQL trên project Supabase, không viết tay. `seed_fingerprint` là md5(title)+due+status của TỪNG dòng pm_actions đo bằng `select md5(title)`; gate 23 đối chiếu nó với pm/action-register.json, nên sửa sổ mà không đo lại database là ĐỎ. docs/44 §3.4.",
   "project": {
     "name": "game9k-pm",
     "ref": "illulsggtxlseywsuuyg",
     "region": "ap-southeast-1",
     "plan": "free",
     "server_version": "PostgreSQL 17.12",
-    "measured_at": "2026-11-24"
+    "measured_at": "2026-11-18"
   },
   "migrations_applied": [
     "pm_core_schema_v1",
     "pm_rls_readonly_v1",
-    "pm_seed_from_registers_v1"
+    "pm_seed_from_registers_v1",
+    "pm_deps_and_stakeholders_v1"
   ],
   "tables": {
-    "pm_action_projects": { "rls": true, "anon_read": true, "anon_write": false, "auth_update": false, "auth_delete": false, "policies": 1, "write_policies": 0 },
-    "pm_actions":         { "rls": true, "anon_read": true, "anon_write": false, "auth_update": false, "auth_delete": false, "policies": 1, "write_policies": 0 },
-    "pm_audit":           { "rls": true, "anon_read": true, "anon_write": false, "auth_update": false, "auth_delete": false, "policies": 1, "write_policies": 0 },
-    "pm_documents":       { "rls": true, "anon_read": true, "anon_write": false, "auth_update": false, "auth_delete": false, "policies": 1, "write_policies": 0 },
-    "pm_notes":           { "rls": true, "anon_read": true, "anon_write": false, "auth_update": false, "auth_delete": false, "policies": 1, "write_policies": 0 },
-    "pm_people":          { "rls": true, "anon_read": true, "anon_write": false, "auth_update": false, "auth_delete": false, "policies": 1, "write_policies": 0 },
-    "pm_projects":        { "rls": true, "anon_read": true, "anon_write": false, "auth_update": false, "auth_delete": false, "policies": 1, "write_policies": 0 }
+    "pm_action_deps": {
+      "rls": true,
+      "anon_read": true,
+      "anon_write": false,
+      "auth_update": false,
+      "auth_delete": false,
+      "write_policies": 0
+    },
+    "pm_action_projects": {
+      "rls": true,
+      "anon_read": true,
+      "anon_write": false,
+      "auth_update": false,
+      "auth_delete": false,
+      "policies": 1,
+      "write_policies": 0
+    },
+    "pm_action_stakeholders": {
+      "rls": true,
+      "anon_read": true,
+      "anon_write": false,
+      "auth_update": false,
+      "auth_delete": false,
+      "write_policies": 0
+    },
+    "pm_actions": {
+      "rls": true,
+      "anon_read": true,
+      "anon_write": false,
+      "auth_update": false,
+      "auth_delete": false,
+      "policies": 1,
+      "write_policies": 0
+    },
+    "pm_audit": {
+      "rls": true,
+      "anon_read": true,
+      "anon_write": false,
+      "auth_update": false,
+      "auth_delete": false,
+      "policies": 1,
+      "write_policies": 0
+    },
+    "pm_documents": {
+      "rls": true,
+      "anon_read": true,
+      "anon_write": false,
+      "auth_update": false,
+      "auth_delete": false,
+      "policies": 1,
+      "write_policies": 0
+    },
+    "pm_notes": {
+      "rls": true,
+      "anon_read": true,
+      "anon_write": false,
+      "auth_update": false,
+      "auth_delete": false,
+      "policies": 1,
+      "write_policies": 0
+    },
+    "pm_people": {
+      "rls": true,
+      "anon_read": true,
+      "anon_write": false,
+      "auth_update": false,
+      "auth_delete": false,
+      "policies": 1,
+      "write_policies": 0
+    },
+    "pm_projects": {
+      "rls": true,
+      "anon_read": true,
+      "anon_write": false,
+      "auth_update": false,
+      "auth_delete": false,
+      "policies": 1,
+      "write_policies": 0
+    }
   },
-  "row_counts": { "pm_people": 2, "pm_actions": 8, "pm_actions_open": 5, "pm_actions_done": 3 },
+  "row_counts": {
+    "pm_people": 2,
+    "pm_actions": 12,
+    "pm_actions_open": 9,
+    "pm_action_deps": 4,
+    "pm_action_stakeholders": 12,
+    "pm_projects": 6,
+    "pm_documents": 6,
+    "pm_notes": 3,
+    "pm_audit": 3
+  },
   "constraint_probes": [
-    { "name": "DONE mà không có evidence", "sql": "update pm_actions set status='DONE', done_on=null, evidence=null where id='P1'", "blocked": true, "by": "pm_actions_done_needs_evidence" },
-    { "name": "đóng sớm trước not_before", "sql": "update pm_actions set status='DONE', done_on='2026-11-01', evidence='x' where id='P3'", "blocked": true, "by": "pm_actions_done_after_not_before" },
-    { "name": "anon INSERT pm_actions", "blocked": true, "by": "privilege" },
-    { "name": "authenticated UPDATE pm_actions", "blocked": true, "by": "privilege" },
-    { "name": "anon DELETE pm_audit", "blocked": true, "by": "privilege" }
-  ]
+    {
+      "name": "DONE mà không có evidence",
+      "blocked": true,
+      "by": "pm_actions_done_needs_evidence"
+    },
+    {
+      "name": "đóng sớm trước not_before",
+      "blocked": true,
+      "by": "pm_actions_done_after_not_before"
+    },
+    {
+      "name": "việc tự chặn chính nó (P1 → P1)",
+      "blocked": true,
+      "by": "pm_action_deps_no_self (23514)"
+    },
+    {
+      "name": "blocked_by trỏ tới P-id không tồn tại (P3 → P999)",
+      "blocked": true,
+      "by": "pm_action_deps_blocked_by_fkey (23503)"
+    },
+    {
+      "name": "anon INSERT pm_action_deps",
+      "blocked": true,
+      "by": "RLS: không có policy ghi"
+    },
+    {
+      "name": "authenticated UPDATE pm_actions",
+      "blocked": true,
+      "by": "RLS: không có policy ghi"
+    },
+    {
+      "name": "anon DELETE pm_audit",
+      "blocked": true,
+      "by": "RLS: không có policy ghi"
+    }
+  ],
+  "seed_fingerprint": {
+    "P1": {
+      "md5_title": "3e35291db626007d947adb72402cf96d",
+      "due": "2026-12-18",
+      "status": "OPEN"
+    },
+    "P2": {
+      "md5_title": "f7d7af81312be63b6ed4ca7ce848ab12",
+      "due": "2026-12-18",
+      "status": "OPEN"
+    },
+    "P3": {
+      "md5_title": "1ef7ecefbd5e78cecd2d349bbc1da740",
+      "due": "2026-12-20",
+      "status": "OPEN"
+    },
+    "P4": {
+      "md5_title": "f2ddc5d1d3ea207df8ce521a77077b4a",
+      "due": "2026-11-24",
+      "status": "DONE"
+    },
+    "P5": {
+      "md5_title": "e37cfc793afe4b8e5a4774fb683dfe7c",
+      "due": "2026-11-24",
+      "status": "DONE"
+    },
+    "P6": {
+      "md5_title": "e77cce758c1623e618b3376a78d568a4",
+      "due": "2026-12-05",
+      "status": "DONE"
+    },
+    "P7": {
+      "md5_title": "49988e5230d4d46b8e08d6508fce0385",
+      "due": "2026-12-10",
+      "status": "OPEN"
+    },
+    "P8": {
+      "md5_title": "2e711375c8d67f75b9ad15c86a025da9",
+      "due": "2026-12-15",
+      "status": "OPEN"
+    },
+    "P9": {
+      "md5_title": "e11b625ee9c409b324bef1183c44942e",
+      "due": "2026-12-15",
+      "status": "OPEN"
+    },
+    "P10": {
+      "md5_title": "3f0bd7592a8bed2211c656b9a4f79127",
+      "due": "2026-12-22",
+      "status": "OPEN"
+    },
+    "P11": {
+      "md5_title": "cb7e54af3b60b6e44646dbb230712c9c",
+      "due": "2026-12-15",
+      "status": "OPEN"
+    },
+    "P12": {
+      "md5_title": "c2c5da262d26d40cf39b065fe3fea317",
+      "due": "2026-12-20",
+      "status": "OPEN"
+    }
+  }
 }
