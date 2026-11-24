@@ -1295,6 +1295,27 @@
    "stakeholder": [
     "LXK"
    ]
+  },
+  {
+   "id": "P13",
+   "title": "Gán tên người thật cho 17 ADR đang do chức danh ký ('Principal Architect' ×14, '+ Legal', 'Tech Lead On-chain', 'Founder')",
+   "source": "docs/46-nineteen-adrs-and-seventeen-empty-signatures.md §2",
+   "source_doc": "docs/46-nineteen-adrs-and-seventeen-empty-signatures.md",
+   "why": "README của docs/08-adr yêu cầu 'mỗi ADR phải có người quyết có tên' và 'ADR chưa ký KHÔNG được dùng để justify code đã merge'. 17/35 ADR vi phạm; 12 trong số đó đã ở trạng thái Accepted và đã được dùng đúng như điều bị cấm. Một chức danh không phải một người: 'Principal Architect *(chờ ký)*' trông như đã có người đồng ý, và đó là lý do 14 quyết định hiện không có ai chịu trách nhiệm.",
+   "owner": "LXK",
+   "agent_allowed": false,
+   "owner_reason": "Agent không biết 'Principal Architect' là ai, và không được tự gán tên một người vào một chữ ký.",
+   "not_before": "2026-11-19",
+   "due": "2026-12-15",
+   "block_if_unmet": "accept",
+   "block_if_unmet_note": "Quá hạn ⇒ portal tiếp tục hiện 17 ADR là 'Chờ ký' và P13 được nêu đích danh trong mục câu hỏi mở của docs/46; cổng 25 giữ đỏ nếu ai đó khai display_state='accepted' cho chúng.",
+   "evidence_required": "mỗi ADR trong 17 tệp có một tên người ở trường `Người quyết`, hoặc một ADR mới tuyên bố rõ chức danh nào chịu trách nhiệm và ai giữ chức danh đó",
+   "status": "OPEN",
+   "blocked_by": [],
+   "blocked_by_note": "",
+   "stakeholder": [
+    "LXK"
+   ]
   }
  ],
  "people": {

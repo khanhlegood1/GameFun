@@ -94,6 +94,25 @@ Portal hiện `display_state`. Với 12 ADR `accepted` + `role_only`, portal hi�
 
 **Con số hiện trên portal:** 18 ADR có tên người ký · 17 chỉ có chức danh · 0 hoàn toàn chưa ký · 8 thiếu tệp.
 
+### 2.3. Bốn dòng trên trang, kiểm bằng mắt trên bản thật
+
+`fetch_page https://gamefun9k.vercel.app/?v=5` sau khi merge:
+
+```
+17   ADR chưa có người ký
+     18 đã có tên người · 43 ADR
+```
+
+Và từng thẻ, đọc trên HTML thật:
+
+| ADR | Nhãn trạng thái hiện trên portal | Nhãn chữ ký |
+|---|---|---|
+| 0001, 0009, 0014 | **Chờ ký** | *chỉ có chức danh — chưa ai ký* |
+| 0019, 0020, 0021, 0022 | **Đã nhận** | *có tên người ký* |
+| 0023 … 0036 | **Chờ ký** | *có tên người ký* |
+
+Dòng 0023…0036 là chỗ đáng chú ý: **có tên người ký nhưng vẫn Chờ ký** — vì người đó ghi `Proposed — chờ PO ký`, tức là ADR chờ chính người đã đề xuất nó. Tên người không đồng nghĩa đã ký; hai trường là hai chuyện, và portal nói được cả hai.
+
 ---
 
 ## 3. Cổng đã bắt gì trong vòng này
@@ -171,7 +190,7 @@ Bốn phép phá đã chạy thật trên bản sao, cả bốn đều đỏ đ�
 
 | | Nợ | Vì sao để lại |
 |---|---|---|
-| **W1** | Chưa có `P*` cho "gán tên người cho 17 ADR do chức danh ký" | Cần biết `Principal Architect` là ai trước. Đã nêu ở §5 câu 1 |
+| ~~**W1**~~ | ~~Chưa có `P*` cho "gán tên người cho 17 ADR do chức danh ký"~~ | **Đã đóng trong cùng vòng:** thành **P13** (`owner: LXK`, hạn 2026-12-15). Không để một phát hiện nằm ngoài sổ việc — `docs/37`: việc không có người và ngày là một mong muốn |
 | **W2** | 8 ADR thiếu tệp | Cần tệp, không cần mã |
 | **W3** | `README.md` của thư mục ADR vẫn ghi `Accepted (chờ ký)` — mâu thuẫn gốc | Sửa nó là sửa tài liệu nguồn của bạn. Portal đã hiện đúng bất kể README nói gì |
 | **W4** | Cổng 25 chưa đọc được format header thứ tư, nếu có | Ba format đã gặp đều xử lý; nếu gặp format mới, cổng 25 sẽ đỏ ở `display_state` rỗng chứ không im lặng |
