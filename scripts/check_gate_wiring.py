@@ -59,6 +59,8 @@ CONTENT_MODE = {
     "verify_kit_bundle.py": "--selftest",
     "check_pm_supabase.py": "--selftest",
     "check_decisions.py": "--selftest",
+    "check_portal.py": "--selftest",
+    "check_portal_render.mjs": None,
 }
 
 # Cổng được PHÉP nhận cờ `--selftest` mà không đọc cờ, vì chế độ mặc định của nó đã
@@ -83,7 +85,7 @@ def run_lines(text: str) -> list[str]:
     for m in re.finditer(r"(?m)^\s{8}run:[ \t]*(?!\|)(.+)$", text):
         out.extend(p.strip() for p in m.group(1).split("&&"))
     for block in re.findall(r"(?ms)^\s{8}run:[ \t]*\|\n(.*?)(?=^\s{6}- |\Z)", text):
-        out.extend(re.findall(r"(?m)^\s*python3\s+scripts/\S+.*$", block))
+        out.extend(re.findall(r"(?m)^\s*(?:python3|node)\s+scripts/\S+.*$", block))
     return [re.sub(r"\s+", " ", s).strip() for s in out if "scripts/" in s]
 
 
@@ -94,7 +96,7 @@ def gate_scripts() -> list[str]:
 def calls_by_script(cmds: list[str]) -> dict[str, list[str]]:
     seen: dict[str, list[str]] = {}
     for c in cmds:
-        m = re.search(r"scripts/([\w.-]+\.py)", c)
+        m = re.search(r"scripts/([\w.-]+\.(?:py|mjs))", c)
         if m:
             seen.setdefault(m.group(1), []).append(c)
     return seen

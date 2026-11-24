@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Game9K · Bảng điều khiển dự án</title>
+<meta name="description" content="Việc đang mở, việc đang chờ người quyết, và danh sách ADR — đọc thẳng từ repo GameFun."/>
+<meta name="robots" content="noindex"/>
+<style>
+  :root{
+    --bg:#0b0f14; --bg2:#111823; --card:#151d29; --card2:#1a2434;
+    --line:#243145; --ink:#e8eef7; --ink2:#9fb0c6; --ink3:#6b7f99;
+    --brand:#4f8cff; --brand2:#7aa9ff;
+    --ok:#3ddc97; --warn:#f7c948; --bad:#ff6b6b; --idle:#8b9bb4;
+    --r:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:radial-gradient(1200px 600px at 15% -10%, #1b2a45 0%, transparent 60%), var(--bg);
+    color:var(--ink);
+    font:15px/1.55 "Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  .id{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;letter-spacing:.02em;color:var(--ink2);background:#0e1520;border:1px solid var(--line);border-radius:6px;padding:2px 7px}
+  .muted{color:var(--ink3)}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 22px 64px}
+
+  /* ---- thanh trên ---- */
+  .top{display:flex;align-items:center;gap:14px;padding:20px 0 6px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:.02em}
+  .logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--brand),#a06bff);display:grid;place-items:center;font-size:15px;font-weight:800;color:#fff}
+  .brand small{display:block;font-weight:500;color:var(--ink3);font-size:11.5px;letter-spacing:0}
+  .top-right{margin-left:auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .pill{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 13px;font-size:12.5px;color:var(--ink2)}
+  .pill b{color:var(--ink);font-weight:600}
+
+  /* ---- hero ---- */
+  .hero{display:flex;gap:16px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;margin:22px 0 18px}
+  h1{margin:0;font-size:27px;line-height:1.2;letter-spacing:-.01em}
+  h1 span{color:var(--brand2)}
+  .sub{margin:6px 0 0;color:var(--ink2);font-size:13.5px;max-width:62ch}
+
+  /* ---- KPI ---- */
+  .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0 24px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;position:relative;overflow:hidden}
+  .kpi::after{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--idle)}
+  .kpi-brand::after{background:var(--brand)} .kpi-warn::after{background:var(--warn)}
+  .kpi-bad::after{background:var(--bad)} .kpi-ok::after{background:var(--ok)}
+  .kpi-v{font-size:29px;font-weight:750;line-height:1.1;font-variant-numeric:tabular-nums}
+  .kpi-k{font-size:13px;color:var(--ink);margin-top:2px}
+  .kpi-s{font-size:11.5px;color:var(--ink3)}
+
+  /* ---- bố cục ---- */
+  .cols{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;align-items:start}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+  .panel-h{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .panel-h h2{margin:0;font-size:15px;font-weight:650}
+  .panel-h .grow{margin-left:auto}
+  .panel-note{padding:0 16px 12px;margin:0;color:var(--ink3);font-size:12px}
+
+  /* ---- tabs ---- */
+  .tabs{display:flex;gap:4px;background:#0e1520;border:1px solid var(--line);border-radius:10px;padding:3px}
+  .tab{border:0;background:transparent;color:var(--ink2);font:inherit;font-size:12.5px;padding:6px 11px;border-radius:7px;cursor:pointer}
+  .tab:hover{color:var(--ink)}
+  .tab.is-active{background:var(--card2);color:var(--ink);box-shadow:0 1px 0 #ffffff10 inset}
+  .search{border:1px solid var(--line);background:#0e1520;color:var(--ink);border-radius:9px;padding:7px 11px;font:inherit;font-size:13px;min-width:180px}
+  .search::placeholder{color:var(--ink3)}
+  .search:focus{outline:2px solid var(--brand);outline-offset:1px}
+
+  /* ---- bảng việc ---- */
+  .tasks{width:100%;border-collapse:collapse}
+  .tasks thead th{text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+  .tasks tbody tr.task{border-bottom:1px solid #1c2637;cursor:pointer;transition:background .12s}
+  .tasks tbody tr.task:hover,.tasks tbody tr.task:focus-visible{background:var(--card2);outline:none}
+  .tasks td{padding:11px 12px;vertical-align:middle}
+  .cell-id{white-space:nowrap}
+  .depth{display:inline-block;margin-left:5px;font-size:10.5px;color:var(--warn);background:#f7c9481a;border:1px solid #f7c94833;border-radius:5px;padding:0 5px}
+  .cell-title{min-width:260px}
+  .t-title{font-weight:560;line-height:1.35}
+  .t-meta{font-size:11.5px;color:var(--ink3);margin-top:3px;display:flex;gap:6px;flex-wrap:wrap}
+  .t-ask{color:var(--warn)}
+  .cell-owner{white-space:nowrap}
+  .cell-due{white-space:nowrap;font-variant-numeric:tabular-nums}
+  .due{font-size:13px}
+  .due-left{display:block;font-size:11px;color:var(--ok)}
+  .due-late{display:block;font-size:11px;color:var(--bad);font-weight:600}
+  .empty{text-align:center;padding:34px 12px;color:var(--ink3)}
+
+  .owner{display:inline-flex;align-items:center;gap:7px;font-size:13px}
+  .avatar{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;background:#223049;border:1px solid var(--line);color:var(--ink)}
+  .owner-name{color:var(--ink2)}
+
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:#0e1520;color:var(--ink2);white-space:nowrap}
+  .chip .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+  .chip-open{color:var(--brand2);border-color:#4f8cff44}
+  .chip-blocked{color:var(--warn);border-color:#f7c94844}
+  .chip-overdue{color:var(--bad);border-color:#ff6b6b44}
+  .chip-done{color:var(--ok);border-color:#3ddc9744}
+  .chip-dropped{color:var(--idle);border-color:#8b9bb444}
+  .chip-proposed{color:var(--warn);border-color:#f7c94844}
+  .chip-accepted{color:var(--ok);border-color:#3ddc9744}
+  .chip-rejected,.chip-superseded{color:var(--idle)}
+  .chip-missing{color:var(--bad);border-color:#ff6b6b44}
+  .chip-unknown{color:var(--idle)}
+
+  /* ---- dây chuyền ---- */
+  .chain{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+  .chain-node{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--ink2);background:#0e1520;border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+  .chain-node.is-done{color:var(--ok);border-color:#3ddc9740}
+  .chain-arrow{color:var(--ink3);font-size:11px}
+
+  /* ---- hàng đợi quyết định ---- */
+  .queue{display:grid;gap:10px;padding:14px}
+  .queue-card{text-align:left;width:100%;background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:12px;color:inherit;font:inherit;cursor:pointer}
+  .queue-card:hover{border-color:#4f8cff66}
+  .queue-top{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+  .queue-title{font-size:13.5px;font-weight:560;line-height:1.35}
+  .queue-note{font-size:11.5px;color:var(--warn);margin-top:6px;font-family:ui-monospace,Menlo,monospace}
+  .queue-who{display:flex;align-items:center;gap:10px;margin-top:9px;font-size:12px}
+
+  /* ---- ADR ---- */
+  .adr-filters{display:flex;gap:6px;flex-wrap:wrap}
+  .afilter{border:1px solid var(--line);background:#0e1520;color:var(--ink2);border-radius:999px;padding:5px 11px;font:inherit;font-size:12px;cursor:pointer}
+  .afilter.is-active{background:var(--brand);border-color:var(--brand);color:#fff}
+  .adr-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:14px}
+  .adr-card{display:block;background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:13px;text-decoration:none;color:inherit;transition:border-color .12s,transform .12s}
+  a.adr-card:hover{border-color:#4f8cff66;transform:translateY(-1px)}
+  .adr-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .adr-title{font-size:13.5px;font-weight:560;line-height:1.4}
+  .adr-foot{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:9px;font-size:11.5px;color:var(--ink3)}
+  .adr-imp{background:#0e1520;border:1px solid var(--line);border-radius:5px;padding:1px 7px}
+  .adr-warn{color:var(--bad)}
+
+  /* ---- drawer ---- */
+  .drawer-back{position:fixed;inset:0;background:#04070bcc;backdrop-filter:blur(2px);z-index:40}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:min(520px,100%);background:var(--bg2);border-left:1px solid var(--line);z-index:41;transform:translateX(102%);transition:transform .2s ease;overflow-y:auto}
+  .drawer.is-open{transform:none}
+  .drawer-top{position:sticky;top:0;background:var(--bg2);border-bottom:1px solid var(--line);padding:16px 18px;display:flex;gap:10px;align-items:flex-start}
+  .drawer-top h3{margin:6px 0 0;font-size:16px;line-height:1.35}
+  .x{margin-left:auto;border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:15px;flex:none}
+  .x:hover{color:var(--ink)}
+  .drawer-body{padding:16px 18px 40px}
+  .drawer-chips{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+  .pk{font-size:12px;color:var(--ink2);border:1px solid var(--line);border-radius:999px;padding:3px 10px;background:#0e1520}
+  .sec{margin:0 0 16px}
+  .sec h4{margin:0 0 5px;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);font-weight:650}
+  .sec p{margin:0;color:var(--ink);font-size:13.5px;line-height:1.55}
+  .ask-line{font-size:13px;padding:5px 0;border-bottom:1px dashed #223049;display:flex;gap:8px;align-items:baseline}
+  .src{display:inline-block;font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#0e1520;border:1px solid var(--line);border-radius:6px;padding:4px 8px;color:var(--brand2)}
+
+  /* ---- sơ đồ phụ thuộc ---- */
+  .deps{padding:14px;display:grid;gap:12px}
+  .dep-lane{border-left:2px solid #223049;padding-left:12px;margin-left:6px}
+  .dep-node{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px;flex-wrap:wrap}
+  .dep-node .who{font-size:11.5px;color:var(--ink3)}
+
+  /* ---- boot ---- */
+  .boot{padding:60px 22px;text-align:center;color:var(--ink2)}
+  .boot-err{color:var(--bad);font-family:ui-monospace,Menlo,monospace;font-size:13px;max-width:60ch;margin:0 auto;text-align:left;line-height:1.6}
+  footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink3);font-size:12px;display:flex;gap:14px;flex-wrap:wrap}
+  footer code{color:var(--ink2)}
+
+  @media (max-width:1040px){
+    .cols{grid-template-columns:minmax(0,1fr)}
+    .adr-list{grid-template-columns:minmax(0,1fr)}
+    .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+  @media (max-width:640px){
+    h1{font-size:22px}
+    .cell-chain,.cell-owner{display:none}
+    .tasks thead th:nth-child(3),.tasks thead th:nth-child(6){display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">9K</span>
+      <span>Game9K<small>Bảng điều khiển dự án</small></span>
+    </div>
+    <div class="top-right">
+      <span class="pill" id="today">—</span>
+      <span class="pill" id="asof">—</span>
+      <span class="pill"><b>portal</b>/task</span>
+    </div>
+  </div>
+
+  <div class="boot" id="boot">Đang đọc <code>data.json</code>…</div>
+
+  <div id="app" hidden>
+    <div class="hero">
+      <div>
+        <h1 id="greet">—</h1>
+        <p class="sub">
+          Mọi dòng ở đây đọc thẳng từ <b>cùng một nguồn</b> với repo: sổ việc
+          <code>pm/action-register.json</code> và thư mục ADR <code>docs/08-adr</code>.
+          Không có số nào được gõ tay trên trang này — nếu repo đổi, CI đỏ, và trang này đổi theo.
+        </p>
+      </div>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="cols">
+      <div>
+        <div class="panel">
+          <div class="panel-h">
+            <h2>Việc</h2>
+            <span class="muted" id="task-count" style="font-size:12px"></span>
+            <div class="tabs" role="tablist" aria-label="Lọc việc">
+              <button class="tab is-active" data-tab="open" role="tab">Đang mở</button>
+              <button class="tab" data-tab="blocked" role="tab">Đang chờ</button>
+              <button class="tab" data-tab="done" role="tab">Đã xong</button>
+              <button class="tab" data-tab="all" role="tab">Tất cả</button>
+            </div>
+            <input class="search grow" id="q" type="search" placeholder="Tìm theo mã, tên, người…" aria-label="Tìm việc"/>
+          </div>
+          <p class="panel-note">Bấm vào một dòng để đọc vì sao việc đó tồn tại và cần gì để đóng nó.</p>
+          <table class="tasks">
+            <thead>
+              <tr>
+                <th>Mã</th><th>Việc</th><th>Người</th><th>Trạng thái</th><th>Hạn</th><th>Đang chờ</th>
+              </tr>
+            </thead>
+            <tbody id="task-body"></tbody>
+          </table>
+        </div>
+
+        <div class="panel" style="margin-top:18px">
+          <div class="panel-h">
+            <h2>ADR · quyết định kiến trúc</h2>
+            <div class="adr-filters grow" style="justify-content:flex-end">
+              <button class="afilter is-active" data-f="all">Tất cả</button>
+              <button class="afilter" data-f="proposed">Chờ ký</button>
+              <button class="afilter" data-f="accepted">Đã nhận</button>
+              <button class="afilter" data-f="missing">Thiếu tệp</button>
+            </div>
+          </div>
+          <p class="panel-note">“Chờ ký” nghĩa là người quyết chưa ký. Theo quy ước của repo, ADR chưa ký <b>không</b> được dùng để biện minh cho mã đã merge.</p>
+          <div class="adr-list" id="adr-list"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel">
+          <div class="panel-h"><h2>Chỉ một người quyết được</h2></div>
+          <p class="panel-note">Những việc đang giữ việc khác lại. Đóng một cái ở đây là mở khoá cả dây chuyền.</p>
+          <div class="queue" id="queue"></div>
+        </div>
+
+        <div class="panel" style="margin-top:18px">
+          <div class="panel-h"><h2>Đọc trang này thế nào</h2></div>
+          <div class="drawer-body" style="padding-top:12px">
+            <div class="sec">
+              <h4>Cột “Đang chờ”</h4>
+              <p>Dây chuyền phụ thuộc, đọc từ phải sang trái: việc bên trái không bắt đầu được cho tới khi việc bên phải xong. <code>P10 ← P9 ← P8</code> nghĩa là <b>P8</b> là gốc — mọi thứ khác đang đợi nó.</p>
+            </div>
+            <div class="sec">
+              <h4>Nhãn “+1”, “+2”</h4>
+              <p>Số bậc phải đi ngược lên mới tới một việc có thể tự bắt đầu. <b>+0</b> là làm được ngay. Số càng lớn thì việc này càng xa tầm với — không phải vì ai lười, mà vì cấu trúc.</p>
+            </div>
+            <div class="sec">
+              <h4>Vì sao “Quá hạn” quan trọng</h4>
+              <p>Mỗi việc có một dòng <i>nếu quá hạn thì…</i> ghi sẵn từ trước. Quá hạn không phải là trễ — nó là lúc một tuyên bố trong tài liệu phải bị gỡ xuống.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <span>Nguồn: <code>pm/action-register.json</code> · <code>docs/08-adr/</code></span>
+      <span>Trang tĩnh, không backend, không theo dõi.</span>
+      <span>Dựng bởi <code>scripts/gen_portal_data.py</code> + <code>scripts/check_portal.py</code></span>
+    </footer>
+  </div>
+</div>
+
+<div class="drawer-back" id="drawer-back" hidden></div>
+<aside class="drawer" id="drawer" tabindex="-1" aria-live="polite">
+  <div class="drawer-top">
+    <div>
+      <span class="id" id="drawer-id">—</span>
+      <h3 id="drawer-title">—</h3>
+    </div>
+    <button class="x" id="drawer-close" aria-label="Đóng">✕</button>
+  </div>
+  <div class="drawer-body" id="drawer-body"></div>
+</aside>
+
+<script src="./app.js"></script>
+</body>
+</html>
